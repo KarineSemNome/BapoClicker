@@ -20,6 +20,32 @@
             user-select: none;
             -webkit-user-select: none;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        #bapos-background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .falling-bapo {
+            position: absolute;
+            top: -100px;
+            opacity: 0.5;
+            user-select: none;
+            pointer-events: none;
+            animation: fallBapo linear infinite;
+        }
+
+        @keyframes fallBapo {
+            0% { transform: translateY(-100px) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
         }
 
         .shake {
@@ -42,6 +68,8 @@
             align-items: center;
             font-size: 0.85rem;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 10;
         }
         
         .accessibility-bar button, .accessibility-bar select {
@@ -53,7 +81,6 @@
             cursor: pointer;
         }
 
-        /* Widget Fixo de Bapoedas no Canto Superior Esquerdo */
         .corner-currency-widget {
             position: fixed;
             top: 55px;
@@ -85,6 +112,8 @@
             border-radius: 20px;
             border: 5px solid #000000;
             box-shadow: 8px 8px 0px #000000;
+            position: relative;
+            z-index: 5;
         }
 
         h1 { font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 0px #FFD700; }
@@ -105,11 +134,6 @@
             margin-bottom: 10px;
         }
 
-        .btn-change-name:active {
-            transform: translateY(2px);
-            box-shadow: 0px 0px 0px #000;
-        }
-
         #click-btn {
             font-family: inherit;
             font-size: 24px;
@@ -123,11 +147,6 @@
             box-shadow: 0 8px 0px #000000;
             margin: 15px 0;
             width: 85%;
-        }
-
-        #click-btn:active {
-            transform: translateY(6px);
-            box-shadow: 0 2px 0px #000000;
         }
 
         .shop {
@@ -159,9 +178,7 @@
             flex-shrink: 0;
         }
 
-        .upgrade-info {
-            flex-grow: 1;
-        }
+        .upgrade-info { flex-grow: 1; }
 
         button.btn-buy {
             font-family: inherit;
@@ -175,11 +192,6 @@
             cursor: pointer;
             box-shadow: 0 4px 0px #000000;
             width: 100%;
-        }
-
-        button.btn-buy:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0px #000000;
         }
 
         button:disabled {
@@ -208,17 +220,8 @@
             width: 75px;
         }
 
-        #floating-prestige-btn {
-            top: 45%;
-            transform: translateY(-50%);
-            background-color: #FF9100;
-        }
-
-        #floating-achievements-btn {
-            top: 65%;
-            transform: translateY(-50%);
-            background-color: #00E5FF;
-        }
+        #floating-prestige-btn { top: 45%; transform: translateY(-50%); background-color: #FF9100; }
+        #floating-achievements-btn { top: 65%; transform: translateY(-50%); background-color: #00E5FF; }
 
         .badge {
             background: #D500F9;
@@ -236,33 +239,20 @@
             right: -5px;
         }
 
-        .animated-pulse {
-            animation: pulse 1s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.15); }
-        }
+        .animated-pulse { animation: pulse 1s infinite alternate; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.15); } }
 
         .tab-overlay {
             position: fixed;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
+            top: 0; left: -100%; width: 100%; height: 100%;
             background-color: rgba(103, 58, 183, 0.98);
             z-index: 999;
             transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             overflow-y: auto;
         }
 
-        .tab-overlay.open {
-            left: 0;
-        }
+        .tab-overlay.open { left: 0; }
 
         .tab-content {
             background: #FFF;
@@ -280,125 +270,76 @@
 
         .close-tab-btn {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            background: #FF1744;
-            color: #FFF;
-            border: 3px solid #000;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 2px 2px 0px #000;
+            top: 10px; right: 15px;
+            background: #FF1744; color: #FFF;
+            border: 3px solid #000; border-radius: 50%;
+            width: 35px; height: 35px;
+            font-weight: bold; font-size: 1.2rem;
+            cursor: pointer; box-shadow: 2px 2px 0px #000;
         }
 
         .tree-container {
-            position: relative;
-            margin-top: 20px;
-            padding: 10px;
-            background: #FFF9C4;
-            border: 4px solid #000;
-            border-radius: 15px;
-            min-height: 450px;
+            position: relative; margin-top: 20px; padding: 10px;
+            background: #FFF9C4; border: 4px solid #000; border-radius: 15px; min-height: 450px;
         }
 
-        .tree-node-grid {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 10px;
-        }
+        .tree-node-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 10px; }
 
         .node-card {
-            background: #FFF;
-            border: 3px solid #000;
-            border-radius: 12px;
-            padding: 8px;
-            box-shadow: 3px 3px 0px #000;
-            font-size: 0.75rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: #FFF; border: 3px solid #000; border-radius: 12px;
+            padding: 8px; box-shadow: 3px 3px 0px #000; font-size: 0.75rem;
+            display: flex; flex-direction: column; align-items: center;
         }
-
         .node-card.unlocked { background: #C8E6C9; }
         .node-card.locked { background: #E0E0E0; opacity: 0.7; }
 
-        .node-img {
-            width: 36px;
-            height: 36px;
-            border: 2px solid #000;
-            border-radius: 6px;
-            background: #FFF;
-            margin-bottom: 4px;
-            object-fit: cover;
-        }
+        .node-img { width: 36px; height: 36px; border: 2px solid #000; border-radius: 6px; background: #FFF; margin-bottom: 4px; object-fit: cover; }
+        .secret-trigger { cursor: pointer; transition: color 0.2s; }
+        .secret-trigger:hover { color: #D500F9; }
 
-        .secret-trigger {
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .secret-trigger:hover {
-            color: #D500F9;
-        }
-
-        .achievements-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-        }
+        .achievements-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
 
         .achievement-card {
-            background: #FFF;
-            border: 3px solid #000;
-            border-radius: 10px;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-align: left;
-            box-shadow: 3px 3px 0px #000;
+            background: #FFF; border: 3px solid #000; border-radius: 10px;
+            padding: 10px; display: flex; align-items: center; gap: 10px; text-align: left; box-shadow: 3px 3px 0px #000;
         }
-
         .achievement-card.unlocked { background: #E8F5E9; }
         .achievement-card.claimed { background: #D1C4E9; }
 
-        .achievement-img {
-            width: 48px;
-            height: 48px;
-            border: 2px solid #000;
-            border-radius: 8px;
-            object-fit: cover;
-            background: #E0F7FA;
-            flex-shrink: 0;
-        }
-
-        .achievement-info {
-            flex-grow: 1;
-        }
-
+        .achievement-img { width: 48px; height: 48px; border: 2px solid #000; border-radius: 8px; object-fit: cover; background: #E0F7FA; flex-shrink: 0; }
         .btn-supreme { background-color: #D500F9; color: #FFF; font-size: 14px; width: 100%; margin-top: 15px; border: 3px solid #000; box-shadow: 0 4px 0px #000; padding: 10px; cursor: pointer; font-family: inherit; font-weight: bold;}
 
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 1000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000;
         }
 
         .modal-content {
-            background: #ffffff;
-            border: 5px solid #000;
-            border-radius: 20px;
-            padding: 25px;
-            max-width: 320px;
-            box-shadow: 8px 8px 0px #000000;
+            background: #ffffff; border: 5px solid #000; border-radius: 20px;
+            padding: 25px; max-width: 380px; box-shadow: 8px 8px 0px #000000; position: relative;
+        }
+
+        #boss-fight-modal {
+            background: url('Imagens/fundo_da_luta.png') center center / cover no-repeat;
+        }
+        #boss-fight-modal .modal-content {
+            max-width: 520px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.94);
+        }
+        #boss-fight-modal .boss-sprite-img {
+            width: 220px;
+            height: 220px;
+        }
+
+        body.boss-mode > #bapos-background-container,
+        body.boss-mode > .accessibility-bar,
+        body.boss-mode > .corner-currency-widget,
+        body.boss-mode > .floating-side-btn,
+        body.boss-mode > #main-container,
+        body.boss-mode > #prestige-tab,
+        body.boss-mode > #achievements-tab {
+            display: none !important;
         }
 
         .modal-content input, .modal-content textarea {
@@ -406,86 +347,64 @@
             border: 3px solid #000; border-radius: 10px; margin-bottom: 15px; text-align: center;
         }
 
+        /* ESTILOS DA BOSS FIGHT */
+        .boss-hp-box {
+            position: fixed; top: 15px; background: #FFF; border: 4px solid #000;
+            padding: 8px 12px; border-radius: 12px; box-shadow: 4px 4px 0px #000; z-index: 2000;
+            display: flex; align-items: center; gap: 8px; font-weight: bold;
+        }
+        #player-hp-box { left: 15px; }
+        #boss-hp-box { right: 15px; }
+
+        .hp-hearts-container { display: flex; gap: 4px; }
+        .hp-heart-img { width: 24px; height: 24px; object-fit: contain; }
+
+        .boss-sprite-img {
+            width: 140px; height: 140px; object-fit: contain;
+            margin: 10px auto; transition: opacity 0.8s ease; display: block;
+        }
+
+        .fade-out { opacity: 0; }
+
+        .jokenpo-btns { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+        .btn-jokenpo {
+            font-family: inherit; font-size: 1.2rem; font-weight: bold; padding: 10px 15px;
+            background: #FFD700; border: 3px solid #000; border-radius: 10px; cursor: pointer; box-shadow: 2px 2px 0px #000;
+        }
+        .btn-jokenpo:active { transform: translateY(2px); box-shadow: none; }
+
         .credits-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000000;
-            color: #FFD700;
-            z-index: 9999;
-            display: none;
-            overflow: hidden;
-            flex-direction: column;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; color: #FFD700;
+            z-index: 9999; display: none; overflow: hidden; flex-direction: column; align-items: center;
         }
 
         .credits-scroll {
-            position: absolute;
-            bottom: -100%;
-            width: 80%;
-            max-width: 600px;
-            text-align: center;
-            animation: scrollCredits 25s linear forwards;
+            position: absolute; bottom: -100%; width: 80%; max-width: 600px; text-align: center; animation: scrollCredits 25s linear forwards;
         }
 
-        @keyframes scrollCredits {
-            0% { top: 100%; }
-            100% { top: -160%; }
-        }
-
-        .credits-scroll h1 {
-            font-size: 3rem;
-            color: #FE3867;
-            text-shadow: 2px 2px 0px #FFF;
-            margin-bottom: 20px;
-        }
-
-        .credits-scroll p {
-            font-size: 1.3rem;
-            color: #FFF;
-            line-height: 1.6;
-            margin: 15px 0;
-        }
-
-        .credits-scroll .watermark {
-            font-size: 1.8rem;
-            color: #00E5FF;
-            font-weight: bold;
-            margin-top: 40px;
-        }
+        @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -160%; } }
+        .credits-scroll h1 { font-size: 3rem; color: #FE3867; text-shadow: 2px 2px 0px #FFF; margin-bottom: 20px; }
+        .credits-scroll p { font-size: 1.3rem; color: #FFF; line-height: 1.6; margin: 15px 0; }
+        .credits-scroll .watermark { font-size: 1.8rem; color: #00E5FF; font-weight: bold; margin-top: 40px; }
 
         .credits-restart-btn {
-            margin-top: 20px;
-            padding: 15px 25px;
-            font-size: 1.2rem;
-            background: #00E676;
-            color: #000;
-            border: 4px solid #FFF;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 0px #FFF;
+            margin-top: 20px; padding: 15px 25px; font-size: 1.2rem; background: #00E676;
+            color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF;
         }
 
         .credits-want-btn {
-            margin-top: 15px;
-            padding: 12px 20px;
-            font-size: 1rem;
-            background: #FF9100;
-            color: #000;
-            border: 4px solid #FFF;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 0px #FFF;
-            display: none;
+            margin-top: 15px; padding: 12px 20px; font-size: 1rem; background: #FF9100;
+            color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF; display: none;
         }
     </style>
 </head>
 <body>
 
+    <div id="bapos-background-container"></div>
+
     <div class="accessibility-bar">
         <button id="toggle-anim-btn">Animações: ON</button>
-        <button id="toggle-bgm-btn">Música: OFF</button>
+        <button id="toggle-bgm-btn">Música: ON</button>
         <button id="save-btn" style="background:#00E676; color:#000;">💾 Salvar</button>
         <button id="reset-btn" style="background:#FF1744; color:#FFF;">🗑️ Resetar</button>
         <label for="sound-mode">Som Clique:</label>
@@ -496,9 +415,9 @@
         </select>
     </div>
 
-    <!-- Widget Fixo de Bapoedas no Canto Superior Esquerdo -->
+    <!-- Widget Fixo com bapoeda.png -->
     <div class="corner-currency-widget">
-        <img src="Imagens/bapoedas.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'14\' fill=\'%23FFD700\' stroke=\'%23000\' stroke-width=\'2\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>🟡</text></svg>'" class="corner-currency-img" alt="Bapoedas">
+        <img src="Imagens/bapoeda.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'14\' fill=\'%23FFD700\' stroke=\'%23000\' stroke-width=\'2\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>🟡</text></svg>'" class="corner-currency-img" alt="Bapoedas">
         <span id="corner-score">0</span>
     </div>
 
@@ -512,6 +431,16 @@
         <div class="badge animated-pulse" id="achievements-notification" style="display:none;">!</div>
         <span style="font-size:1.6rem;">🏆</span>
         <span>CONQUISTAS</span>
+    </div>
+
+    <!-- Placares de Vida da Boss Fight -->
+    <div class="boss-hp-box" id="player-hp-box" style="display:none;">
+        <span>VOCÊ:</span>
+        <div class="hp-hearts-container" id="player-hearts"></div>
+    </div>
+    <div class="boss-hp-box" id="boss-hp-box" style="display:none;">
+        <span>MARRONE:</span>
+        <div class="hp-hearts-container" id="boss-hearts"></div>
     </div>
 
     <div class="tab-overlay" id="prestige-tab">
@@ -562,6 +491,65 @@
         </div>
     </div>
 
+    <!-- Modais da Boss Fight -->
+    <div class="modal-overlay" id="boss-dialogue-modal" style="display:none;">
+        <div class="modal-content">
+            <h3 style="color:#FF1744; margin-top:0;">MARRONE APARECEU!</h3>
+            <img id="marrone-dialogue-img" src="Imagens/marrone.png" class="boss-sprite-img" alt="Marrone">
+            <p id="boss-dialogue-text">Pra libertar eles, tem que me vencer no Jokenpô!</p>
+            <button class="btn-buy" id="start-boss-fight-btn">ACEITAR DESAFIO!</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="boss-fight-modal" style="display:none;">
+        <div class="modal-content">
+            <h3>JOKENPÔ CONTRA MARRONE</h3>
+            <img id="marrone-fight-img" src="Imagens/marrone.png" class="boss-sprite-img" alt="Marrone">
+            <p id="jokenpo-status-text">Escolha sua jogada!</p>
+            <div class="jokenpo-btns">
+                <button class="btn-jokenpo" onclick="jogarJokenpo('pedra')">✊ Pedra</button>
+                <button class="btn-jokenpo" onclick="jogarJokenpo('papel')">✋ Papel</button>
+                <button class="btn-jokenpo" onclick="jogarJokenpo('tesoura')">✌️ Tesoura</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="revive-modal" style="display:none;">
+        <div class="modal-content">
+            <h3>REVIVER O BOSS?</h3>
+            <p>Marrone foi derrotado... Deseja trazê-lo de volta à vida?</p>
+            <button class="btn-buy" id="revive-yes-btn" style="margin-bottom:8px;">SIM</button>
+            <button class="btn-buy" id="revive-no-btn" style="background-color:#FF1744; color:#FFF;">NÃO</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="revive-sequence-modal" style="display:none;">
+        <div class="modal-content">
+            <img id="revive-sequence-img" src="Imagens/marrone_normal.png" class="boss-sprite-img" alt="Marrone">
+            <p id="revive-sequence-text" style="font-weight:bold; font-size:1.1rem;"></p>
+            <button class="btn-buy" id="revive-next-btn">Avançar...</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="bapos-freed-modal" style="display:none;">
+        <div class="modal-content">
+            <h2 style="color:#00E676; margin-top:0;">EBAAAAA! OS BAPOS FORAM LIBERTADOS</h2>
+            <p>Você salvou todos eles!</p>
+            <button class="btn-buy" id="bapos-freed-btn">VER CRÉDITOS FINAIS</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="vugnaes-modal" style="display:none;">
+        <div class="modal-content">
+            <h3 style="color:#D500F9; margin-top:0;">🔮 VUGNAES SREO 🔮</h3>
+            <p id="vugnaes-modal-desc">Você descobriu um antigo mistério Bapal! Digite o código de ativação ou confirme a compra do Upgrade Lendário por <strong>2543 Bapoedas</strong>.</p>
+            <input type="text" id="vugnaes-input" placeholder="Digite o código secreto..." maxlength="20">
+            <br>
+            <button class="btn-buy" id="confirm-vugnaes-btn" style="margin-bottom:8px; background-color:#D500F9; color:#FFF;">ATIVAR VUGNAES (2543 Bapoedas)</button>
+            <button class="btn-buy" id="close-vugnaes-btn" style="background-color:#FF1744; color:#FFF;">FECHAR</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="change-name-modal" style="display:none;">
         <div class="modal-content">
             <h3>MUDAR DE NOME</h3>
@@ -575,9 +563,9 @@
 
     <div class="modal-overlay" id="endgame-modal" style="display:none;">
         <div class="modal-content">
-            <h3>VOCÊ SALVOU OS BAPOS!</h3>
-            <p>Escreva uma mensagem especial para os créditos finais:</p>
-            <textarea id="endgame-message-input" rows="4" placeholder="Digite sua mensagem final aqui..."></textarea>
+            <h3>VOCÊ SALVOU OS BAPOS DAS GARRAS DO MALDITO MARRONE!</h3>
+            <p>Agora, poderemos ser livres e viver sendo escravos do capitalismo tardio que nos assola:</p>
+            <textarea id="endgame-message-input" rows="4" placeholder="Agradecemos de verdade por você ter nos salvado, OH PODEROSA/E/O"></textarea>
             <br>
             <button class="btn-buy" id="finish-game-btn">VER CRÉDITOS FINAIS</button>
         </div>
@@ -589,10 +577,13 @@
             <p id="credits-thanks-text"><strong>Agradecimento Especial:</strong><br>Obrigado por jogar e salvar todos os Bapos do terrível Marrone!</p>
             <p id="credits-custom-message" style="color:#FFD700; font-style:italic;"></p>
             <div id="credits-names-list">
-                <p><strong>Desenvolvimento & Design:</strong><br>Equipe Bapo Clicker</p>
-                <p><strong>Apoiadores Supremos:</strong><br>Comunidade Bapal</p>
+                <p><strong>Desenvolvimento & Design:</strong><br>Karine Millena do bapotodo</p>
+                <p><strong>Imagens e soins:</strong><br>O bapo todo</p>
+                <p><strong>Testadores:</strong><br>Aline A.</p>
+                <p><strong>Agradecimentos especiais:</strong><br>A Comunidade😭</p>
+                <p><strong>Agradecimento mais que especial:</strong><br>Ao nosso salvador ${nomeJogador}</p>
             </div>
-            <p class="watermark">@obapotodo</p>
+            <p class="watermark">siga @obapotodo em todas as redes sociais</p>
             <button class="credits-restart-btn" onclick="resetarJogo()">REINICIAR JOGO</button>
             <br>
             <button class="credits-want-btn" id="want-play-btn" onclick="voltarParaAjudar()">Agola, eu quelo, não sou mais Muliro</button>
@@ -608,14 +599,14 @@
         <button id="click-btn">CLICA AQUI OH!</button>
 
         <div class="shop">
-            <h3>Loja Principal</h3>
+            <h3>Lojinho Principal</h3>
             <div id="shop-container"></div>
         </div>
     </div>
 
     <script>
         let animacoesAtivas = true;
-        let bgmMuted = true;
+        let bgmMuted = false;
         let modoSom = "monhado";
 
         let nomeJogador = "Herói";
@@ -629,41 +620,58 @@
         const a1 = 500;
         const r = 1.35;
 
-        // Áudios na pasta "Áudios/"
+        // Variaveis do Boss
+        let playerHp = 3;
+        let bossHp = 3;
+        const bossOrder = ['tesoura', 'pedra', 'papel'];
+        let bossIndex = 0;
+        let reviveStep = 0;
+
         const sfxMonhado = new Audio('Áudios/monhado.mp3');
         const sfxCoco = new Audio('Áudios/cocô.mp3');
         const sfxCrocante = new Audio('Áudios/crocante.mp3');
         const sfxAnhanguera = new Audio('Áudios/anhanguera.mp3');
 
         const bgmMusic = new Audio('Áudios/musica.mp3');
-        bgmMusic.loop = true;
+bgmMusic.loop = true;
+bgmMusic.preload = 'auto';
+bgmMusic.volume = 0.4;
 
-        function playClickSound() {
-            let soundToPlay;
-            if (modoSom === 'monhado') soundToPlay = sfxMonhado;
-            else if (modoSom === 'coco') soundToPlay = sfxCoco;
-            else if (modoSom === 'crocante') soundToPlay = sfxCrocante;
+let bgmIniciado = false;
 
-            if (soundToPlay) {
-                soundToPlay.currentTime = 0;
-                soundToPlay.play().catch(e => {});
-            }
-        }
+function tocarMusica() {
+    if (bgmMuted) return;
 
-        function toggleBGM() {
-            bgmMuted = !bgmMuted;
-            document.getElementById('toggle-bgm-btn').innerText = `Música: ${bgmMuted ? 'OFF' : 'ON'}`;
-            if (!bgmMuted) {
-                bgmMusic.play().catch(e => {});
-            } else {
-                bgmMusic.pause();
-            }
-        }
+    bgmMusic.play()
+        .then(() => {
+            bgmIniciado = true;
+            console.log('Música iniciada com sucesso.');
+        })
+        .catch(erro => {
+            console.error('Erro ao tocar a música:', erro);
+        });
+}
 
-        // Imagens de loja na pasta "Imagens/"
+function toggleBGM() {
+    bgmMuted = !bgmMuted;
+
+    const botao = document.getElementById('toggle-bgm-btn');
+    botao.innerText = `Música: ${bgmMuted ? 'OFF' : 'ON'}`;
+
+    if (bgmMuted) {
+        bgmMusic.pause();
+    } else {
+        tocarMusica();
+    }
+}
+document.addEventListener('pointerdown', tocarMusica, true);
+document.addEventListener('keydown', tocarMusica, true);
+
+document.getElementById('toggle-bgm-btn')
+    .addEventListener('click', toggleBGM);
         const lojaData = [
             { id: 'click', nome: '1. Super Clique (+1)', desc: 'Aumenta clique manual', baseCost: 10, multCost: 1.3, power: 1, bps: 0, img: 'Imagens/click_upgrade.png' },
-            { id: 'auto', nome: '2. Auto Clicker (+0.05/s)', desc: 'Clique automático', baseCost: 15, multCost: 1.25, power: 0, bps: 0.05, img: 'Imagens/auto_upgrade.png' },
+            { id: 'auto', nome: '2. Bapo GPT (+0.05/s)', desc: 'Clique automático', baseCost: 15, multCost: 1.25, power: 0, bps: 0.05, img: 'Imagens/auto_upgrade.png' },
             { id: 'farm', nome: '3. Fazenda de Bapos (+0.5/s)', desc: 'Plantação de Bapos', baseCost: 100, multCost: 1.25, power: 0, bps: 0.5, img: 'Imagens/farm_upgrade.png' },
             { id: 'factory', nome: '4. Fábrica de Bapos (+4/s)', desc: 'Produção industrial', baseCost: 600, multCost: 1.25, power: 0, bps: 4, img: 'Imagens/factory_upgrade.png' },
             { id: 'quantum', nome: '5. Bapo Quântico (+30/s)', desc: 'Gera Bapos paralelos', baseCost: 3000, multCost: 1.28, power: 0, bps: 30, img: 'Imagens/quantum_upgrade.png' },
@@ -671,14 +679,11 @@
         ];
 
         let loja = {};
-        lojaData.forEach(item => {
-            loja[item.id] = { qtd: 0, ...item };
-        });
+        lojaData.forEach(item => { loja[item.id] = { qtd: 0, ...item }; });
 
-        // Imagens de habilidades na pasta "Imagens/"
         const listaSkills = [
             { id: "s1", nome: "Desconto Bapal", desc: "Loja -5%", custo: 1, tipo: "desconto", val: 0.05, parentId: null, img: "Imagens/skill_1.png" },
-            { id: "s2", nome: "Clique Duplo", desc: "Clique x2", custo: 1, tipo: "cliqueMult", val: 2, parentId: null, img: "Imagens/skill_2.png" },
+            { id: "s2", nome: "Clique Mais forte", desc: "+5% de poder de clique por nível (20 níveis)", custo: 1, tipo: "cliqueMult", val: 0.05, maxNivel: 20, parentId: null, img: "Imagens/skill_2.png" },
             { id: "s3", nome: "Auto Boost", desc: "Auto-clickers +100%", custo: 1, tipo: "autoPerc", val: 1.0, parentId: null, img: "Imagens/skill_3.png" },
             { id: "s4", nome: "Super Desconto", desc: "Loja -10%", custo: 2, tipo: "desconto", val: 0.10, parentId: "s1", img: "Imagens/skill_4.png" },
             { id: "s5", nome: "Fazenda Turbo", desc: "Fazendas +150%", custo: 2, tipo: "farmMult", val: 2.5, parentId: "s1", img: "Imagens/skill_5.png" },
@@ -686,26 +691,25 @@
             { id: "s7", nome: "Fábrica Atômica", desc: "Fábricas +200%", custo: 2, tipo: "factoryMult", val: 3.0, parentId: "s3", img: "Imagens/skill_7.png" },
             { id: "s8", nome: "Sinergia Quântica", desc: "Quânticos +300%", custo: 4, tipo: "quantumMult", val: 4.0, parentId: "s5", img: "Imagens/skill_8.png" },
             { id: "s9", nome: "Produção Global", desc: "Geral +100%", custo: 4, tipo: "geralPerc", val: 1.0, parentId: "s6", img: "Imagens/skill_9.png" },
-            { id: "s10", nome: "Reator Nuclear", desc: "Reatores +400%", custo: 5, tipo: "reactorMult", val: 5.0, parentId: "s7", img: "Imagens/skill_10.png" },
-            { id: "s11", nome: "Dominância Bapal", desc: "Geral +200%", custo: 8, tipo: "geralPerc", val: 2.0, parentId: "s8", img: "Imagens/skill_11.png" },
+            { id: "s10", nome: "Reator Nuclear", desc: "Reatores +300%", custo: 5, tipo: "reactorMult", val: 5.0, parentId: "s7", img: "Imagens/skill_10.png" },
+            { id: "s11", nome: "Dominância Bapal", desc: "Geral +300%", custo: 8, tipo: "geralPerc", val: 2.0, parentId: "s8", img: "Imagens/skill_11.png" },
             { id: "s12", nome: "Bapo Divino", desc: "Geral +500%", custo: 12, tipo: "geralPerc", val: 5.0, parentId: "s9", img: "Imagens/skill_12.png" }
         ];
 
         let skillsCompradas = {};
-        listaSkills.forEach(sk => skillsCompradas[sk.id] = false);
+        listaSkills.forEach(sk => skillsCompradas[sk.id] = sk.id === "s2" ? 0 : false);
         let supremoLiberado = false;
 
-        // Imagens de conquistas na pasta "Conquistas/"
         const conquistasData = [
             { id: "c1", nome: "Primeiro Bapo", desc: "Clique 1 vez no Bapo Grande", req: () => totalCliquesManuais >= 1, bonusDesc: "+10 Bapoedas Instântaneas", bonusType: "bapoedas", bonusVal: 10, secreta: false, img: "Conquistas/Primeiro Bapo.png" },
-            { id: "c2", nome: "Dedo Rápido", desc: "Alcance 50 cliques manuais", req: () => totalCliquesManuais >= 50, bonusDesc: "+1% Clique Poderoso", bonusType: "cliqueMult", bonusVal: 0.01, secreta: false, img: "Conquistas/Dedo Rápido.png" },
-            { id: "c3", nome: "Início do Império", desc: "Compre seu primeiro upgrade da loja", req: () => Object.values(loja).some(item => item.qtd > 0), bonusDesc: "-1% em todos os preços", bonusType: "desconto", bonusVal: 0.01, secreta: false, img: "Conquistas/Início do Império.png" },
+            { id: "c2", nome: "A técnica do 5 e +", desc: "Alcance 50 cliques manuais", req: () => totalCliquesManuais >= 50, bonusDesc: "+1% Clique Poderoso", bonusType: "cliqueMult", bonusVal: 0.01, secreta: false, img: "Conquistas/cinco e mais.png" },
+            { id: "c3", nome: "Início da Revolução Bapal", desc: "Compre seu primeiro upgrade da loja", req: () => Object.values(loja).some(item => item.qtd > 0), bonusDesc: "-1% em todos os preços", bonusType: "desconto", bonusVal: 0.01, secreta: false, img: "Conquistas/Revolução Bapal.png" },
             { id: "c4", nome: "Pequena Fortuna", desc: "Acumule 1.000 Bapoedas", req: () => bapoedas >= 1000, bonusDesc: "+50 Bapoedas", bonusType: "bapoedas", bonusVal: 50, secreta: false, img: "Conquistas/Pequena Fortuna.png" },
             { id: "c5", nome: "Agricultor Bapal", desc: "Tenha 10 Fazendas de Bapo", req: () => loja.farm.qtd >= 10, bonusDesc: "+2% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.02, secreta: false, img: "Conquistas/Agricultor Bapal.png" },
             { id: "c6", nome: "Primeiro Salto", desc: "Realize seu primeiro Prestígio", req: () => totalPrestagiosFeitos >= 1, bonusDesc: "+2 Pontos de Prestígio extra", bonusType: "pp", bonusVal: 2, secreta: false, img: "Conquistas/Primeiro Salto.png" },
-            { id: "c7", nome: "Mestre da Loja", desc: "Tenha pelo menos 5 unidades de cada item comum", req: () => loja.click.qtd >= 5 && loja.auto.qtd >= 5 && loja.farm.qtd >= 5 && loja.factory.qtd >= 5, bonusDesc: "-2% em todos os preços", bonusType: "desconto", bonusVal: 0.02, secreta: false, img: "Conquistas/Mestre da Loja.png" },
-            { id: "c8", nome: "Clicker Compulsivo", desc: "Alcance 500 cliques manuais", req: () => totalCliquesManuais >= 500, bonusDesc: "+5% Poder de Clique", bonusType: "cliqueMult", bonusVal: 0.05, secreta: false, img: "Conquistas/Clicker Compulsivo.png" },
-            { id: "c9", nome: "Mente Brilhante", desc: "Compre 5 Habilidades na Árvore de Prestígio", req: () => Object.values(skillsCompradas).filter(v => v).length >= 5, bonusDesc: "+3 Pontos de Prestígio", bonusType: "pp", bonusVal: 3, secreta: false, img: "Conquistas/Mente Brilhante.png" },
+            { id: "c7", nome: "Mestre do Lojinho", desc: "Tenha pelo menos 5 unidades de cada item comum", req: () => loja.click.qtd >= 5 && loja.auto.qtd >= 5 && loja.farm.qtd >= 5 && loja.factory.qtd >= 5, bonusDesc: "-2% em todos os preços", bonusType: "desconto", bonusVal: 0.02, secreta: false, img: "Conquistas/Mestre do Lojinho.png" },
+            { id: "c8", nome: "Clicker Anônimo", desc: "Alcance 500 cliques manuais", req: () => totalCliquesManuais >= 500, bonusDesc: "+5% Poder de Clique", bonusType: "cliqueMult", bonusVal: 0.05, secreta: false, img: "Conquistas/Clicker Anônimo.png" },
+            { id: "c9", nome: "BigBrain", desc: "Compre 5 Habilidades na Árvore de Prestígio", req: () => Object.values(skillsCompradas).filter(v => v).length >= 5, bonusDesc: "+3 Pontos de Prestígio", bonusType: "pp", bonusVal: 3, secreta: false, img: "Conquistas/BigBrain.png" },
             { id: "c10", nome: "Magnata dos Bapos", desc: "Acumule 100.000 Bapoedas", req: () => bapoedas >= 100000, bonusDesc: "+10% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.10, secreta: false, img: "Conquistas/Magnata dos Bapos.png" },
             { id: "sec1", nome: "Então tá", desc: "Você recusou ajudar os Bapos no começo...", req: () => conquistasEstado["sec1"]?.desbloqueada, bonusDesc: "+1 Ponto de Prestígio de consolo", bonusType: "pp", bonusVal: 1, secreta: true, img: "Conquistas/Então tá.png" },
             { id: "sec2", nome: "MUUUUU", desc: "Nomeou-se Anhanguera e invocou a lenda!", req: () => conquistasEstado["sec2"]?.desbloqueada, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: true, img: "Conquistas/MUUUUU.png" },
@@ -714,9 +718,51 @@
         ];
 
         let conquistasEstado = {};
-        conquistasData.forEach(c => {
-            conquistasEstado[c.id] = { desbloqueada: false, resgatada: false };
-        });
+        conquistasData.forEach(c => { conquistasEstado[c.id] = { desbloqueada: false, resgatada: false }; });
+
+        function calcularTotalUpgradesComprados() {
+            let totalLoja = Object.values(loja).reduce((acc, curr) => acc + curr.qtd, 0);
+            let totalSkills = Object.values(skillsCompradas).reduce((acc, curr) => acc + (typeof curr === 'number' ? curr : (curr ? 1 : 0)), 0);
+            let extraSecreto = upgradeSecretoComprado ? 5 : 0;
+            return totalLoja + totalSkills + extraSecreto;
+        }
+
+        function contarUpgradesMaximizados() {
+            return listaSkills.filter(sk => {
+                const nivel = sk.id === 's2'
+                    ? (Number(skillsCompradas[sk.id]) || 0)
+                    : (skillsCompradas[sk.id] ? 1 : 0);
+                return nivel >= (sk.maxNivel || 1);
+            }).length;
+        }
+
+        function atualizarBaposNoFundo() {
+            const container = document.getElementById('bapos-background-container');
+            const totalUpgrades = calcularTotalUpgradesComprados();
+            const maxBapos = Math.min(totalUpgrades * 3, 100); 
+
+            while (container.children.length < maxBapos) criarBapoCaindo(container);
+            while (container.children.length > maxBapos) container.removeChild(container.lastChild);
+        }
+
+        function criarBapoCaindo(container) {
+            const img = document.createElement('img');
+            img.src = 'Imagens/bapo.png';
+            img.className = 'falling-bapo';
+
+            const tamanho = Math.floor(Math.random() * 40) + 30;
+            const left = Math.random() * 95; 
+            const duracao = (Math.random() * 8 + 5).toFixed(1);
+            const atraso = (Math.random() * -10).toFixed(1);
+
+            img.style.width = `${tamanho}px`;
+            img.style.height = `${tamanho}px`;
+            img.style.left = `${left}vw`;
+            img.style.animationDuration = `${duracao}s`;
+            img.style.animationDelay = `${atraso}s`;
+
+            container.appendChild(img);
+        }
 
         document.getElementById('toggle-anim-btn').addEventListener('click', () => {
             animacoesAtivas = !animacoesAtivas;
@@ -748,21 +794,50 @@
         });
 
         document.getElementById('secret-bapal-btn').addEventListener('click', () => {
+            const vugnaesModal = document.getElementById('vugnaes-modal');
+            const desc = document.getElementById('vugnaes-modal-desc');
+            const confirmBtn = document.getElementById('confirm-vugnaes-btn');
+            const input = document.getElementById('vugnaes-input');
+
             if (upgradeSecretoComprado) {
-                alert("Você já possui o upgrade secreto 'Vugnaes Sreo'!");
-                return;
-            }
-            if (bapoedas >= 200) {
-                if (confirm("Você encontrou um segredo Bapal!\nDeseja comprar 'Vugnaes Sreo' por 200 Bapoedas?")) {
-                    bapoedas -= 200;
-                    upgradeSecretoComprado = true;
-                    conquistasEstado["sec_vugnaes"].desbloqueada = true;
-                    playClickSound();
-                    atualizarTela();
-                    alert("✨ UPGRADE LENDÁRIO ADQUIRIDO: Vugnaes Sreo!");
-                }
+                desc.innerText = "Você já possui o Upgrade Lendário 'Vugnaes Sreo' ativo!";
+                input.style.display = 'none';
+                confirmBtn.style.display = 'none';
             } else {
-                alert("Você achou um segredo! Mas precisa de 200 Bapoedas para comprar 'Vugnaes Sreo'.");
+                desc.innerHTML = "Você descobriu um mistério Bapal!<br>Digite a palavra mágica ou confirme a compra por <strong>2543 Bapoedas</strong>.";
+                input.style.display = 'inline-block';
+                input.value = '';
+                confirmBtn.style.display = 'inline-block';
+            }
+
+            vugnaesModal.style.display = 'flex';
+        });
+
+        document.getElementById('close-vugnaes-btn').addEventListener('click', () => {
+            document.getElementById('vugnaes-modal').style.display = 'none';
+        });
+
+        document.getElementById('confirm-vugnaes-btn').addEventListener('click', () => {
+            const inputVal = document.getElementById('vugnaes-input').value.trim().toLowerCase();
+            if (upgradeSecretoComprado) return;
+
+            if (inputVal === "vugnaes" || inputVal === "vugnaes sreo") {
+                upgradeSecretoComprado = true;
+                conquistasEstado["sec_vugnaes"].desbloqueada = true;
+                playClickSound();
+                document.getElementById('vugnaes-modal').style.display = 'none';
+                atualizarTela();
+                alert("✨ CÓDIGO ACEITO! Upgrade Lendário Vugnaes Sreo Adquirido!");
+            } else if (bapoedas >= 2543) {
+                bapoedas -= 2543;
+                upgradeSecretoComprado = true;
+                conquistasEstado["sec_vugnaes"].desbloqueada = true;
+                playClickSound();
+                document.getElementById('vugnaes-modal').style.display = 'none';
+                atualizarTela();
+                alert("✨ UPGRADE LENDÁRIO ADQUIRIDO: Vugnaes Sreo!");
+            } else {
+                alert("Você precisa digitar o código 'vugnaes' correto ou ter pelo menos 2543 Bapoedas!");
             }
         });
 
@@ -772,7 +847,10 @@
             const placeholderSkillImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'><rect width='36' height='36' fill='%2329B6F6'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='16'>⚡</text></svg>";
 
             listaSkills.forEach((sk, i) => {
-                const isBought = skillsCompradas[sk.id];
+                const nivelSkill = sk.id === "s2" ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
+                const isBought = nivelSkill > 0;
+                const nivelMaximo = sk.maxNivel || 1;
+                const atingiuMaximo = nivelSkill >= nivelMaximo;
                 const parentBought = !sk.parentId || skillsCompradas[sk.parentId];
                 const node = document.createElement('div');
                 node.className = `node-card ${isBought ? 'unlocked' : (parentBought ? '' : 'locked')}`;
@@ -781,16 +859,17 @@
                     <img src="${sk.img}" onerror="this.src='${placeholderSkillImg}'" class="node-img" alt="${sk.nome}">
                     <strong>${i+1}. ${sk.nome}</strong>
                     <span style="font-size:0.7rem; margin:2px 0;">${sk.desc}</span>
-                    <button class="btn-buy" id="btn-sk-${sk.id}" style="font-size:0.65rem; padding:4px;" ${isBought || !parentBought || pontosPrestigio < sk.custo ? 'disabled' : ''}>
-                        ${isBought ? 'MAX!' : `Comprar (${sk.custo} PP)`}
+                    <button class="btn-buy" id="btn-sk-${sk.id}" style="font-size:0.65rem; padding:4px;" ${atingiuMaximo || !parentBought || pontosPrestigio < sk.custo ? 'disabled' : ''}>
+                        ${atingiuMaximo ? 'MAX!' : `${isBought ? `Nível ${nivelSkill}/20 - ` : ''}Comprar (${sk.custo} PP)`}
                     </button>
                 `;
                 grid.appendChild(node);
 
                 document.getElementById(`btn-sk-${sk.id}`).addEventListener('click', () => {
-                    if (!skillsCompradas[sk.id] && pontosPrestigio >= sk.custo && parentBought) {
+                    const nivelAtual = sk.id === "s2" ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
+                    if (nivelAtual < nivelMaximo && pontosPrestigio >= sk.custo && parentBought) {
                         pontosPrestigio -= sk.custo;
-                        skillsCompradas[sk.id] = true;
+                        skillsCompradas[sk.id] = sk.id === "s2" ? nivelAtual + 1 : true;
                         playClickSound();
                         atualizarTela();
                         renderSkillTree();
@@ -814,12 +893,8 @@
                 let btnText = "Bloqueada";
                 let btnDisabled = true;
 
-                if (est.resgatada) {
-                    btnText = "Resgatado!";
-                } else if (est.desbloqueada) {
-                    btnText = "Coletar Bônus";
-                    btnDisabled = false;
-                }
+                if (est.resgatada) btnText = "Resgatado!";
+                else if (est.desbloqueada) { btnText = "Coletar Bônus"; btnDisabled = false; }
 
                 card.innerHTML = `
                     <img src="${c.img}" onerror="this.src='${placeholderAchImg}'" class="achievement-img" alt="${c.nome}">
@@ -869,12 +944,10 @@
 
         function validarSegredosNome(novoNome) {
             const nomeMinusculo = novoNome.toLowerCase();
-
             if (nomeMinusculo === "anhanguera") {
                 conquistasEstado["sec2"].desbloqueada = true;
                 sfxAnhanguera.play().catch(e => {});
             }
-
             if (nomeMinusculo.includes("felps") || nomeMinusculo.includes("bapo")) {
                 conquistasEstado["sec3"].desbloqueada = true;
             }
@@ -961,7 +1034,10 @@
             listaSkills.forEach(sk => {
                 if (skillsCompradas[sk.id]) {
                     if (sk.tipo === "cliqueBase") cliqueBase += sk.val;
-                    if (sk.tipo === "cliqueMult") cliqueBase *= sk.val;
+                    if (sk.tipo === "cliqueMult") {
+                        const nivel = sk.id === "s2" ? (Number(skillsCompradas[sk.id]) || 0) : 1;
+                        cliqueBase *= 1 + (sk.val * nivel);
+                    }
                 }
             });
 
@@ -996,6 +1072,7 @@
 
         function atualizarTela() {
             checarConquistas();
+            atualizarBaposNoFundo();
             const { bpsTotal } = calcularGanhos();
             const valorFormatado = Math.floor(bapoedas);
             
@@ -1026,7 +1103,7 @@
             const badgeAch = document.getElementById('achievements-notification');
             badgeAch.style.display = temConquistaPendente ? "flex" : "none";
 
-            let totalMaximizados = Object.values(skillsCompradas).filter(v => v).length;
+            let totalMaximizados = contarUpgradesMaximizados();
             document.getElementById('total-skills').innerText = totalMaximizados;
 
             const btnSkillSupreme = document.getElementById('skill-supreme');
@@ -1034,7 +1111,7 @@
                 btnSkillSupreme.innerText = "TODOS OS BAPOS FORAM SALVOS!";
                 btnSkillSupreme.disabled = true;
             } else {
-                btnSkillSupreme.disabled = totalMaximizados < 12;
+                btnSkillSupreme.disabled = totalMaximizados < listaSkills.length;
             }
         }
 
@@ -1077,12 +1154,158 @@
             }
         });
 
+        // TRIGGER DA BOSS FIGHT
         document.getElementById('skill-supreme').addEventListener('click', () => {
-            if (Object.values(skillsCompradas).filter(v => v).length >= 12) {
-                supremoLiberado = true;
-                document.getElementById('endgame-modal').style.display = 'flex';
-                atualizarTela();
+            if (contarUpgradesMaximizados() >= listaSkills.length) {
+                prestigeTab.classList.remove('open');
+                iniciarIntroducaoBoss();
             }
+        });
+
+        function iniciarIntroducaoBoss() {
+            document.getElementById('boss-dialogue-modal').style.display = 'flex';
+        }
+
+        document.getElementById('start-boss-fight-btn').addEventListener('click', () => {
+            document.getElementById('boss-dialogue-modal').style.display = 'none';
+            iniciarBossFight();
+        });
+
+        function renderCoracoes(containerId, count, imgName) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const img = document.createElement('img');
+                img.src = `Imagens/${imgName}`;
+                img.className = 'hp-heart-img';
+                img.onerror = () => { img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><text y="20" font-size="20">❤️</text></svg>'; };
+                container.appendChild(img);
+            }
+        }
+
+        function atualizarSpriteBoss() {
+            const bossImg = document.getElementById('marrone-fight-img');
+            if (bossHp === 3) bossImg.src = 'Imagens/marrone.png';
+            else if (bossHp === 2) bossImg.src = 'Imagens/marrone_machucado.png';
+            else if (bossHp === 1) bossImg.src = 'Imagens/marrone_muito_machucado.png';
+            else if (bossHp === 0) bossImg.src = 'Imagens/marrone_morto.png';
+        }
+
+        function iniciarBossFight() {
+            playerHp = 3;
+            bossHp = 3;
+            bossIndex = 0;
+
+            document.body.classList.add('boss-mode');
+
+            document.getElementById('player-hp-box').style.display = 'flex';
+            document.getElementById('boss-hp-box').style.display = 'flex';
+            
+            renderCoracoes('player-hearts', playerHp, 'vida_bapo.png');
+            renderCoracoes('boss-hearts', bossHp, 'vida_marrone.png');
+            atualizarSpriteBoss();
+
+            document.getElementById('jokenpo-status-text').innerText = "Escolha sua jogada!";
+            document.getElementById('boss-fight-modal').style.display = 'flex';
+        }
+
+        function jogarJokenpo(escolhaPlayer) {
+            const escolhaBoss = bossOrder[bossIndex];
+            bossIndex = (bossIndex + 1) % bossOrder.length;
+
+            let resultado = "";
+
+            if (escolhaPlayer === escolhaBoss) {
+                resultado = `Empate! Ambos escolheram ${escolhaPlayer.toUpperCase()}.`;
+            } else if (
+                (escolhaPlayer === 'pedra' && escolhaBoss === 'tesoura') ||
+                (escolhaPlayer === 'papel' && escolhaBoss === 'pedra') ||
+                (escolhaPlayer === 'tesoura' && escolhaBoss === 'papel')
+            ) {
+                bossHp--;
+                resultado = `Você ganhou de ${escolhaBoss.toUpperCase()} com ${escolhaPlayer.toUpperCase()}! Marrone perdeu 1 vida.`;
+            } else {
+                playerHp--;
+                resultado = `Marrone usou ${escolhaBoss.toUpperCase()} e venceu seu ${escolhaPlayer.toUpperCase()}! Você perdeu 1 vida.`;
+            }
+
+            renderCoracoes('player-hearts', playerHp, 'vida_bapo.png');
+            renderCoracoes('boss-hearts', bossHp, 'vida_marrone.png');
+            atualizarSpriteBoss();
+            document.getElementById('jokenpo-status-text').innerText = resultado;
+
+            if (bossHp <= 0) {
+                setTimeout(() => {
+                    document.getElementById('boss-fight-modal').style.display = 'none';
+                    document.getElementById('revive-modal').style.display = 'flex';
+                }, 800);
+            } else if (playerHp <= 0) {
+                alert("Você perdeu para o Marrone! Tente novamente.");
+                iniciarBossFight();
+            }
+        }
+
+        document.getElementById('revive-no-btn').addEventListener('click', () => {
+            document.getElementById('revive-modal').style.display = 'none';
+            ocultarHUDsBoss();
+            document.body.classList.remove('boss-mode');
+            mostrarModalBaposLibertados();
+        });
+
+        document.getElementById('revive-yes-btn').addEventListener('click', () => {
+            document.getElementById('revive-modal').style.display = 'none';
+            iniciarSequenciaReviver();
+        });
+
+        function ocultarHUDsBoss() {
+            document.getElementById('player-hp-box').style.display = 'none';
+            document.getElementById('boss-hp-box').style.display = 'none';
+        }
+
+        function iniciarSequenciaReviver() {
+            reviveStep = 0;
+            const img = document.getElementById('revive-sequence-img');
+            const txt = document.getElementById('revive-sequence-text');
+
+            img.className = 'boss-sprite-img';
+            img.src = 'Imagens/marrone_normal.png';
+            txt.innerText = 'Ué, você me reviveu?';
+
+            document.getElementById('revive-sequence-modal').style.display = 'flex';
+        }
+
+        document.getElementById('revive-next-btn').addEventListener('click', () => {
+            reviveStep++;
+            const img = document.getElementById('revive-sequence-img');
+            const txt = document.getElementById('revive-sequence-text');
+
+            if (reviveStep === 1) {
+                img.src = 'Imagens/marrone_serio.png';
+                txt.innerText = 'Bem, independente do que seja...';
+            } else if (reviveStep === 2) {
+                img.src = 'Imagens/marrone1.png';
+                txt.innerText = 'Trato é trato, nunca mais vou lhe perturbar';
+            } else if (reviveStep === 3) {
+                img.src = 'Imagens/marrone.png';
+                txt.innerText = 'Até nunca mais!';
+                img.classList.add('fade-out');
+            } else if (reviveStep >= 4) {
+                document.getElementById('revive-sequence-modal').style.display = 'none';
+                ocultarHUDsBoss();
+                document.body.classList.remove('boss-mode');
+                mostrarModalBaposLibertados();
+            }
+        });
+
+        function mostrarModalBaposLibertados() {
+            supremoLiberado = true;
+            atualizarTela();
+            document.getElementById('bapos-freed-modal').style.display = 'flex';
+        }
+
+        document.getElementById('bapos-freed-btn').addEventListener('click', () => {
+            document.getElementById('bapos-freed-modal').style.display = 'none';
+            dispararCreditos("", false);
         });
 
         function dispararCreditos(mensagemCustomizada = "", recusouAjuda = false) {
@@ -1093,7 +1316,7 @@
                 thanksText.innerHTML = "<strong>OBRIGADA/OBRIGADO/OBRIGADE A TODES (exceto você)</strong>";
                 wantBtn.style.display = 'inline-block';
             } else {
-                thanksText.innerHTML = "<strong>Agradecimento Especial:</strong><br>Obrigado por jogar e salvar todos os Bapos do terrível Marrone!";
+                thanksText.innerHTML = "<strong>Agradecimento Especial:</strong><br>Obrigada por jogar e salvar todos os Bapos do terrível Marrone!";
                 wantBtn.style.display = 'none';
             }
 
@@ -1127,6 +1350,9 @@
 
             document.getElementById('player-greeting').innerText = `Boa sorte, ${nomeJogador}! Salve os Bapos!`;
             document.getElementById('welcome-modal').style.display = 'none';
+            bgmMuted = false;
+            bgmMusic.play().catch(e => {});
+            document.getElementById('toggle-bgm-btn').innerText = 'Música: ON';
             salvarJogo();
             atualizarTela();
         });
@@ -1166,6 +1392,7 @@
                 totalCliquesManuais = dados.totalCliquesManuais || 0;
                 nivelPrestigio = dados.nivelPrestigio || 1;
                 skillsCompradas = dados.skillsCompradas || skillsCompradas;
+                if (typeof skillsCompradas.s2 === "boolean") skillsCompradas.s2 = skillsCompradas.s2 ? 1 : 0;
                 supremoLiberado = dados.supremoLiberado || false;
                 upgradeSecretoComprado = dados.upgradeSecretoComprado || false;
 
