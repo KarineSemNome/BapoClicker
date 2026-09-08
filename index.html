@@ -1023,6 +1023,29 @@ document.getElementById('toggle-bgm-btn')
             return Math.max(1, Math.floor(custo * (1 - descontoTotal)));
         }
 
+        // Reproduz o som selecionado sempre que o jogador clica/comprar algo.
+        function playClickSound() {
+            let som;
+
+            if (modoSom === "coco") {
+                som = sfxCoco;
+            } else if (modoSom === "crocante") {
+                som = sfxCrocante;
+            } else {
+                som = sfxMonhado;
+            }
+
+            try {
+                som.currentTime = 0;
+                const promessa = som.play();
+                if (promessa && typeof promessa.catch === "function") {
+                    promessa.catch(() => {});
+                }
+            } catch (e) {
+                console.warn("Não foi possível reproduzir o som do clique:", e);
+            }
+        }
+
         function calcularGanhos() {
             let cliqueBase = 1 + (loja.click.qtd * loja.click.power);
             let bpsBase = (loja.auto.qtd * loja.auto.bps * obterMultSkill('autoPerc')) + 
