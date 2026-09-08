@@ -517,7 +517,7 @@
     <div class="modal-overlay" id="revive-modal" style="display:none;">
         <div class="modal-content">
             <h3>REVIVER O BOSS?</h3>
-            <p>Marrone foi derrotado... Deseja trazê-lo de volta à vida?</p>
+            <p>Marrone foi derrotado... Deseja reviver o boss??</p>
             <button class="btn-buy" id="revive-yes-btn" style="margin-bottom:8px;">SIM</button>
             <button class="btn-buy" id="revive-no-btn" style="background-color:#FF1744; color:#FFF;">NÃO</button>
         </div>
@@ -1292,7 +1292,7 @@ document.getElementById('toggle-bgm-btn')
 
             img.className = 'boss-sprite-img';
             img.src = 'Imagens/marrone_normal.png';
-            txt.innerText = 'Ué, você me reviveu?';
+            txt.innerText = 'Ué, você me reviveu, isso é burrice ou benevolência?';
 
             document.getElementById('revive-sequence-modal').style.display = 'flex';
         }
@@ -1310,7 +1310,7 @@ document.getElementById('toggle-bgm-btn')
                 txt.innerText = 'Trato é trato, nunca mais vou lhe perturbar';
             } else if (reviveStep === 3) {
                 img.src = 'Imagens/marrone.png';
-                txt.innerText = 'Até nunca mais!';
+                txt.innerText = 'Até nunca mais! Vou perturbar outros mundos e dimensões MUAHAHAHAHAH!!! Vou para o mundo dos Pererecos!';
                 img.classList.add('fade-out');
             } else if (reviveStep >= 4) {
                 document.getElementById('revive-sequence-modal').style.display = 'none';
@@ -1336,10 +1336,10 @@ document.getElementById('toggle-bgm-btn')
             const wantBtn = document.getElementById('want-play-btn');
 
             if (recusouAjuda) {
-                thanksText.innerHTML = "<strong>OBRIGADA/OBRIGADO/OBRIGADE A TODES (exceto você)</strong>";
+                thanksText.innerHTML = "<strong>AGRADECEMOS DE TODO CORAÇÃO A TODES (exceto você)</strong>";
                 wantBtn.style.display = 'inline-block';
             } else {
-                thanksText.innerHTML = "<strong>Agradecimento Especial:</strong><br>Obrigada por jogar e salvar todos os Bapos do terrível Marrone!";
+                thanksText.innerHTML = "<strong>Agradecimento Especial:</strong><br>Muito feliz obrigado por jogar e salvar todos os Bapos do terrível Marrone!";
                 wantBtn.style.display = 'none';
             }
 
