@@ -81,28 +81,68 @@
             border: 2px solid #FFF;
             cursor: pointer;
         }
-
         .corner-currency-widget {
             position: fixed;
             top: 55px;
             left: 15px;
             background: #FFD700;
             border: 3px solid #000;
-            border-radius: 50px;
-            padding: 6px 14px 6px 8px;
+            border-radius: 18px;
+            padding: 7px 12px 8px 8px;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 4px 4px 0px #000;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            box-shadow: 4px 4px 0 #000;
             z-index: 100;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
+            min-width: 125px;
+        }
+
+        .currency-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            line-height: 1.05;
+        }
+
+        .currency-subrow {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            line-height: 1.05;
+            font-size: 0.9rem;
         }
 
         .corner-currency-img {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
+        }
+
+        .corner-currency-small-img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .coco-easter-egg {
+            position: fixed;
+            right: 12px;
+            bottom: 12px;
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            z-index: 500;
+            cursor: pointer;
+            filter: drop-shadow(3px 3px 0 #000);
+            animation: cocoPop 0.25s ease-out;
+        }
+
+        @keyframes cocoPop {
+            from { transform: scale(0) rotate(-20deg); opacity: 0; }
+            to { transform: scale(1) rotate(0deg); opacity: 1; }
         }
 
         .container {
@@ -306,6 +346,18 @@
         }
         .achievement-card.unlocked { background: #E8F5E9; }
         .achievement-card.claimed { background: #D1C4E9; }
+        .achievement-card.secret-achievement {
+            background: #FE3867;
+            color: #FFD700;
+            text-shadow: 1px 1px 0 #000, -1px -1px 0 #000,
+                         1px -1px 0 #000, -1px 1px 0 #000;
+        }
+        .achievement-card.secret-achievement small {
+            color: #FFD700 !important;
+        }
+        .achievement-card.secret-achievement button {
+            text-shadow: none;
+        }
 
         .achievement-img { width: 48px; height: 48px; border: 2px solid #000; border-radius: 8px; object-fit: cover; background: #E0F7FA; flex-shrink: 0; }
         .btn-supreme { background-color: #D500F9; color: #FFF; font-size: 14px; width: 100%; margin-top: 15px; border: 3px solid #000; box-shadow: 0 4px 0px #000; padding: 10px; cursor: pointer; font-family: inherit; font-weight: bold;}
@@ -424,10 +476,20 @@
         </select>
     </div>
 
-    <!-- Widget Fixo com bapoeda.png -->
+    <!-- Mostruário de moedas -->
     <div class="corner-currency-widget">
-        <img src="Imagens/bapoeda.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'14\' fill=\'%23FFD700\' stroke=\'%23000\' stroke-width=\'2\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>🟡</text></svg>'" class="corner-currency-img" alt="Bapoedas">
-        <span id="corner-score">0</span>
+        <div class="currency-row">
+            <img src="Imagens/bapoeda.png" class="corner-currency-img" alt="Bapoedas">
+            <span id="corner-score">0</span>
+        </div>
+        <div class="currency-subrow">
+            <span>BPS:</span>
+            <span id="corner-bps">0.00</span>
+        </div>
+        <div class="currency-subrow">
+            <img src="Imagens/coisinho.png" class="corner-currency-small-img" alt="Coisinhos">
+            <span>Coisinhos: <span id="corner-coisinhos">0</span></span>
+        </div>
     </div>
 
     <div id="floating-prestige-btn" class="floating-side-btn">
@@ -461,7 +523,7 @@
             <p><strong>Reinicie seu progresso para ascender e comprar habilidades permanentes!</strong></p>
             
             <div style="background:#FFF3E0; border:3px solid #000; border-radius:10px; padding:10px; margin-bottom:15px;">
-                <p style="font-size: 1.1rem; margin: 3px 0;">Pontos de Prestígio (PP): <strong id="pp-score" style="color:#D500F9;">0</strong></p>
+                <p style="font-size: 1.1rem; margin: 3px 0;">Coisinhos: <strong id="pp-score" style="color:#D500F9;">0</strong></p>
                 <p style="margin: 3px 0;"><small>Prestígios Totais Feitos: <span id="prestige-count">0</span></small></p>
                 <button class="btn-buy" id="buy-prestige" style="background-color: #FF9100; font-size: 0.95rem; padding: 10px; margin-top:5px;">
                     REALIZAR PRESTÍGIO!<br>
@@ -476,7 +538,7 @@
                 <div class="tree-node-grid" id="tree-grid"></div>
             </div>
 
-            <button class="btn-supreme" id="skill-supreme" disabled>👑 UPGRADE SUPREMO: SALVAR OS BAPOS (Requer 12 Upgrades)</button>
+            <button class="btn-supreme" id="skill-supreme" disabled>👑 UPGRADE SUPREMO: SALVAR OS BAPOS (Requer 12 Upgrades Principais)</button>
         </div>
     </div>
 
@@ -602,8 +664,6 @@
     <div class="container" id="main-container">
         <div class="greeting" id="player-greeting">Ajudando a salvar os Bapos das garras do MARRONE!</div>
         <button class="btn-change-name" id="open-change-name-btn">✏️ Mudar Nome (5 Bapoedas)</button>
-        <h2>Bapoedas: <span id="score">0</span></h2>
-        
         <button id="click-btn">CLICA AQUI OH!</button>
 
         <div class="shop">
@@ -623,6 +683,8 @@
         let totalPrestagiosFeitos = 0;
         let totalCliquesManuais = 0;
         let upgradeSecretoComprado = false;
+        let nivelNada = 0;
+        let cocoEasterEggAtivo = false;
 
         let nivelPrestigio = 1;
         const a1 = 500;
@@ -711,11 +773,12 @@ document.getElementById('toggle-bgm-btn')
             { id: "s9", nome: "Produção Global", desc: "Geral +100%", custo: 4, tipo: "geralPerc", val: 1.0, parentId: "s6", img: "Imagens/skill_9.png" },
             { id: "s10", nome: "Reator Nuclear", desc: "Reatores +300%", custo: 5, tipo: "reactorMult", val: 5.0, parentId: "s7", img: "Imagens/skill_10.png" },
             { id: "s11", nome: "Dominância Bapal", desc: "Geral +300%", custo: 8, tipo: "geralPerc", val: 2.0, parentId: "s8", img: "Imagens/skill_11.png" },
-            { id: "s12", nome: "Bapo Divino", desc: "Geral +500%", custo: 12, tipo: "geralPerc", val: 5.0, parentId: "s9", img: "Imagens/skill_12.png" }
+            { id: "s12", nome: "Bapo Divino", desc: "Geral +500%", custo: 12, tipo: "geralPerc", val: 5.0, parentId: "s9", img: "Imagens/skill_12.png" },
+            { id: "s13", nome: "Nada", desc: "Nível 1: Nada. Nível 2: mostra o próximo movimento do Marrone. Nível 3: impede o mundo dos Pererecos.", custo: 3, tipo: "nada", val: 1, maxNivel: 3, parentId: null, img: "Imagens/skill_13.png", opcional: true }
         ];
 
         let skillsCompradas = {};
-        listaSkills.forEach(sk => skillsCompradas[sk.id] = sk.id === "s2" ? 0 : false);
+        listaSkills.forEach(sk => skillsCompradas[sk.id] = (sk.id === "s2" || sk.id === "s13") ? 0 : false);
         let supremoLiberado = false;
 
         const conquistasData = [
@@ -724,15 +787,17 @@ document.getElementById('toggle-bgm-btn')
             { id: "c3", nome: "Início da Revolução Bapal", desc: "Compre seu primeiro upgrade da loja", req: () => Object.values(loja).some(item => item.qtd > 0), bonusDesc: "-1% em todos os preços", bonusType: "desconto", bonusVal: 0.01, secreta: false, img: "Conquistas/Revolução Bapal.png" },
             { id: "c4", nome: "Pequena Fortuna", desc: "Acumule 1.000 Bapoedas", req: () => bapoedas >= 1000, bonusDesc: "+50 Bapoedas", bonusType: "bapoedas", bonusVal: 50, secreta: false, img: "Conquistas/Pequena Fortuna.png" },
             { id: "c5", nome: "Agricultor Bapal", desc: "Tenha 10 Fazendas de Bapo", req: () => loja.farm.qtd >= 10, bonusDesc: "+2% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.02, secreta: false, img: "Conquistas/Agricultor Bapal.png" },
-            { id: "c6", nome: "Primeiro Salto", desc: "Realize seu primeiro Prestígio", req: () => totalPrestagiosFeitos >= 1, bonusDesc: "+2 Pontos de Prestígio extra", bonusType: "pp", bonusVal: 2, secreta: false, img: "Conquistas/Primeiro Salto.png" },
+            { id: "c6", nome: "Primeiro Salto", desc: "Realize seu primeiro Prestígio", req: () => totalPrestagiosFeitos >= 1, bonusDesc: "+2 Coisinhos extra", bonusType: "pp", bonusVal: 2, secreta: false, img: "Conquistas/Primeiro Salto.png" },
             { id: "c7", nome: "Mestre do Lojinho", desc: "Tenha pelo menos 5 unidades de cada item comum", req: () => loja.click.qtd >= 5 && loja.auto.qtd >= 5 && loja.farm.qtd >= 5 && loja.factory.qtd >= 5, bonusDesc: "-2% em todos os preços", bonusType: "desconto", bonusVal: 0.02, secreta: false, img: "Conquistas/Mestre do Lojinho.png" },
             { id: "c8", nome: "Clicker Anônimo", desc: "Alcance 500 cliques manuais", req: () => totalCliquesManuais >= 500, bonusDesc: "+5% Poder de Clique", bonusType: "cliqueMult", bonusVal: 0.05, secreta: false, img: "Conquistas/Clicker Anônimo.png" },
             { id: "c9", nome: "BigBrain", desc: "Compre 5 Habilidades na Árvore de Prestígio", req: () => Object.values(skillsCompradas).filter(v => v).length >= 5, bonusDesc: "+3 Pontos de Prestígio", bonusType: "pp", bonusVal: 3, secreta: false, img: "Conquistas/BigBrain.png" },
             { id: "c10", nome: "Magnata dos Bapos", desc: "Acumule 100.000 Bapoedas", req: () => bapoedas >= 100000, bonusDesc: "+10% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.10, secreta: false, img: "Conquistas/Magnata dos Bapos.png" },
-            { id: "sec1", nome: "Então tá", desc: "Você recusou ajudar os Bapos no começo...", req: () => conquistasEstado["sec1"]?.desbloqueada, bonusDesc: "+1 Ponto de Prestígio de consolo", bonusType: "pp", bonusVal: 1, secreta: true, img: "Conquistas/Então tá.png" },
+            { id: "c11", nome: "Nada Absoluto", desc: "Evolua a habilidade Nada até o nível máximo", req: () => nivelNada >= 3, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: false, img: "Conquistas/Nada.png" },
+            { id: "sec1", nome: "Então tá", desc: "Você recusou ajudar os Bapos no começo...", req: () => conquistasEstado["sec1"]?.desbloqueada, bonusDesc: "+1 Coisinho de consolo", bonusType: "pp", bonusVal: 1, secreta: true, img: "Conquistas/Então tá.png" },
             { id: "sec2", nome: "MUUUUU", desc: "Nomeou-se Anhanguera e invocou a lenda!", req: () => conquistasEstado["sec2"]?.desbloqueada, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: true, img: "Conquistas/MUUUUU.png" },
             { id: "sec3", nome: "Self Insert", desc: "Colocou 'Felps' ou 'Bapo' no seu nome!", req: () => conquistasEstado["sec3"]?.desbloqueada, bonusDesc: "+10% Clique Poderoso", bonusType: "cliqueMult", bonusVal: 0.10, secreta: true, img: "Conquistas/Self Insert.png" },
-            { id: "sec_vugnaes", nome: "Vugnaes Sreo", desc: "Encontrou e comprou o upgrade secreto!", req: () => upgradeSecretoComprado, bonusDesc: "+13.37% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.1337, secreta: true, img: "Conquistas/Vugnaes Sreo.png" }
+            { id: "sec_vugnaes", nome: "Vugnaes Sreo", desc: "Encontrou e comprou o upgrade secreto!", req: () => upgradeSecretoComprado, bonusDesc: "+13.37% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.1337, secreta: true, img: "Conquistas/Vugnaes Sreo.png" },
+            { id: "sec_coco", nome: "Colecionador de Cocô", desc: "Encontrou e clicou no cocô secreto!", req: () => conquistasEstado["sec_coco"]?.desbloqueada, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: true, img: "Conquistas/colecionador de cocô.png" }
         ];
 
         let conquistasEstado = {};
@@ -740,13 +805,16 @@ document.getElementById('toggle-bgm-btn')
 
         function calcularTotalUpgradesComprados() {
             let totalLoja = Object.values(loja).reduce((acc, curr) => acc + curr.qtd, 0);
-            let totalSkills = Object.values(skillsCompradas).reduce((acc, curr) => acc + (typeof curr === 'number' ? curr : (curr ? 1 : 0)), 0);
+            let totalSkills = listaSkills.filter(sk => !sk.opcional).reduce((acc, sk) => {
+                const curr = skillsCompradas[sk.id];
+                return acc + (typeof curr === 'number' ? curr : (curr ? 1 : 0));
+            }, 0);
             let extraSecreto = upgradeSecretoComprado ? 5 : 0;
             return totalLoja + totalSkills + extraSecreto;
         }
 
         function contarUpgradesMaximizados() {
-            return listaSkills.filter(sk => {
+            return listaSkills.filter(sk => !sk.opcional).filter(sk => {
                 const nivel = sk.id === 's2'
                     ? (Number(skillsCompradas[sk.id]) || 0)
                     : (skillsCompradas[sk.id] ? 1 : 0);
@@ -865,7 +933,7 @@ document.getElementById('toggle-bgm-btn')
             const placeholderSkillImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'><rect width='36' height='36' fill='%2329B6F6'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='16'>⚡</text></svg>";
 
             listaSkills.forEach((sk, i) => {
-                const nivelSkill = sk.id === "s2" ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
+                const nivelSkill = (sk.id === "s2" || sk.id === "s13") ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
                 const isBought = nivelSkill > 0;
                 const nivelMaximo = sk.maxNivel || 1;
                 const atingiuMaximo = nivelSkill >= nivelMaximo;
@@ -875,19 +943,20 @@ document.getElementById('toggle-bgm-btn')
                 node.id = `node-${sk.id}`;
                 node.innerHTML = `
                     <img src="${sk.img}" onerror="this.src='${placeholderSkillImg}'" class="node-img" alt="${sk.nome}">
-                    <strong>${i+1}. ${sk.nome}</strong>
+                    <strong>${i+1}. ${sk.nome}${sk.opcional ? " (Opcional)" : ""}</strong>
                     <span style="font-size:0.7rem; margin:2px 0;">${sk.desc}</span>
                     <button class="btn-buy" id="btn-sk-${sk.id}" style="font-size:0.65rem; padding:4px;" ${atingiuMaximo || !parentBought || pontosPrestigio < sk.custo ? 'disabled' : ''}>
-                        ${atingiuMaximo ? 'MAX!' : `${isBought ? `Nível ${nivelSkill}/20 - ` : ''}Comprar (${sk.custo} PP)`}
+                        ${atingiuMaximo ? 'MAX!' : `${isBought ? `Nível ${nivelSkill}/${nivelMaximo} - ` : ''}Comprar (${sk.custo} Coisinho${sk.custo > 1 ? "s" : ""})`}
                     </button>
                 `;
                 grid.appendChild(node);
 
                 document.getElementById(`btn-sk-${sk.id}`).addEventListener('click', () => {
-                    const nivelAtual = sk.id === "s2" ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
+                    const nivelAtual = (sk.id === "s2" || sk.id === "s13") ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
                     if (nivelAtual < nivelMaximo && pontosPrestigio >= sk.custo && parentBought) {
                         pontosPrestigio -= sk.custo;
-                        skillsCompradas[sk.id] = sk.id === "s2" ? nivelAtual + 1 : true;
+                        skillsCompradas[sk.id] = (sk.id === "s2" || sk.id === "s13") ? nivelAtual + 1 : true;
+                        if (sk.id === "s13") nivelNada = nivelAtual + 1;
                         playClickSound();
                         atualizarTela();
                         renderSkillTree();
@@ -906,7 +975,7 @@ document.getElementById('toggle-bgm-btn')
                 if (c.secreta && !est.desbloqueada) return;
 
                 const card = document.createElement('div');
-                card.className = `achievement-card ${est.resgatada ? 'claimed' : (est.desbloqueada ? 'unlocked' : '')}`;
+                card.className = `achievement-card ${c.secreta ? 'secret-achievement' : ''} ${est.resgatada ? 'claimed' : (est.desbloqueada ? 'unlocked' : '')}`;
                 
                 let btnText = "Bloqueada";
                 let btnDisabled = true;
@@ -1126,6 +1195,8 @@ document.getElementById('toggle-bgm-btn')
             
             document.getElementById('score').innerText = valorFormatado;
             document.getElementById('corner-score').innerText = valorFormatado;
+            document.getElementById('corner-bps').innerText = bpsTotal.toFixed(2);
+            document.getElementById('corner-coisinhos').innerText = Math.floor(pontosPrestigio);
 
             lojaData.forEach(item => {
                 document.getElementById(`cost-${item.id}`).innerText = obterCustoItem(item.id);
@@ -1163,7 +1234,32 @@ document.getElementById('toggle-bgm-btn')
             }
         }
 
+        function mostrarCocoEasterEgg() {
+            if (cocoEasterEggAtivo || Math.random() >= 0.5) return;
+
+            const coco = document.createElement('img');
+            coco.src = 'Imagens/cocô.png';
+            coco.className = 'coco-easter-egg';
+            coco.alt = 'Cocô secreto';
+
+            coco.addEventListener('click', () => {
+                const ganhoMaximo = Math.floor(bapoedas * 0.96);
+                const ganho = Math.max(1, Math.floor(Math.random() * Math.max(1, ganhoMaximo)) + 1);
+                bapoedas += ganho;
+                coco.remove();
+                cocoEasterEggAtivo = false;
+                conquistasEstado["sec_coco"].desbloqueada = true;
+                playClickSound();
+                atualizarTela();
+                alert(`Você encontrou o cocô e ganhou ${ganho} Bapoedas!`);
+            }, { once: true });
+
+            document.body.appendChild(coco);
+            cocoEasterEggAtivo = true;
+        }
+
         document.getElementById('click-btn').addEventListener('click', () => {
+            mostrarCocoEasterEgg();
             totalCliquesManuais++;
             const { poderClique } = calcularGanhos();
             bapoedas += poderClique;
@@ -1300,7 +1396,11 @@ document.getElementById('toggle-bgm-btn')
             renderCoracoes('player-hearts', playerHp, 'vida_bapo.png');
             renderCoracoes('boss-hearts', bossHp, 'vida_marrone.png');
             atualizarSpriteBoss();
-            document.getElementById('jokenpo-status-text').innerText = resultado;
+            let textoResultado = resultado;
+            if (nivelNada >= 2 && bossHp > 0) {
+                textoResultado += ` Próximo movimento do Marrone: ${bossOrder[bossIndex].toUpperCase()}.`;
+            }
+            document.getElementById('jokenpo-status-text').innerText = textoResultado;
 
             if (bossHp <= 0) {
                 pararMusicaBoss();
@@ -1357,7 +1457,11 @@ document.getElementById('toggle-bgm-btn')
                 txt.innerText = 'Trato é trato, nunca mais vou lhe perturbar';
             } else if (reviveStep === 3) {
                 img.src = 'Imagens/marrone.png';
-                txt.innerText = 'Até nunca mais! Vou perturbar outros mundos e dimensões MUAHAHAHAHAH!!! Vou para o mundo dos Pererecos!';
+                if (nivelNada >= 3) {
+                    txt.innerText = 'Até nunca mais! Você descobriu meu plano antes da hora... então não vou para o mundo dos Pererecos!';
+                } else {
+                    txt.innerText = 'Até nunca mais! Vou perturbar outros mundos e dimensões MUAHAHAHAHAH!!! Vou para o mundo dos Pererecos!';
+                }
                 img.classList.add('fade-out');
             } else if (reviveStep >= 4) {
                 document.getElementById('revive-sequence-modal').style.display = 'none';
@@ -1447,6 +1551,7 @@ document.getElementById('toggle-bgm-btn')
                 conquistasEstado: conquistasEstado,
                 supremoLiberado: supremoLiberado,
                 upgradeSecretoComprado: upgradeSecretoComprado,
+                nivelNada: nivelNada,
                 lojaQtds: {}
             };
 
@@ -1473,6 +1578,8 @@ document.getElementById('toggle-bgm-btn')
                 if (typeof skillsCompradas.s2 === "boolean") skillsCompradas.s2 = skillsCompradas.s2 ? 1 : 0;
                 supremoLiberado = dados.supremoLiberado || false;
                 upgradeSecretoComprado = dados.upgradeSecretoComprado || false;
+                nivelNada = Number(dados.nivelNada) || Number(skillsCompradas.s13) || 0;
+                skillsCompradas.s13 = nivelNada;
 
                 if (dados.conquistasEstado) {
                     Object.keys(dados.conquistasEstado).forEach(k => {
