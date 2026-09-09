@@ -646,6 +646,12 @@ bgmMusic.loop = true;
 bgmMusic.preload = 'auto';
 bgmMusic.volume = 0.4;
 
+// Música exclusiva da Boss Fight
+const bossMusic = new Audio('Áudios/Marrone.mp3');
+bossMusic.loop = true;
+bossMusic.preload = 'auto';
+bossMusic.volume = 0.4;
+
 let bgmIniciado = false;
 
 function tocarMusica() {
@@ -669,6 +675,9 @@ function toggleBGM() {
 
     if (bgmMuted) {
         bgmMusic.pause();
+        bossMusic.pause();
+    } else if (document.body.classList.contains('boss-mode')) {
+        tocarMusicaBoss();
     } else {
         tocarMusica();
     }
@@ -1032,8 +1041,8 @@ document.getElementById('toggle-bgm-btn')
             return Math.max(1, Math.floor(custo * (1 - descontoTotal)));
         }
 
-        // Reproduz o som selecionado em uma nova instância a cada clique,
-        // permitindo que vários sons se sobreponham ("somem") em vez de reiniciar.
+        // Cada clique cria uma nova instância do áudio.
+        // Assim, os sons se sobrepõem em vez de reiniciar o som anterior.
         function playClickSound() {
             let baseSom;
 
@@ -1230,12 +1239,32 @@ document.getElementById('toggle-bgm-btn')
             else if (bossHp === 0) bossImg.src = 'Imagens/marrone_morto.png';
         }
 
+        function tocarMusicaBoss() {
+            if (bgmMuted) return;
+
+            bgmMusic.pause();
+
+            bossMusic.play().catch(e => {
+                console.warn("Não foi possível reproduzir a música da Boss Fight:", e);
+            });
+        }
+
+        function pararMusicaBoss() {
+            bossMusic.pause();
+            bossMusic.currentTime = 0;
+
+            if (!bgmMuted) {
+                tocarMusica();
+            }
+        }
+
         function iniciarBossFight() {
             playerHp = 3;
             bossHp = 3;
             bossIndex = 0;
 
             document.body.classList.add('boss-mode');
+            tocarMusicaBoss();
 
             document.getElementById('player-hp-box').style.display = 'flex';
             document.getElementById('boss-hp-box').style.display = 'flex';
@@ -1274,6 +1303,7 @@ document.getElementById('toggle-bgm-btn')
             document.getElementById('jokenpo-status-text').innerText = resultado;
 
             if (bossHp <= 0) {
+                pararMusicaBoss();
                 setTimeout(() => {
                     document.getElementById('boss-fight-modal').style.display = 'none';
                     document.getElementById('revive-modal').style.display = 'flex';
@@ -1288,6 +1318,7 @@ document.getElementById('toggle-bgm-btn')
             document.getElementById('revive-modal').style.display = 'none';
             ocultarHUDsBoss();
             document.body.classList.remove('boss-mode');
+            pararMusicaBoss();
             mostrarModalBaposLibertados();
         });
 
@@ -1332,6 +1363,7 @@ document.getElementById('toggle-bgm-btn')
                 document.getElementById('revive-sequence-modal').style.display = 'none';
                 ocultarHUDsBoss();
                 document.body.classList.remove('boss-mode');
+                pararMusicaBoss();
                 mostrarModalBaposLibertados();
             }
         });
