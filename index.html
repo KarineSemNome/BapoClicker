@@ -82,8 +82,8 @@
             cursor: pointer;
         }
 
-        /* Indicadores no canto superior esquerdo */
-        .corner-widgets-container {
+        /* Widgets de moedas no canto esquerdo */
+        .corner-currency-container {
             position: fixed;
             top: 55px;
             left: 15px;
@@ -104,7 +104,11 @@
             box-shadow: 4px 4px 0px #000;
             font-weight: bold;
             font-size: 1.1rem;
-            width: fit-content;
+        }
+
+        .corner-currency-widget.coisinhos-widget {
+            background: #E040FB;
+            color: #FFF;
         }
 
         .corner-currency-img {
@@ -113,16 +117,16 @@
             object-fit: contain;
         }
 
-        .bps-widget {
+        .bps-indicator {
+            font-size: 0.8rem;
+            color: #000;
+            margin-top: -4px;
             background: #FFF;
             border: 2px solid #000;
             border-radius: 12px;
-            padding: 3px 8px;
-            font-size: 0.85rem;
-            font-weight: bold;
+            padding: 2px 8px;
             box-shadow: 2px 2px 0px #000;
-            width: fit-content;
-            text-align: left;
+            align-self: center;
         }
 
         .container {
@@ -135,11 +139,14 @@
             box-shadow: 8px 8px 0px #000000;
             position: relative;
             z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 { font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 0px #FFD700; }
         h2 { font-size: 1.8rem; margin: 10px 0; }
-        .greeting { font-size: 0.95rem; font-weight: bold; margin: 5px 0 10px 0; color: #d32f2f; background: #FFE082; padding: 6px; border: 2px solid #000; border-radius: 8px; }
+        .greeting { font-size: 0.95rem; font-weight: bold; margin: 5px 0 10px 0; color: #d32f2f; background: #FFE082; padding: 6px; border: 2px solid #000; border-radius: 8px; width: 90%; }
 
         .btn-change-name {
             font-family: inherit;
@@ -152,16 +159,7 @@
             border-radius: 6px;
             cursor: pointer;
             box-shadow: 2px 2px 0px #000;
-            margin-bottom: 10px;
-        }
-
-        /* Botão Principal Centralizado */
-        .click-btn-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            margin: 15px 0;
+            margin-bottom: 15px;
         }
 
         #click-btn {
@@ -175,13 +173,21 @@
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 8px 0px #000000;
+            margin: 15px auto;
             width: 85%;
+            display: block;
+        }
+
+        #click-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0px #000000;
         }
 
         .shop {
             margin-top: 15px;
             border-top: 4px dashed #000000;
             padding-top: 10px;
+            width: 100%;
         }
 
         .upgrade-card {
@@ -336,11 +342,11 @@
         .achievement-card.claimed { background: #D1C4E9; }
 
         /* Estilo para Conquistas Secretas */
-        .achievement-card.secret-card {
+        .achievement-card.secret-style {
             background-color: #FE3867 !important;
             color: #FFD700 !important;
             border: 3px solid #000 !important;
-            text-shadow: 1px 1px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
 
         .achievement-img { width: 48px; height: 48px; border: 2px solid #000; border-radius: 8px; object-fit: cover; background: #E0F7FA; flex-shrink: 0; }
@@ -371,12 +377,11 @@
 
         body.boss-mode > #bapos-background-container,
         body.boss-mode > .accessibility-bar,
-        body.boss-mode > .corner-widgets-container,
+        body.boss-mode > .corner-currency-container,
         body.boss-mode > .floating-side-btn,
         body.boss-mode > #main-container,
         body.boss-mode > #prestige-tab,
-        body.boss-mode > #achievements-tab,
-        body.boss-mode > #easter-egg-coco {
+        body.boss-mode > #achievements-tab {
             display: none !important;
         }
 
@@ -385,7 +390,7 @@
             border: 3px solid #000; border-radius: 10px; margin-bottom: 15px; text-align: center;
         }
 
-        /* ESTILOS DA BOSS FIGHT */
+        /* ESTILOS DA BOSS FIGHT E ANIMAÇÕES DE DIÁLOGO */
         .boss-hp-box {
             position: fixed; top: 15px; background: #FFF; border: 4px solid #000;
             padding: 8px 12px; border-radius: 12px; box-shadow: 4px 4px 0px #000; z-index: 2000;
@@ -399,7 +404,13 @@
 
         .boss-sprite-img {
             width: 140px; height: 140px; object-fit: contain;
-            margin: 10px auto; transition: opacity 0.8s ease; display: block;
+            margin: 10px auto; display: block;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .dialogue-transition {
+            opacity: 0;
+            transform: scale(0.85);
         }
 
         .fade-out { opacity: 0; }
@@ -410,6 +421,24 @@
             background: #FFD700; border: 3px solid #000; border-radius: 10px; cursor: pointer; box-shadow: 2px 2px 0px #000;
         }
         .btn-jokenpo:active { transform: translateY(2px); box-shadow: none; }
+
+        /* EASTER EGG COCÔ */
+        #coco-easter-egg {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 65px;
+            height: 65px;
+            z-index: 999;
+            cursor: pointer;
+            animation: bounceCoco 1.2s infinite alternate ease-in-out;
+            display: none;
+        }
+
+        @keyframes bounceCoco {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-12px) scale(1.08); }
+        }
 
         .credits-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; color: #FFD700;
@@ -434,20 +463,6 @@
             margin-top: 15px; padding: 12px 20px; font-size: 1rem; background: #FF9100;
             color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF; display: none;
         }
-
-        /* Easter Egg Cocô */
-        #easter-egg-coco {
-            position: fixed;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            z-index: 999;
-            object-fit: contain;
-            transition: transform 0.1s ease;
-        }
-        #easter-egg-coco:hover {
-            transform: scale(1.15);
-        }
     </style>
 </head>
 <body>
@@ -467,28 +482,25 @@
         </select>
     </div>
 
-    <!-- Widgets no Canto Superior Esquerdo -->
-    <div class="corner-widgets-container">
-        <!-- Mostruário de Bapoedas -->
+    <!-- Widgets de moedas no canto esquerdo superior -->
+    <div class="corner-currency-container">
         <div class="corner-currency-widget">
             <img src="Imagens/bapoeda.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'14\' fill=\'%23FFD700\' stroke=\'%23000\' stroke-width=\'2\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>🟡</text></svg>'" class="corner-currency-img" alt="Bapoedas">
             <span id="corner-score">0</span>
         </div>
-        <!-- Indicador de Bps abaixo das Bapoedas -->
-        <div class="bps-widget">
+        <div class="bps-indicator">
             <span id="bps-score">0</span> Bps
         </div>
-        <!-- Indicador de Coisinhos atuais abaixo de Bps -->
-        <div class="corner-currency-widget" style="background: #E1BEE7;">
-            <img src="Imagens/coisinho.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'14\' fill=\'%23D500F9\' stroke=\'%23000\' stroke-width=\'2\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>🌀</text></svg>'" class="corner-currency-img" alt="Coisinhos">
-            <span id="coisinhos-score">0</span>
+        <div class="corner-currency-widget coisinhos-widget">
+            <img src="Imagens/coisinhos.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'14\' fill=\'%23E040FB\' stroke=\'%23000\' stroke-width=\'2\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>🌀</text></svg>'" class="corner-currency-img" alt="Coisinhos">
+            <span id="corner-coisinhos">0</span>
         </div>
     </div>
 
     <div id="floating-prestige-btn" class="floating-side-btn">
         <div class="badge animated-pulse" id="prestige-notification" style="display:none;">!</div>
         <span style="font-size:1.6rem;">🌀</span>
-        <span>PRESTÍGIO</span>
+        <span>COISINHOS</span>
     </div>
 
     <div id="floating-achievements-btn" class="floating-side-btn">
@@ -496,6 +508,9 @@
         <span style="font-size:1.6rem;">🏆</span>
         <span>CONQUISTAS</span>
     </div>
+
+    <!-- Easter Egg do Cocô -->
+    <img id="coco-easter-egg" src="Imagens/cocô.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'65\' height=\'65\'><text y=\'50\' font-size=\'50\'>💩</text></svg>'" alt="Cocô Secreto">
 
     <!-- Placares de Vida da Boss Fight -->
     <div class="boss-hp-box" id="player-hp-box" style="display:none;">
@@ -519,7 +534,7 @@
                 <p style="font-size: 1.1rem; margin: 3px 0;">Coisinhos: <strong id="pp-score" style="color:#D500F9;">0</strong></p>
                 <p style="margin: 3px 0;"><small>Prestígios Totais Feitos: <span id="prestige-count">0</span></small></p>
                 <button class="btn-buy" id="buy-prestige" style="background-color: #FF9100; font-size: 0.95rem; padding: 10px; margin-top:5px;">
-                    REALIZAR PRESTÍGIO!<br>
+                    OBTER COISINHOS!<br>
                     <small>(Custo: <span id="prestige-cost">500</span> Bapoedas)</small>
                 </button>
             </div>
@@ -555,6 +570,17 @@
         </div>
     </div>
 
+    <!-- Modal Recompensa Cocô -->
+    <div class="modal-overlay" id="coco-modal" style="display:none;">
+        <div class="modal-content" style="background: #FFF9C4;">
+            <h3 style="color:#795548; margin-top:0;">💩 VOCÊ ACHOU UM COCÔ! 💩</h3>
+            <img src="Imagens/cocô.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'64\' height=\'64\'><text y=\'50\' font-size=\'50\'>💩</text></svg>'" style="width:70px; height:70px; margin: 5px auto;" alt="Cocô">
+            <p style="font-weight:bold; font-size:1.1rem; color:#000;">Você vasculhou o cocô no canto da tela e ganhou:</p>
+            <p id="coco-reward-text" style="font-size:1.4rem; color:#D81B60; font-weight:bold; margin: 10px 0;"></p>
+            <button class="btn-buy" id="close-coco-modal-btn" style="background-color:#8D6E63; color:#FFF;">EBA! (FECHAR)</button>
+        </div>
+    </div>
+
     <!-- Modais da Boss Fight -->
     <div class="modal-overlay" id="boss-dialogue-modal" style="display:none;">
         <div class="modal-content">
@@ -568,8 +594,8 @@
     <div class="modal-overlay" id="boss-fight-modal" style="display:none;">
         <div class="modal-content">
             <h3>JOKENPÔ CONTRA MARRONE</h3>
-            <p id="marrone-next-move-hint" style="color:#D500F9; font-weight:bold; margin: 0 0 5px 0; display:none;"></p>
             <img id="marrone-fight-img" src="Imagens/marrone.png" class="boss-sprite-img" alt="Marrone">
+            <p id="nada-hint-text" style="color:#7B1FA2; font-weight:bold; font-size:0.95rem; display:none; background:#F3E5F5; padding:5px; border-radius:8px; border:2px solid #7B1FA2;"></p>
             <p id="jokenpo-status-text">Escolha sua jogada!</p>
             <div class="jokenpo-btns">
                 <button class="btn-jokenpo" onclick="jogarJokenpo('pedra')">✊ Pedra</button>
@@ -592,6 +618,7 @@
         <div class="modal-content">
             <img id="revive-sequence-img" src="Imagens/marrone_normal.png" class="boss-sprite-img" alt="Marrone">
             <p id="revive-sequence-text" style="font-weight:bold; font-size:1.1rem;"></p>
+            <p id="revive-nada-block-text" style="font-weight:bold; font-size:1rem; color:#D500F9; display:none;"></p>
             <button class="btn-buy" id="revive-next-btn">Avançar...</button>
         </div>
     </div>
@@ -659,19 +686,14 @@
         <div class="greeting" id="player-greeting">Ajudando a salvar os Bapos das garras do MARRONE!</div>
         <button class="btn-change-name" id="open-change-name-btn">✏️ Mudar Nome (5 Bapoedas)</button>
         
-        <!-- Botão centralizado sozinho -->
-        <div class="click-btn-container">
-            <button id="click-btn">CLICA AQUI OH!</button>
-        </div>
+        <!-- Botão centralizado diretamente no contêiner principal -->
+        <button id="click-btn">CLICA AQUI OH!</button>
 
         <div class="shop">
             <h3>Lojinho Principal</h3>
             <div id="shop-container"></div>
         </div>
     </div>
-
-    <!-- Elemento do Easter Egg do Cocô -->
-    <img id="easter-egg-coco" src="Imagens/cocô.png" style="display:none;" alt="Cocô" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'45\' height=\'45\'><text y=\'35\' font-size=\'35\'>💩</text></svg>'">
 
     <script>
         let animacoesAtivas = true;
@@ -707,7 +729,6 @@
         bgmMusic.preload = 'auto';
         bgmMusic.volume = 0.4;
 
-        // Música exclusiva da Boss Fight
         const bossMusic = new Audio('Áudios/Marrone.mp3');
         bossMusic.loop = true;
         bossMusic.preload = 'auto';
@@ -721,7 +742,6 @@
             bgmMusic.play()
                 .then(() => {
                     bgmIniciado = true;
-                    console.log('Música iniciada com sucesso.');
                 })
                 .catch(erro => {
                     console.error('Erro ao tocar a música:', erro);
@@ -773,11 +793,14 @@
             { id: "s10", nome: "Reator Nuclear", desc: "Reatores +300%", custo: 5, tipo: "reactorMult", val: 5.0, parentId: "s7", img: "Imagens/skill_10.png" },
             { id: "s11", nome: "Dominância Bapal", desc: "Geral +300%", custo: 8, tipo: "geralPerc", val: 2.0, parentId: "s8", img: "Imagens/skill_11.png" },
             { id: "s12", nome: "Bapo Divino", desc: "Geral +500%", custo: 12, tipo: "geralPerc", val: 5.0, parentId: "s9", img: "Imagens/skill_12.png" },
-            { id: "s13", nome: "Nada", desc: "Absolutamente nada... Ou será que sim? (3 Níveis)", custo: 1, tipo: "nada", val: 0, maxNivel: 3, parentId: null, img: "Imagens/skill_13.png" }
+            { id: "s13", nome: "Nada", desc: "Aparentemente não faz nada...", custoBase: 5, custoIncremento: 5, tipo: "nada", maxNivel: 3, parentId: null, img: "Imagens/skill_13.png" }
         ];
 
         let skillsCompradas = {};
-        listaSkills.forEach(sk => skillsCompradas[sk.id] = (sk.id === "s2" || sk.id === "s13") ? 0 : false);
+        listaSkills.forEach(sk => {
+            if (sk.id === "s2" || sk.id === "s13") skillsCompradas[sk.id] = 0;
+            else skillsCompradas[sk.id] = false;
+        });
         let supremoLiberado = false;
 
         const conquistasData = [
@@ -791,12 +814,12 @@
             { id: "c8", nome: "Clicker Anônimo", desc: "Alcance 500 cliques manuais", req: () => totalCliquesManuais >= 500, bonusDesc: "+5% Poder de Clique", bonusType: "cliqueMult", bonusVal: 0.05, secreta: false, img: "Conquistas/Clicker Anônimo.png" },
             { id: "c9", nome: "BigBrain", desc: "Compre 5 Habilidades na Árvore de Prestígio", req: () => Object.values(skillsCompradas).filter(v => typeof v === 'number' ? v > 0 : v).length >= 5, bonusDesc: "+3 Coisinhos", bonusType: "pp", bonusVal: 3, secreta: false, img: "Conquistas/BigBrain.png" },
             { id: "c10", nome: "Magnata dos Bapos", desc: "Acumule 100.000 Bapoedas", req: () => bapoedas >= 100000, bonusDesc: "+10% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.10, secreta: false, img: "Conquistas/Magnata dos Bapos.png" },
-            { id: "c11", nome: "Nada Além do Nada", desc: "Evolua a habilidade Nada até o nível máximo!", req: () => (skillsCompradas["s13"] || 0) >= 3, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: false, img: "Imagens/skill_13.png" },
+            { id: "c11", nome: "Mestre do Nada", desc: "Evoluiu o upgrade Nada ao nível máximo!", req: () => (Number(skillsCompradas["s13"]) || 0) >= 3, bonusDesc: "+5 Coisinhos Bônus", bonusType: "pp", bonusVal: 5, secreta: false, img: "Imagens/skill_13.png" },
             { id: "sec1", nome: "Então tá", desc: "Você recusou ajudar os Bapos no começo...", req: () => conquistasEstado["sec1"]?.desbloqueada, bonusDesc: "+1 Coisinho de consolo", bonusType: "pp", bonusVal: 1, secreta: true, img: "Conquistas/Então tá.png" },
             { id: "sec2", nome: "MUUUUU", desc: "Nomeou-se Anhanguera e invocou a lenda!", req: () => conquistasEstado["sec2"]?.desbloqueada, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: true, img: "Conquistas/MUUUUU.png" },
             { id: "sec3", nome: "Self Insert", desc: "Colocou 'Felps' ou 'Bapo' no seu nome!", req: () => conquistasEstado["sec3"]?.desbloqueada, bonusDesc: "+10% Clique Poderoso", bonusType: "cliqueMult", bonusVal: 0.10, secreta: true, img: "Conquistas/Self Insert.png" },
             { id: "sec_vugnaes", nome: "Vugnaes Sreo", desc: "Encontrou e comprou o upgrade secreto!", req: () => upgradeSecretoComprado, bonusDesc: "+13.37% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.1337, secreta: true, img: "Conquistas/Vugnaes Sreo.png" },
-            { id: "sec_coco", nome: "Colecionador de Cocô", desc: "Encontrou e clicou no cocô misterioso!", req: () => conquistasEstado["sec_coco"]?.desbloqueada, bonusDesc: "+100 Bapoedas", bonusType: "bapoedas", bonusVal: 100, secreta: true, img: "Conquistas/colecionador de cocô.png" }
+            { id: "sec_coco", nome: "Colecionador de Cocô", desc: "Achou e clicou no cocô misterioso!", req: () => conquistasEstado["sec_coco"]?.desbloqueada, bonusDesc: "+100 Bapoedas", bonusType: "bapoedas", bonusVal: 100, secreta: true, img: "Conquistas/colecionador de cocô.png" }
         ];
 
         let conquistasEstado = {};
@@ -922,18 +945,28 @@
             }
         });
 
+        function obterCustoSkill(sk) {
+            if (sk.id === "s13") {
+                const nivelAtual = Number(skillsCompradas[sk.id]) || 0;
+                return sk.custoBase + (nivelAtual * sk.custoIncremento);
+            }
+            return sk.custo;
+        }
+
         function renderSkillTree() {
             const grid = document.getElementById('tree-grid');
             grid.innerHTML = "";
             const placeholderSkillImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'><rect width='36' height='36' fill='%2329B6F6'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='16'>⚡</text></svg>";
 
             listaSkills.forEach((sk, i) => {
-                const isMultiNivel = sk.maxNivel && sk.maxNivel > 1;
-                const nivelSkill = isMultiNivel ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
+                const isGradual = sk.id === "s2" || sk.id === "s13";
+                const nivelSkill = isGradual ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
                 const isBought = nivelSkill > 0;
                 const nivelMaximo = sk.maxNivel || 1;
                 const atingiuMaximo = nivelSkill >= nivelMaximo;
                 const parentBought = !sk.parentId || skillsCompradas[sk.parentId];
+                const custoAtual = obterCustoSkill(sk);
+
                 const node = document.createElement('div');
                 node.className = `node-card ${isBought ? 'unlocked' : (parentBought ? '' : 'locked')}`;
                 node.id = `node-${sk.id}`;
@@ -941,17 +974,18 @@
                     <img src="${sk.img}" onerror="this.src='${placeholderSkillImg}'" class="node-img" alt="${sk.nome}">
                     <strong>${i+1}. ${sk.nome}</strong>
                     <span style="font-size:0.7rem; margin:2px 0;">${sk.desc}</span>
-                    <button class="btn-buy" id="btn-sk-${sk.id}" style="font-size:0.65rem; padding:4px;" ${atingiuMaximo || !parentBought || pontosPrestigio < sk.custo ? 'disabled' : ''}>
-                        ${atingiuMaximo ? 'MAX!' : `${isMultiNivel && isBought ? `Nível ${nivelSkill}/${nivelMaximo} - ` : ''}Comprar (${sk.custo} Coisinhos)`}
+                    <button class="btn-buy" id="btn-sk-${sk.id}" style="font-size:0.65rem; padding:4px;" ${atingiuMaximo || !parentBought || pontosPrestigio < custoAtual ? 'disabled' : ''}>
+                        ${atingiuMaximo ? 'MAX!' : `${isGradual ? `Nível ${nivelSkill}/${nivelMaximo} - ` : ''}Comprar (${custoAtual} Coisinhos)`}
                     </button>
                 `;
                 grid.appendChild(node);
 
                 document.getElementById(`btn-sk-${sk.id}`).addEventListener('click', () => {
-                    const nivelAtual = isMultiNivel ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
-                    if (nivelAtual < nivelMaximo && pontosPrestigio >= sk.custo && parentBought) {
-                        pontosPrestigio -= sk.custo;
-                        skillsCompradas[sk.id] = isMultiNivel ? nivelAtual + 1 : true;
+                    const nivelAtual = isGradual ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
+                    const custo = obterCustoSkill(sk);
+                    if (nivelAtual < nivelMaximo && pontosPrestigio >= custo && parentBought) {
+                        pontosPrestigio -= custo;
+                        skillsCompradas[sk.id] = isGradual ? nivelAtual + 1 : true;
                         playClickSound();
                         atualizarTela();
                         renderSkillTree();
@@ -970,7 +1004,7 @@
                 if (c.secreta && !est.desbloqueada) return;
 
                 const card = document.createElement('div');
-                card.className = `achievement-card ${c.secreta ? 'secret-card' : ''} ${est.resgatada ? 'claimed' : (est.desbloqueada ? 'unlocked' : '')}`;
+                card.className = `achievement-card ${c.secreta ? 'secret-style' : ''} ${est.resgatada ? 'claimed' : (est.desbloqueada ? 'unlocked' : '')}`;
                 
                 let btnText = "Bloqueada";
                 let btnDisabled = true;
@@ -1179,15 +1213,21 @@
             return Math.floor(a1 * Math.pow(r, nivelPrestigio - 1));
         }
 
+        function formatarNumero(num) {
+            if (num < 1000) return num.toFixed(num % 1 === 0 ? 0 : 2);
+            return num.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+        }
+
         function atualizarTela() {
             checarConquistas();
             atualizarBaposNoFundo();
             const { bpsTotal } = calcularGanhos();
             const valorFormatado = Math.floor(bapoedas);
             
+            document.getElementById('score').innerText = valorFormatado;
             document.getElementById('corner-score').innerText = valorFormatado;
-            document.getElementById('bps-score').innerText = bpsTotal.toFixed(2);
-            document.getElementById('coisinhos-score').innerText = pontosPrestigio;
+            document.getElementById('bps-score').innerText = formatarNumero(bpsTotal);
+            document.getElementById('corner-coisinhos').innerText = pontosPrestigio;
 
             lojaData.forEach(item => {
                 document.getElementById(`cost-${item.id}`).innerText = obterCustoItem(item.id);
@@ -1264,6 +1304,43 @@
             }
         });
 
+        // LÓGICA DO EASTER EGG DO COCÔ
+        const cocoElem = document.getElementById('coco-easter-egg');
+        function tentarSpawnarCoco() {
+            if (Math.random() <= 0.5) {
+                cocoElem.style.display = 'block';
+            } else {
+                cocoElem.style.display = 'none';
+            }
+        }
+
+        setInterval(tentarSpawnarCoco, 25000); // Tenta spawnar a cada 25 segundos
+        setTimeout(tentarSpawnarCoco, 5000); // Primeira tentativa com 5s de jogo
+
+        cocoElem.addEventListener('click', () => {
+            cocoElem.style.display = 'none';
+            conquistasEstado["sec_coco"].desbloqueada = true;
+
+            let ganho = 0;
+            if (bapoedas === 0) {
+                ganho = Math.floor(Math.random() * 10) + 1;
+            } else {
+                const perc = Math.random() * 0.96; // até 96%
+                ganho = Math.max(1, Math.floor(bapoedas * perc));
+            }
+
+            bapoedas += ganho;
+            playClickSound();
+
+            document.getElementById('coco-reward-text').innerText = `+${ganho} Bapoedas!`;
+            document.getElementById('coco-modal').style.display = 'flex';
+            atualizarTela();
+        });
+
+        document.getElementById('close-coco-modal-btn').addEventListener('click', () => {
+            document.getElementById('coco-modal').style.display = 'none';
+        });
+
         // TRIGGER DA BOSS FIGHT
         document.getElementById('skill-supreme').addEventListener('click', () => {
             if (contarUpgradesMaximizados() >= listaSkills.length) {
@@ -1295,17 +1372,30 @@
 
         function atualizarSpriteBoss() {
             const bossImg = document.getElementById('marrone-fight-img');
-            if (bossHp === 3) bossImg.src = 'Imagens/marrone.png';
-            else if (bossHp === 2) bossImg.src = 'Imagens/marrone_machucado.png';
-            else if (bossHp === 1) bossImg.src = 'Imagens/marrone_muito_machucado.png';
-            else if (bossHp === 0) bossImg.src = 'Imagens/marrone_morto.png';
+            mudarSpriteComAnimacao(bossImg, () => {
+                if (bossHp === 3) bossImg.src = 'Imagens/marrone.png';
+                else if (bossHp === 2) bossImg.src = 'Imagens/marrone_machucado.png';
+                else if (bossHp === 1) bossImg.src = 'Imagens/marrone_muito_machucado.png';
+                else if (bossHp === 0) bossImg.src = 'Imagens/marrone_morto.png';
+            });
+        }
+
+        // Função para transição suave de elementos visuais do Boss
+        function mudarSpriteComAnimacao(imgElem, callback) {
+            if (!animacoesAtivas) {
+                callback();
+                return;
+            }
+            imgElem.classList.add('dialogue-transition');
+            setTimeout(() => {
+                callback();
+                imgElem.classList.remove('dialogue-transition');
+            }, 250);
         }
 
         function tocarMusicaBoss() {
             if (bgmMuted) return;
-
             bgmMusic.pause();
-
             bossMusic.play().catch(e => {
                 console.warn("Não foi possível reproduzir a música da Boss Fight:", e);
             });
@@ -1314,7 +1404,6 @@
         function pararMusicaBoss() {
             bossMusic.pause();
             bossMusic.currentTime = 0;
-
             if (!bgmMuted) {
                 tocarMusica();
             }
@@ -1334,23 +1423,19 @@
             renderCoracoes('player-hearts', playerHp, 'vida_bapo.png');
             renderCoracoes('boss-hearts', bossHp, 'vida_marrone.png');
             atualizarSpriteBoss();
-            atualizarDicaMarrone();
+
+            // Nível 2 do Nada mostra o próximo movimento do Marrone
+            const nivelNada = Number(skillsCompradas["s13"]) || 0;
+            const nadaHint = document.getElementById('nada-hint-text');
+            if (nivelNada >= 2) {
+                nadaHint.style.display = 'block';
+                nadaHint.innerText = `👁️ O Nada lhe revelou: O Marrone vai jogar ${bossOrder[bossIndex].toUpperCase()}!`;
+            } else {
+                nadaHint.style.display = 'none';
+            }
 
             document.getElementById('jokenpo-status-text').innerText = "Escolha sua jogada!";
             document.getElementById('boss-fight-modal').style.display = 'flex';
-        }
-
-        function atualizarDicaMarrone() {
-            const hintElem = document.getElementById('marrone-next-move-hint');
-            const nivelNada = Number(skillsCompradas["s13"]) || 0;
-            
-            if (nivelNada >= 2) {
-                const proximaJogada = bossOrder[bossIndex];
-                hintElem.innerText = `🔮 Revelação do Nada: O próximo movimento do Marrone será ${proximaJogada.toUpperCase()}!`;
-                hintElem.style.display = 'block';
-            } else {
-                hintElem.style.display = 'none';
-            }
         }
 
         function jogarJokenpo(escolhaPlayer) {
@@ -1376,8 +1461,14 @@
             renderCoracoes('player-hearts', playerHp, 'vida_bapo.png');
             renderCoracoes('boss-hearts', bossHp, 'vida_marrone.png');
             atualizarSpriteBoss();
-            atualizarDicaMarrone();
             document.getElementById('jokenpo-status-text').innerText = resultado;
+
+            // Atualiza a dica do Nível 2 do Nada para o próximo turno
+            const nivelNada = Number(skillsCompradas["s13"]) || 0;
+            const nadaHint = document.getElementById('nada-hint-text');
+            if (nivelNada >= 2 && bossHp > 0 && playerHp > 0) {
+                nadaHint.innerText = `👁️ O Nada lhe revelou: O Marrone vai jogar ${bossOrder[bossIndex].toUpperCase()}!`;
+            }
 
             if (bossHp <= 0) {
                 pararMusicaBoss();
@@ -1413,7 +1504,9 @@
             reviveStep = 0;
             const img = document.getElementById('revive-sequence-img');
             const txt = document.getElementById('revive-sequence-text');
+            const blockTxt = document.getElementById('revive-nada-block-text');
 
+            blockTxt.style.display = 'none';
             img.className = 'boss-sprite-img';
             img.src = 'Imagens/marrone_normal.png';
             txt.innerText = 'Ué, você me reviveu, isso é burrice ou benevolência?';
@@ -1425,30 +1518,61 @@
             reviveStep++;
             const img = document.getElementById('revive-sequence-img');
             const txt = document.getElementById('revive-sequence-text');
+            const blockTxt = document.getElementById('revive-nada-block-text');
+
             const nivelNada = Number(skillsCompradas["s13"]) || 0;
 
             if (reviveStep === 1) {
-                img.src = 'Imagens/marrone_serio.png';
-                txt.innerText = 'Bem, independente do que seja...';
+                mudarSpriteComAnimacao(img, () => {
+                    img.src = 'Imagens/marrone_serio.png';
+                    txt.innerText = 'Bem, independente do que seja...';
+                });
             } else if (reviveStep === 2) {
-                img.src = 'Imagens/marrone1.png';
-                txt.innerText = 'Trato é trato, nunca mais vou lhe perturbar';
+                mudarSpriteComAnimacao(img, () => {
+                    img.src = 'Imagens/marrone1.png';
+                    txt.innerText = 'Trato é trato, nunca mais vou lhe perturbar';
+                });
             } else if (reviveStep === 3) {
-                img.src = 'Imagens/marrone.png';
+                mudarSpriteComAnimacao(img, () => {
+                    if (nivelNada >= 3) {
+                        img.src = 'Imagens/marrone.png';
+                        txt.innerText = 'MUAHAHAHA, VOU DOMINAR OS PERERE-';
+                    } else {
+                        img.src = 'Imagens/marrone.png';
+                        txt.innerText = 'Até nunca mais! Vou perturbar outros mundos e dimensões MUAHAHAHAHAH!!! Vou para o mundo dos Pererecos!';
+                        img.classList.add('fade-out');
+                    }
+                });
+            } else if (reviveStep === 4) {
                 if (nivelNada >= 3) {
-                    txt.innerText = 'Até nunca mais! Eu iria para o mundo dos Pererecos, mas o seu poder do NADA Nível 3 me impediu! MUAHAHAHAHAH!!!';
+                    mudarSpriteComAnimacao(img, () => {
+                        img.classList.remove('fade-out');
+                        img.src = 'Imagens/marrone_muito_machucado.png';
+                        txt.innerText = '';
+                        blockTxt.style.display = 'block';
+                        blockTxt.innerText = '*O Nada impediu os poderes de Marrone*';
+                    });
                 } else {
-                    txt.innerText = 'Até nunca mais! Vou perturbar outros mundos e dimensões MUAHAHAHAHAH!!! Vou para o mundo dos Pererecos!';
+                    finalizarSequenciaReviver();
                 }
-                img.classList.add('fade-out');
-            } else if (reviveStep >= 4) {
-                document.getElementById('revive-sequence-modal').style.display = 'none';
-                ocultarHUDsBoss();
-                document.body.classList.remove('boss-mode');
-                pararMusicaBoss();
-                mostrarModalBaposLibertados();
+            } else if (reviveStep === 5 && nivelNada >= 3) {
+                mudarSpriteComAnimacao(img, () => {
+                    img.src = 'Imagens/marrone_muito_machucado.png';
+                    blockTxt.style.display = 'none';
+                    txt.innerText = `MALDITO SEJA ${nomeJogador.toUpperCase()} PERDI MEUS PODERES!!`;
+                });
+            } else {
+                finalizarSequenciaReviver();
             }
         });
+
+        function finalizarSequenciaReviver() {
+            document.getElementById('revive-sequence-modal').style.display = 'none';
+            ocultarHUDsBoss();
+            document.body.classList.remove('boss-mode');
+            pararMusicaBoss();
+            mostrarModalBaposLibertados();
+        }
 
         function mostrarModalBaposLibertados() {
             supremoLiberado = true;
@@ -1516,44 +1640,6 @@
             atualizarTela();
         });
 
-        /* EASTER EGG COCÔ */
-        function tentarGerarCoco() {
-            const cocoElem = document.getElementById('easter-egg-coco');
-            if (cocoElem.style.display === 'block') return;
-
-            if (Math.random() < 0.5) {
-                const maxX = window.innerWidth - 60;
-                const maxY = window.innerHeight - 60;
-                const posX = Math.floor(Math.random() * maxX);
-                const posY = Math.floor(Math.random() * maxY);
-
-                cocoElem.style.left = `${posX}px`;
-                cocoElem.style.top = `${posY}px`;
-                cocoElem.style.display = 'block';
-            }
-        }
-
-        document.getElementById('easter-egg-coco').addEventListener('click', () => {
-            const cocoElem = document.getElementById('easter-egg-coco');
-            cocoElem.style.display = 'none';
-
-            let premio = 1;
-            if (bapoedas > 0) {
-                const min = 1;
-                const max = bapoedas * 0.96;
-                premio = Math.floor(Math.random() * (max - min + 1)) + min;
-            }
-
-            bapoedas += premio;
-            conquistasEstado["sec_coco"].desbloqueada = true;
-            sfxCoco.play().catch(e => {});
-            alert(`💩 Você clicou no Cocô e ganhou ${premio} Bapoedas!`);
-            atualizarTela();
-        });
-
-        // Tenta gerar um cocô a cada 15 segundos
-        setInterval(tentarGerarCoco, 15000);
-
         function salvarJogo(exibirAlerta = false) {
             const dadosJogo = {
                 nomeJogador: nomeJogador,
@@ -1590,7 +1676,7 @@
                 nivelPrestigio = dados.nivelPrestigio || 1;
                 skillsCompradas = dados.skillsCompradas || skillsCompradas;
                 if (typeof skillsCompradas.s2 === "boolean") skillsCompradas.s2 = skillsCompradas.s2 ? 1 : 0;
-                if (typeof skillsCompradas.s13 === "boolean") skillsCompradas.s13 = skillsCompradas.s13 ? 1 : 0;
+                if (skillsCompradas.s13 === undefined) skillsCompradas.s13 = 0;
                 supremoLiberado = dados.supremoLiberado || false;
                 upgradeSecretoComprado = dados.upgradeSecretoComprado || false;
 
