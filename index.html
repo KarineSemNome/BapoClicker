@@ -385,6 +385,42 @@
             border: 3px solid #000; border-radius: 10px; margin-bottom: 15px; text-align: center;
         }
 
+        /* Diálogos internos: substituem alert/confirm do navegador */
+        #site-dialog-modal {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        #site-dialog-modal.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        #site-dialog-modal .modal-content {
+            width: min(380px, 88%);
+            transform: translateY(12px) scale(0.98);
+            transition: transform 0.25s ease;
+        }
+
+        #site-dialog-modal.open .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        #site-dialog-title { margin-top: 0; color: #D500F9; }
+        #site-dialog-message { white-space: pre-wrap; line-height: 1.45; }
+
+        .site-dialog-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .site-dialog-buttons .btn-buy { flex: 1; }
+
         /* ESTILOS DA BOSS FIGHT */
         .boss-hp-box {
             position: fixed; top: 15px; background: #FFF; border: 4px solid #000;
@@ -399,10 +435,19 @@
 
         .boss-sprite-img {
             width: 140px; height: 140px; object-fit: contain;
-            margin: 10px auto; transition: opacity 0.8s ease; display: block;
+            margin: 10px auto;
+            opacity: 1;
+            transition: opacity 0.45s ease-in-out, transform 0.45s ease-in-out;
+            display: block;
         }
 
-        .fade-out { opacity: 0; }
+        #boss-dialogue-modal .boss-sprite-img,
+        #boss-fight-modal .boss-sprite-img,
+        #revive-sequence-modal .boss-sprite-img {
+            will-change: opacity, transform;
+        }
+
+        .fade-out { opacity: 0; transform: scale(0.97); }
 
         .jokenpo-btns { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
         .btn-jokenpo {
@@ -410,6 +455,48 @@
             background: #FFD700; border: 3px solid #000; border-radius: 10px; cursor: pointer; box-shadow: 2px 2px 0px #000;
         }
         .btn-jokenpo:active { transform: translateY(2px); box-shadow: none; }
+
+        .pause-corner-btn {
+            position: fixed; top: 14px; right: 14px; width: 58px; height: 58px;
+            padding: 5px; border: 3px solid #000; border-radius: 14px;
+            background: #FE3867; cursor: pointer; z-index: 5000;
+            box-shadow: 3px 3px 0 #000; transition: transform .15s ease;
+        }
+        body.boss-mode .pause-corner-btn { top: auto; right: 14px; bottom: 14px; }
+        body.boss-mode .standalone-sfx-btn { bottom: 14px; left: 14px; }
+        .pause-corner-btn:hover { transform: scale(1.08); }
+        .pause-corner-btn:active { transform: scale(.96); }
+        .pause-corner-btn img { width: 100%; height: 100%; object-fit: contain; }
+
+        .standalone-sfx-btn {
+            position: fixed; left: 14px; bottom: 14px; z-index: 5000;
+            font-family: inherit; font-weight: bold; padding: 9px 13px;
+            border: 3px solid #000; border-radius: 10px; cursor: pointer;
+            background: #FFF; color: #000; box-shadow: 2px 2px 0 #000;
+        }
+
+        .pause-overlay {
+            position: fixed; inset: 0; z-index: 10000; display: flex;
+            align-items: center; justify-content: center;
+            background: rgba(0,0,0,.72);
+        }
+        .pause-panel {
+            width: min(90%, 430px); padding: 32px; text-align: center;
+            background: #FE3867; color: #000; border: 4px solid #000;
+            border-radius: 22px; box-shadow: 8px 8px 0 #000;
+        }
+        .pause-panel h1 { margin: 0 0 22px; font-size: 2.4rem; }
+        .pause-menu-btn {
+            display: block; width: 100%; margin: 11px 0; padding: 14px;
+            font-family: inherit; font-weight: bold; font-size: 1.05rem;
+            border: 3px solid #000; border-radius: 12px; background: #FFF;
+            cursor: pointer; box-shadow: 3px 3px 0 #000;
+        }
+        .pause-menu-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #000; }
+        .pause-options-content { max-width: 430px; }
+        .pause-options-content button, .pause-options-content select {
+            margin: 6px;
+        }
 
         .credits-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; color: #FFD700;
@@ -425,6 +512,31 @@
         .credits-scroll p { font-size: 1.3rem; color: #FFF; line-height: 1.6; margin: 15px 0; }
         .credits-scroll .watermark { font-size: 1.8rem; color: #00E5FF; font-weight: bold; margin-top: 40px; }
 
+        .desenvolvedores-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px 18px;
+            margin: 20px auto;
+            width: 100%;
+        }
+
+        .desenvolvedor {
+            width: 130px;
+            text-align: center;
+            color: #FFF;
+            font-size: 1rem;
+            line-height: 1.25;
+        }
+
+        .desenvolvedor img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 8px;
+        }
+
         .credits-restart-btn {
             margin-top: 20px; padding: 15px 25px; font-size: 1.2rem; background: #00E676;
             color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF;
@@ -434,6 +546,31 @@
             margin-top: 15px; padding: 12px 20px; font-size: 1rem; background: #FF9100;
             color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF; display: none;
         }
+
+
+        /* MODO TESTE DEBUG */
+        #debug-modal .modal-content {
+            max-width: 520px;
+            border: 5px solid #FE3867;
+        }
+        #debug-modal h2 {
+            margin-top: 0;
+            color: #FE3867;
+        }
+        .debug-btn {
+            display: block;
+            width: 100%;
+            margin: 9px 0;
+            padding: 12px;
+            border: 3px solid #000;
+            border-radius: 10px;
+            background: #FE3867;
+            color: #FFF;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .debug-btn:hover { transform: scale(1.02); }
 
         /* Easter Egg Cocô */
         #easter-egg-coco {
@@ -454,17 +591,36 @@
 
     <div id="bapos-background-container"></div>
 
-    <div class="accessibility-bar">
-        <button id="toggle-anim-btn">Animações: ON</button>
-        <button id="toggle-bgm-btn">Música: ON</button>
-        <button id="save-btn" style="background:#00E676; color:#000;">💾 Salvar</button>
-        <button id="reset-btn" style="background:#FF1744; color:#FFF;">🗑️ Resetar</button>
-        <label for="sound-mode">Som Clique:</label>
-        <select id="sound-mode">
-            <option value="monhado">Som Monhado</option>
-            <option value="coco">Som de COCÔ</option>
-            <option value="crocante">Som Crocante</option>
-        </select>
+    <button id="pause-btn" class="pause-corner-btn" aria-label="Abrir pausa" title="Pausa (ESC)">
+        <img src="Imagens/pausa.png" alt="Pausa">
+    </button>
+
+    <button id="toggle-sfx-btn" class="standalone-sfx-btn">SFX: ON</button>
+
+    <div class="pause-overlay" id="pause-menu" style="display:none;">
+        <div class="pause-panel">
+            <h1>PAUSADO</h1>
+            <button id="pause-continue-btn" class="pause-menu-btn">CONTINUAR</button>
+            <button id="pause-options-btn" class="pause-menu-btn">OPÇÕES</button>
+            <button id="pause-credits-btn" class="pause-menu-btn">CRÉDITOS</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="pause-options-modal" style="display:none;">
+        <div class="modal-content pause-options-content">
+            <h2>OPÇÕES</h2>
+            <button id="toggle-anim-btn">Animações: ON</button>
+            <button id="toggle-bgm-btn">Música: ON</button>
+            <button id="save-btn" style="background:#00E676; color:#000;">💾 Salvar</button>
+            <button id="reset-btn" style="background:#FF1744; color:#FFF;">🗑️ Resetar</button>
+            <label for="sound-mode">Som Clique:</label>
+            <select id="sound-mode">
+                <option value="monhado">Som Monhado</option>
+                <option value="coco">Som de COCÔ</option>
+                <option value="crocante">Som Crocante</option>
+            </select>
+            <button id="close-options-btn" class="btn-buy">VOLTAR</button>
+        </div>
     </div>
 
     <!-- Widgets no Canto Superior Esquerdo -->
@@ -531,7 +687,7 @@
                 <div class="tree-node-grid" id="tree-grid"></div>
             </div>
 
-            <button class="btn-supreme" id="skill-supreme" disabled>👑 UPGRADE SUPREMO: SALVAR OS BAPOS (Requer 13 Upgrades)</button>
+            <button class="btn-supreme" id="skill-supreme" disabled>👑 UPGRADE SUPREMO: SALVAR OS BAPOS (Requer 12 Upgrades)</button>
         </div>
     </div>
 
@@ -542,6 +698,31 @@
             <p><small>Complete desafios e receba bônus passivos e prêmios imediatos!</small></p>
             
             <div class="achievements-grid" id="achievements-grid"></div>
+        </div>
+    </div>
+
+    <!-- Modal interno para avisos e confirmações, sem janelas nativas do navegador -->
+    <div class="modal-overlay" id="site-dialog-modal" style="display:none;">
+        <div class="modal-content">
+            <h3 id="site-dialog-title">Aviso Bapal</h3>
+            <p id="site-dialog-message"></p>
+            <div class="site-dialog-buttons">
+                <button class="btn-buy" id="site-dialog-ok-btn">OK</button>
+                <button class="btn-buy" id="site-dialog-cancel-btn" style="background-color:#FF1744; color:#FFF; display:none;">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modo Teste Debug: ativado pela sequência B A P O T O D O -->
+    <div class="modal-overlay" id="debug-modal" style="display:none; z-index:10000;">
+        <div class="modal-content">
+            <h2>MODO TESTE DEBUG</h2>
+            <p>Atalhos de teste. Estas opções servem para pular diretamente para momentos do jogo.</p>
+            <button class="debug-btn" id="debug-boss-btn">LUTA DO MARRONE</button>
+            <button class="debug-btn" id="debug-boss-intro-btn">INTRODUÇÃO DO MARRONE</button>
+            <button class="debug-btn" id="debug-credits-btn">CRÉDITOS FINAIS</button>
+            <button class="debug-btn" id="debug-close-btn" style="background:#555;">FECHAR DEBUG</button>
         </div>
     </div>
 
@@ -643,9 +824,49 @@
             <p id="credits-custom-message" style="color:#FFD700; font-style:italic;"></p>
             <div id="credits-names-list">
                 <p><strong>Desenvolvimento & Design:</strong><br>Karine Millena do bapotodo</p>
-                <p><strong>Imagens e soins:</strong><br>O bapo todo</p>
-                <p><strong>Testadores:</strong><br>Aline A.</p>
-                <p><strong>Agradecimentos especiais:</strong><br>A Comunidade😭</p>
+                <p><strong>Imagens e soins:</strong><br>Onespace Cat</p>
+                <p><strong>Testadores:</strong><br>
+                Aline A.<br>
+                Onespace Cat <br>
+                Sofia Sayuri <br>
+                Taexogi <br>
+                </p>
+                <p><strong>Agradecimentos especiais:</strong><br>
+                A Comunidade😭<br>
+                Maison Margiella <br>
+                </p>
+                <p><strong>Verdadeiros Desenvolvedores:</strong></p>
+                <div class="desenvolvedores-container">
+                    <div class="desenvolvedor">
+                        <img src="Imagens/jeno.png" alt="Jeno" onerror="this.src='Imagens/bapo.png'">
+                        <div>Jeno Vugnaes Bapo da Silva</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/maison.png" alt="Maison" onerror="this.src='Imagens/bapo.png'">
+                        <div>Maison Margiella Bapo da Silva</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/agatha.png" alt="Agatha" onerror="this.src='Imagens/bapo.png'">
+                        <div>Agatha Bapa da Silva</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/dante.png" alt="Dante" onerror="this.src='Imagens/bapo.png'">
+                        <div>Dante Bapa da Silva</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/maya.png" alt="Maya" onerror="this.src='Imagens/bapo.png'">
+                        <div>Maya Bapa da Silva</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/kiara.png" alt="Kiara" onerror="this.src='Imagens/bapo.png'">
+                        <div>Kiara Bapa</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/kiara2.png" alt="Kiara Piema" onerror="this.src='Imagens/bapo.png'">
+                        <div>Kiara Piema</div>
+                    </div>
+                </div>
+                <p>(sim, tem 2 Kiara)</p>
                 <p><strong>Agradecimento mais que especial:</strong><br>Ao nosso salvador <span id="credits-player-name"></span></p>
             </div>
             <p class="watermark">siga @obapotodo em todas as redes sociais</p>
@@ -676,6 +897,7 @@
     <script>
         let animacoesAtivas = true;
         let bgmMuted = false;
+        let sfxMuted = false;
         let modoSom = "monhado";
 
         let nomeJogador = "Herói";
@@ -715,6 +937,52 @@
 
         let bgmIniciado = false;
 
+        // Sistema de diálogos interno: nenhum alert/confirm nativo do navegador.
+        let siteDialogCallback = null;
+
+        function mostrarDialogoSite(mensagem, opcoes = {}) {
+            const modal = document.getElementById('site-dialog-modal');
+            const title = document.getElementById('site-dialog-title');
+            const message = document.getElementById('site-dialog-message');
+            const okBtn = document.getElementById('site-dialog-ok-btn');
+            const cancelBtn = document.getElementById('site-dialog-cancel-btn');
+
+            title.innerText = opcoes.titulo || 'Aviso Bapal';
+            message.innerText = mensagem;
+            cancelBtn.style.display = opcoes.confirmacao ? 'block' : 'none';
+            okBtn.innerText = opcoes.textoOk || (opcoes.confirmacao ? 'SIM' : 'OK');
+            cancelBtn.innerText = opcoes.textoCancelar || 'CANCELAR';
+
+            siteDialogCallback = opcoes.callback || null;
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => modal.classList.add('open'));
+        }
+
+        function fecharDialogoSite(confirmado = false) {
+            const modal = document.getElementById('site-dialog-modal');
+            const callback = siteDialogCallback;
+            siteDialogCallback = null;
+
+            modal.classList.remove('open');
+            setTimeout(() => { modal.style.display = 'none'; }, 250);
+
+            if (callback) callback(confirmado);
+        }
+
+        document.getElementById('site-dialog-ok-btn').addEventListener('click', () => fecharDialogoSite(true));
+        document.getElementById('site-dialog-cancel-btn').addEventListener('click', () => fecharDialogoSite(false));
+
+        function mostrarAviso(mensagem, titulo = 'Aviso Bapal') {
+            mostrarDialogoSite(mensagem, { titulo });
+        }
+
+        function pedirConfirmacao(mensagem, callback, titulo = 'Confirmação Bapal') {
+            mostrarDialogoSite(mensagem, { titulo, confirmacao: true, callback });
+        }
+
+        // Qualquer alert usado futuramente também será convertido em modal.
+        window.alert = (mensagem) => mostrarAviso(String(mensagem));
+
         function tocarMusica() {
             if (bgmMuted) return;
 
@@ -748,6 +1016,24 @@
 
         document.getElementById('toggle-bgm-btn').addEventListener('click', toggleBGM);
 
+        function toggleSFX() {
+            sfxMuted = !sfxMuted;
+            const botao = document.getElementById('toggle-sfx-btn');
+            botao.innerText = `SFX: ${sfxMuted ? 'OFF' : 'ON'}`;
+
+            // Interrompe imediatamente qualquer SFX que esteja tocando.
+            if (sfxMuted) {
+                [sfxMonhado, sfxCoco, sfxCrocante, sfxAnhanguera].forEach(som => {
+                    try {
+                        som.pause();
+                        som.currentTime = 0;
+                    } catch (e) {}
+                });
+            }
+        }
+
+        document.getElementById('toggle-sfx-btn').addEventListener('click', toggleSFX);
+
         const lojaData = [
             { id: 'click', nome: '1. Super Clique (+1)', desc: 'Aumenta clique manual', baseCost: 10, multCost: 1.3, power: 1, bps: 0, img: 'Imagens/click_upgrade.png' },
             { id: 'auto', nome: '2. Bapo GPT (+0.05/s)', desc: 'Clique automático', baseCost: 15, multCost: 1.25, power: 0, bps: 0.05, img: 'Imagens/auto_upgrade.png' },
@@ -773,7 +1059,7 @@
             { id: "s10", nome: "Reator Nuclear", desc: "Reatores +300%", custo: 5, tipo: "reactorMult", val: 5.0, parentId: "s7", img: "Imagens/skill_10.png" },
             { id: "s11", nome: "Dominância Bapal", desc: "Geral +300%", custo: 8, tipo: "geralPerc", val: 2.0, parentId: "s8", img: "Imagens/skill_11.png" },
             { id: "s12", nome: "Bapo Divino", desc: "Geral +500%", custo: 12, tipo: "geralPerc", val: 5.0, parentId: "s9", img: "Imagens/skill_12.png" },
-            { id: "s13", nome: "Nada", desc: "Absolutamente nada... Ou será que sim? (3 Níveis)", custo: 1, tipo: "nada", val: 0, maxNivel: 3, parentId: null, img: "Imagens/skill_13.png" }
+            { id: "s13", nome: "Nada", desc: "Absolutamente nada... Ou será que sim? (3 Níveis)", custo: 10, custoMultiplicador: 2, tipo: "nada", val: 0, maxNivel: 3, parentId: null, img: "Imagens/skill_13.png" }
         ];
 
         let skillsCompradas = {};
@@ -791,12 +1077,12 @@
             { id: "c8", nome: "Clicker Anônimo", desc: "Alcance 500 cliques manuais", req: () => totalCliquesManuais >= 500, bonusDesc: "+5% Poder de Clique", bonusType: "cliqueMult", bonusVal: 0.05, secreta: false, img: "Conquistas/Clicker Anônimo.png" },
             { id: "c9", nome: "BigBrain", desc: "Compre 5 Habilidades na Árvore de Prestígio", req: () => Object.values(skillsCompradas).filter(v => typeof v === 'number' ? v > 0 : v).length >= 5, bonusDesc: "+3 Coisinhos", bonusType: "pp", bonusVal: 3, secreta: false, img: "Conquistas/BigBrain.png" },
             { id: "c10", nome: "Magnata dos Bapos", desc: "Acumule 100.000 Bapoedas", req: () => bapoedas >= 100000, bonusDesc: "+10% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.10, secreta: false, img: "Conquistas/Magnata dos Bapos.png" },
-            { id: "c11", nome: "Nada Além do Nada", desc: "Evolua a habilidade Nada até o nível máximo!", req: () => (skillsCompradas["s13"] || 0) >= 3, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: false, img: "Imagens/skill_13.png" },
+            { id: "c11", nome: "Nada... Literalmente Nada", desc: "Evolua a habilidade Nada até o nível máximo!", req: () => (skillsCompradas["s13"] || 0) >= 3, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: false, img: "Imagens/skill_13.png" },
             { id: "sec1", nome: "Então tá", desc: "Você recusou ajudar os Bapos no começo...", req: () => conquistasEstado["sec1"]?.desbloqueada, bonusDesc: "+1 Coisinho de consolo", bonusType: "pp", bonusVal: 1, secreta: true, img: "Conquistas/Então tá.png" },
             { id: "sec2", nome: "MUUUUU", desc: "Nomeou-se Anhanguera e invocou a lenda!", req: () => conquistasEstado["sec2"]?.desbloqueada, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: true, img: "Conquistas/MUUUUU.png" },
             { id: "sec3", nome: "Self Insert", desc: "Colocou 'Felps' ou 'Bapo' no seu nome!", req: () => conquistasEstado["sec3"]?.desbloqueada, bonusDesc: "+10% Clique Poderoso", bonusType: "cliqueMult", bonusVal: 0.10, secreta: true, img: "Conquistas/Self Insert.png" },
             { id: "sec_vugnaes", nome: "Vugnaes Sreo", desc: "Encontrou e comprou o upgrade secreto!", req: () => upgradeSecretoComprado, bonusDesc: "+13.37% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.1337, secreta: true, img: "Conquistas/Vugnaes Sreo.png" },
-            { id: "sec_coco", nome: "Colecionador de Cocô", desc: "Encontrou e clicou no cocô misterioso!", req: () => conquistasEstado["sec_coco"]?.desbloqueada, bonusDesc: "+100 Bapoedas", bonusType: "bapoedas", bonusVal: 100, secreta: true, img: "Conquistas/colecionador de cocô.png" }
+            { id: "sec_coco", nome: "Colecionador de Cocô", desc: "VOCÊ TÁ COLECIONANDO COCÔ?!?!?!", req: () => conquistasEstado["sec_coco"]?.desbloqueada, bonusDesc: "+100 Bapoedas", bonusType: "bapoedas", bonusVal: 100, secreta: true, img: "Conquistas/colecionador de cocô.png" }
         ];
 
         let conquistasEstado = {};
@@ -845,6 +1131,51 @@
 
             container.appendChild(img);
         }
+
+        const pauseMenu = document.getElementById('pause-menu');
+        const pauseOptionsModal = document.getElementById('pause-options-modal');
+        let jogoPausado = false;
+
+        function abrirPausa() {
+            if (document.getElementById('credits-screen').style.display === 'flex') return;
+            jogoPausado = true;
+            pauseOptionsModal.style.display = 'none';
+            pauseMenu.style.display = 'flex';
+        }
+
+        function fecharPausa() {
+            jogoPausado = false;
+            pauseOptionsModal.style.display = 'none';
+            pauseMenu.style.display = 'none';
+        }
+
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            if (jogoPausado) fecharPausa(); else abrirPausa();
+        });
+        document.getElementById('pause-continue-btn').addEventListener('click', fecharPausa);
+        document.getElementById('pause-options-btn').addEventListener('click', () => {
+            pauseMenu.style.display = 'none';
+            pauseOptionsModal.style.display = 'flex';
+        });
+        document.getElementById('close-options-btn').addEventListener('click', () => {
+            pauseOptionsModal.style.display = 'none';
+            pauseMenu.style.display = 'flex';
+        });
+        document.getElementById('pause-credits-btn').addEventListener('click', () => {
+            pauseMenu.style.display = 'none';
+            dispararCreditos('', false);
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            if (pauseOptionsModal.style.display === 'flex') {
+                pauseOptionsModal.style.display = 'none';
+                pauseMenu.style.display = 'flex';
+            } else if (jogoPausado) {
+                fecharPausa();
+            } else {
+                abrirPausa();
+            }
+        });
 
         document.getElementById('toggle-anim-btn').addEventListener('click', () => {
             animacoesAtivas = !animacoesAtivas;
@@ -908,7 +1239,7 @@
                 playClickSound();
                 document.getElementById('vugnaes-modal').style.display = 'none';
                 atualizarTela();
-                alert("✨ CÓDIGO ACEITO! Upgrade Lendário Vugnaes Sreo Adquirido!");
+                mostrarAviso("✨ CÓDIGO ACEITO! Upgrade Lendário Vugnaes Sreo Adquirido!");
             } else if (bapoedas >= 2543) {
                 bapoedas -= 2543;
                 upgradeSecretoComprado = true;
@@ -916,9 +1247,9 @@
                 playClickSound();
                 document.getElementById('vugnaes-modal').style.display = 'none';
                 atualizarTela();
-                alert("✨ UPGRADE LENDÁRIO ADQUIRIDO: Vugnaes Sreo!");
+                mostrarAviso("✨ UPGRADE LENDÁRIO ADQUIRIDO: Vugnaes Sreo!");
             } else {
-                alert("Você precisa digitar o código 'vugnaes' correto ou ter pelo menos 2543 Bapoedas!");
+                mostrarAviso("Você precisa digitar o código 'vugnaes' correto ou ter pelo menos 2543 Bapoedas!");
             }
         });
 
@@ -934,6 +1265,9 @@
                 const nivelMaximo = sk.maxNivel || 1;
                 const atingiuMaximo = nivelSkill >= nivelMaximo;
                 const parentBought = !sk.parentId || skillsCompradas[sk.parentId];
+                const custoAtualSkill = isMultiNivel && sk.custoMultiplicador
+                    ? Math.floor(sk.custo * Math.pow(sk.custoMultiplicador, nivelSkill))
+                    : sk.custo;
                 const node = document.createElement('div');
                 node.className = `node-card ${isBought ? 'unlocked' : (parentBought ? '' : 'locked')}`;
                 node.id = `node-${sk.id}`;
@@ -941,16 +1275,19 @@
                     <img src="${sk.img}" onerror="this.src='${placeholderSkillImg}'" class="node-img" alt="${sk.nome}">
                     <strong>${i+1}. ${sk.nome}</strong>
                     <span style="font-size:0.7rem; margin:2px 0;">${sk.desc}</span>
-                    <button class="btn-buy" id="btn-sk-${sk.id}" style="font-size:0.65rem; padding:4px;" ${atingiuMaximo || !parentBought || pontosPrestigio < sk.custo ? 'disabled' : ''}>
-                        ${atingiuMaximo ? 'MAX!' : `${isMultiNivel && isBought ? `Nível ${nivelSkill}/${nivelMaximo} - ` : ''}Comprar (${sk.custo} Coisinhos)`}
+                    <button class="btn-buy" id="btn-sk-${sk.id}" style="font-size:0.65rem; padding:4px;" ${atingiuMaximo || !parentBought || pontosPrestigio < custoAtualSkill ? 'disabled' : ''}>
+                        ${atingiuMaximo ? 'MAX!' : `${isMultiNivel && isBought ? `Nível ${nivelSkill}/${nivelMaximo} - ` : ''}Comprar (${custoAtualSkill} Coisinhos)`}
                     </button>
                 `;
                 grid.appendChild(node);
 
                 document.getElementById(`btn-sk-${sk.id}`).addEventListener('click', () => {
                     const nivelAtual = isMultiNivel ? (Number(skillsCompradas[sk.id]) || 0) : (skillsCompradas[sk.id] ? 1 : 0);
-                    if (nivelAtual < nivelMaximo && pontosPrestigio >= sk.custo && parentBought) {
-                        pontosPrestigio -= sk.custo;
+                    const custoCompra = isMultiNivel && sk.custoMultiplicador
+                        ? Math.floor(sk.custo * Math.pow(sk.custoMultiplicador, nivelAtual))
+                        : sk.custo;
+                    if (nivelAtual < nivelMaximo && pontosPrestigio >= custoCompra && parentBought) {
+                        pontosPrestigio -= custoCompra;
                         skillsCompradas[sk.id] = isMultiNivel ? nivelAtual + 1 : true;
                         playClickSound();
                         atualizarTela();
@@ -1057,7 +1394,7 @@
 
         document.getElementById('open-change-name-btn').addEventListener('click', () => {
             if (bapoedas < 5) {
-                alert("Você precisa de pelo menos 5 Bapoedas para mudar de nome!");
+                mostrarAviso("Você precisa de pelo menos 5 Bapoedas para mudar de nome!");
                 return;
             }
             document.getElementById('change-name-modal').style.display = 'flex';
@@ -1070,7 +1407,7 @@
         document.getElementById('confirm-change-name-btn').addEventListener('click', () => {
             const novoNome = document.getElementById('new-name-input').value.trim();
             if (!novoNome) {
-                alert("Por favor, digite um nome válido!");
+                mostrarAviso("Por favor, digite um nome válido!");
                 return;
             }
 
@@ -1106,6 +1443,7 @@
         }
 
         function playClickSound() {
+            if (sfxMuted) return;
             let baseSom;
 
             if (modoSom === "coco") {
@@ -1293,31 +1631,84 @@
             }
         }
 
+        function trocarImagemMarroneSuave(img, novoSrc, duracao = 450) {
+            if (!img || img.getAttribute('src') === novoSrc) {
+                if (img) {
+                    img.classList.remove('fade-out');
+                    img.style.opacity = '1';
+                    img.style.transform = 'scale(1)';
+                }
+                return;
+            }
+
+            img.classList.add('fade-out');
+
+            setTimeout(() => {
+                img.src = novoSrc;
+
+                const mostrarNovaImagem = () => {
+                    img.classList.remove('fade-out');
+                    img.style.opacity = '1';
+                    img.style.transform = 'scale(1)';
+                };
+
+                if (img.complete) requestAnimationFrame(mostrarNovaImagem);
+                else img.addEventListener('load', mostrarNovaImagem, { once: true });
+            }, duracao / 2);
+        }
+
         function atualizarSpriteBoss() {
             const bossImg = document.getElementById('marrone-fight-img');
-            if (bossHp === 3) bossImg.src = 'Imagens/marrone.png';
-            else if (bossHp === 2) bossImg.src = 'Imagens/marrone_machucado.png';
-            else if (bossHp === 1) bossImg.src = 'Imagens/marrone_muito_machucado.png';
-            else if (bossHp === 0) bossImg.src = 'Imagens/marrone_morto.png';
+            let novoSrc = 'Imagens/marrone.png';
+            if (bossHp === 2) novoSrc = 'Imagens/marrone_machucado.png';
+            else if (bossHp === 1) novoSrc = 'Imagens/marrone_muito_machucado.png';
+            else if (bossHp === 0) novoSrc = 'Imagens/marrone_morto.png';
+
+            trocarImagemMarroneSuave(bossImg, novoSrc);
+        }
+
+        let transicaoMusicaBoss = null;
+
+        function fazerFadeAudio(audio, volumeAlvo, duracao = 500, aoFinal = null) {
+            if (transicaoMusicaBoss) clearInterval(transicaoMusicaBoss);
+
+            const inicio = audio.volume;
+            const inicioTempo = performance.now();
+
+            transicaoMusicaBoss = setInterval(() => {
+                const progresso = Math.min((performance.now() - inicioTempo) / duracao, 1);
+                audio.volume = inicio + (volumeAlvo - inicio) * progresso;
+
+                if (progresso >= 1) {
+                    clearInterval(transicaoMusicaBoss);
+                    transicaoMusicaBoss = null;
+                    if (aoFinal) aoFinal();
+                }
+            }, 16);
         }
 
         function tocarMusicaBoss() {
             if (bgmMuted) return;
+            if (!bossMusic.paused) return;
 
-            bgmMusic.pause();
-
-            bossMusic.play().catch(e => {
+            bossMusic.volume = 0;
+            bossMusic.play().then(() => {
+                fazerFadeAudio(bossMusic, 0.4, 650);
+            }).catch(e => {
                 console.warn("Não foi possível reproduzir a música da Boss Fight:", e);
             });
+
+            fazerFadeAudio(bgmMusic, 0, 500, () => bgmMusic.pause());
         }
 
         function pararMusicaBoss() {
-            bossMusic.pause();
-            bossMusic.currentTime = 0;
+            fazerFadeAudio(bossMusic, 0, 500, () => {
+                bossMusic.pause();
+                bossMusic.currentTime = 0;
+                bossMusic.volume = 0.4;
+            });
 
-            if (!bgmMuted) {
-                tocarMusica();
-            }
+            if (!bgmMuted) setTimeout(() => tocarMusica(), 500);
         }
 
         function iniciarBossFight() {
@@ -1386,7 +1777,7 @@
                     document.getElementById('revive-modal').style.display = 'flex';
                 }, 800);
             } else if (playerHp <= 0) {
-                alert("Você perdeu para o Marrone! Tente novamente.");
+                mostrarAviso("Você perdeu para o Marrone! Tente novamente.");
                 iniciarBossFight();
             }
         }
@@ -1415,6 +1806,8 @@
             const txt = document.getElementById('revive-sequence-text');
 
             img.className = 'boss-sprite-img';
+            img.style.opacity = '1';
+            img.style.transform = 'scale(1)';
             img.src = 'Imagens/marrone_normal.png';
             txt.innerText = 'Ué, você me reviveu, isso é burrice ou benevolência?';
 
@@ -1428,19 +1821,18 @@
             const nivelNada = Number(skillsCompradas["s13"]) || 0;
 
             if (reviveStep === 1) {
-                img.src = 'Imagens/marrone_serio.png';
+                trocarImagemMarroneSuave(img, 'Imagens/marrone_serio.png');
                 txt.innerText = 'Bem, independente do que seja...';
             } else if (reviveStep === 2) {
-                img.src = 'Imagens/marrone1.png';
+                trocarImagemMarroneSuave(img, 'Imagens/marrone1.png');
                 txt.innerText = 'Trato é trato, nunca mais vou lhe perturbar';
             } else if (reviveStep === 3) {
-                img.src = 'Imagens/marrone.png';
+                trocarImagemMarroneSuave(img, 'Imagens/marrone.png');
                 if (nivelNada >= 3) {
                     txt.innerText = 'Até nunca mais! Eu iria para o mundo dos Pererecos, mas o seu poder do NADA Nível 3 me impediu! MUAHAHAHAHAH!!!';
                 } else {
                     txt.innerText = 'Até nunca mais! Vou perturbar outros mundos e dimensões MUAHAHAHAHAH!!! Vou para o mundo dos Pererecos!';
                 }
-                img.classList.add('fade-out');
             } else if (reviveStep >= 4) {
                 document.getElementById('revive-sequence-modal').style.display = 'none';
                 ocultarHUDsBoss();
@@ -1547,7 +1939,7 @@
             bapoedas += premio;
             conquistasEstado["sec_coco"].desbloqueada = true;
             sfxCoco.play().catch(e => {});
-            alert(`💩 Você clicou no Cocô e ganhou ${premio} Bapoedas!`);
+            mostrarAviso(`VOCÊ TÁ COLECIONANDO COCÔ??? Pelo menos achou ${premio} Bapoedas!`);
             atualizarTela();
         });
 
@@ -1574,7 +1966,7 @@
             });
 
             localStorage.setItem('bapoClickerSave', JSON.stringify(dadosJogo));
-            if (exibirAlerta) alert("Progresso salvo com sucesso!");
+            if (exibirAlerta) mostrarAviso("Progresso salvo com sucesso!", "Progresso");
         }
 
         function carregarJogo() {
@@ -1616,10 +2008,16 @@
         }
 
         function resetarJogo() {
-            if (confirm("Tem certeza que deseja apagar TODO o seu progresso? Isso não pode ser desfeito!")) {
-                localStorage.removeItem('bapoClickerSave');
-                location.reload();
-            }
+            pedirConfirmacao(
+                "Tem certeza que deseja apagar TODO o seu progresso? Isso não pode ser desfeito!",
+                (confirmado) => {
+                    if (confirmado) {
+                        localStorage.removeItem('bapoClickerSave');
+                        location.reload();
+                    }
+                },
+                "Resetar jogo"
+            );
         }
 
         document.getElementById('save-btn').addEventListener('click', () => salvarJogo(true));
@@ -1628,12 +2026,82 @@
         setInterval(() => salvarJogo(false), 30000);
 
         setInterval(() => {
+            if (jogoPausado) return;
             const { bpsTotal } = calcularGanhos();
             if (bpsTotal > 0 || supremoLiberado) {
                 bapoedas += bpsTotal / 10;
                 atualizarTela();
             }
         }, 100);
+
+
+        // ==================== MODO TESTE DEBUG ====================
+        // Digite B A P O T O D O, nessa ordem, para abrir o menu secreto.
+        const debugSequencia = 'bapotodo';
+        let debugEntrada = '';
+
+        function fecharModaisParaDebug() {
+            document.getElementById('pause-menu').style.display = 'none';
+            document.getElementById('boss-dialogue-modal').style.display = 'none';
+            document.getElementById('boss-fight-modal').style.display = 'none';
+            document.getElementById('revive-modal').style.display = 'none';
+            document.getElementById('revive-sequence-modal').style.display = 'none';
+            document.getElementById('bapos-freed-modal').style.display = 'none';
+            document.getElementById('credits-screen').style.display = 'none';
+            document.body.classList.remove('boss-mode');
+        }
+
+        function abrirModoDebug() {
+            debugEntrada = '';
+            fecharModaisParaDebug();
+            document.getElementById('debug-modal').style.display = 'flex';
+            jogoPausado = true;
+        }
+
+        document.addEventListener('keydown', (event) => {
+            const tag = document.activeElement?.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+            const tecla = event.key.toLowerCase();
+            if (tecla.length !== 1 || !/[a-z]/.test(tecla)) return;
+
+            debugEntrada += tecla;
+            if (debugEntrada.length > debugSequencia.length) {
+                debugEntrada = debugEntrada.slice(-debugSequencia.length);
+            }
+
+            if (debugEntrada === debugSequencia) {
+                abrirModoDebug();
+            }
+        });
+
+        function fecharModoDebug() {
+            document.getElementById('debug-modal').style.display = 'none';
+            jogoPausado = false;
+        }
+
+        document.getElementById('debug-close-btn').addEventListener('click', fecharModoDebug);
+
+        document.getElementById('debug-boss-btn').addEventListener('click', () => {
+            fecharModoDebug();
+            document.getElementById('welcome-modal').style.display = 'none';
+            document.getElementById('boss-dialogue-modal').style.display = 'none';
+            iniciarBossFight();
+        });
+
+        document.getElementById('debug-boss-intro-btn').addEventListener('click', () => {
+            fecharModoDebug();
+            document.getElementById('welcome-modal').style.display = 'none';
+            iniciarIntroducaoBoss();
+        });
+
+        document.getElementById('debug-credits-btn').addEventListener('click', () => {
+            fecharModoDebug();
+            document.getElementById('welcome-modal').style.display = 'none';
+            const credits = document.getElementById('credits-screen');
+            credits.style.display = 'flex';
+        });
+
 
         carregarJogo();
         atualizarTela();
