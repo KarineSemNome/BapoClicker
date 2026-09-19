@@ -547,6 +547,31 @@
             color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF; display: none;
         }
 
+
+        /* MODO TESTE DEBUG */
+        #debug-modal .modal-content {
+            max-width: 520px;
+            border: 5px solid #FE3867;
+        }
+        #debug-modal h2 {
+            margin-top: 0;
+            color: #FE3867;
+        }
+        .debug-btn {
+            display: block;
+            width: 100%;
+            margin: 9px 0;
+            padding: 12px;
+            border: 3px solid #000;
+            border-radius: 10px;
+            background: #FE3867;
+            color: #FFF;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .debug-btn:hover { transform: scale(1.02); }
+
         /* Easter Egg Cocô */
         #easter-egg-coco {
             position: fixed;
@@ -688,6 +713,19 @@
         </div>
     </div>
 
+
+    <!-- Modo Teste Debug: ativado pela sequência B A P O T O D O -->
+    <div class="modal-overlay" id="debug-modal" style="display:none; z-index:10000;">
+        <div class="modal-content">
+            <h2>MODO TESTE DEBUG</h2>
+            <p>Atalhos de teste. Estas opções servem para pular diretamente para momentos do jogo.</p>
+            <button class="debug-btn" id="debug-boss-btn">LUTA DO MARRONE</button>
+            <button class="debug-btn" id="debug-boss-intro-btn">INTRODUÇÃO DO MARRONE</button>
+            <button class="debug-btn" id="debug-credits-btn">CRÉDITOS FINAIS</button>
+            <button class="debug-btn" id="debug-close-btn" style="background:#555;">FECHAR DEBUG</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="welcome-modal">
         <div class="modal-content">
             <p>OH NÃO! O MARRONE sequestrou (quase) TODOS os Bapos! OH SER ALÉM DA CONSCIÊNCIA BAPAL, PODERIA NOS AJUDAR PUFAVÔ? Nos diga seu nome</p>
@@ -800,32 +838,36 @@
                 <p><strong>Verdadeiros Desenvolvedores:</strong></p>
                 <div class="desenvolvedores-container">
                     <div class="desenvolvedor">
-                        <img src="Imagens/jeno.png" alt="Jeno" onerror="this.src='Imagens/bapo.png'">
+                        <img src="Imagens/jeno.png" alt="Jeno" onerror="this.src='Imagens/blau.png'">
                         <div>Jeno Vugnaes Bapo da Silva</div>
                     </div>
                     <div class="desenvolvedor">
-                        <img src="Imagens/maison.png" alt="Maison" onerror="this.src='Imagens/bapo.png'">
+                        <img src="Imagens/maison.png" alt="Maison" onerror="this.src='Imagens/blau.png'">
                         <div>Maison Margiella Bapo da Silva</div>
                     </div>
                     <div class="desenvolvedor">
-                        <img src="Imagens/agatha.png" alt="Agatha" onerror="this.src='Imagens/bapo.png'">
+                        <img src="Imagens/agatha.png" alt="Agatha" onerror="this.src='Imagens/blau.png'">
                         <div>Agatha Bapa da Silva</div>
                     </div>
                     <div class="desenvolvedor">
-                        <img src="Imagens/dante.png" alt="Dante" onerror="this.src='Imagens/bapo.png'">
+                        <img src="Imagens/dante.png" alt="Dante" onerror="this.src='Imagens/blau.png'">
                         <div>Dante Bapa da Silva</div>
                     </div>
                     <div class="desenvolvedor">
-                        <img src="Imagens/maya.png" alt="Maya" onerror="this.src='Imagens/bapo.png'">
+                        <img src="Imagens/maya.png" alt="Maya" onerror="this.src='Imagens/blau.png'">
                         <div>Maya Bapa da Silva</div>
                     </div>
                     <div class="desenvolvedor">
-                        <img src="Imagens/kiara.png" alt="Kiara" onerror="this.src='Imagens/bapo.png'">
+                        <img src="Imagens/kiara.png" alt="Kiara" onerror="this.src='Imagens/blau.png'">
                         <div>Kiara Bapa</div>
                     </div>
                     <div class="desenvolvedor">
-                        <img src="Imagens/kiara2.png" alt="Kiara Piema" onerror="this.src='Imagens/bapo.png'">
+                        <img src="Imagens/kiara2.png" alt="Kiara Piema" onerror="this.src='Imagens/blau.png'">
                         <div>Kiara Piema</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/isha.png" alt="Isha Bapa" onerror="this.src='Imagens/blau.png'">
+                        <div>Isha Bapa</div>
                     </div>
                 </div>
                 <p>(sim, tem 2 Kiara)</p>
@@ -946,9 +988,7 @@
         window.alert = (mensagem) => mostrarAviso(String(mensagem));
 
         function tocarMusica() {
-            // Durante a Boss Fight, somente Marrone.mp3 pode tocar.
-            if (bgmMuted || document.body.classList.contains('boss-mode')) return;
-            if (!bossMusic.paused) return;
+            if (bgmMuted) return;
 
             bgmMusic.play()
                 .then(() => {
@@ -1046,7 +1086,7 @@
             { id: "sec2", nome: "MUUUUU", desc: "Nomeou-se Anhanguera e invocou a lenda!", req: () => conquistasEstado["sec2"]?.desbloqueada, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: true, img: "Conquistas/MUUUUU.png" },
             { id: "sec3", nome: "Self Insert", desc: "Colocou 'Felps' ou 'Bapo' no seu nome!", req: () => conquistasEstado["sec3"]?.desbloqueada, bonusDesc: "+10% Clique Poderoso", bonusType: "cliqueMult", bonusVal: 0.10, secreta: true, img: "Conquistas/Self Insert.png" },
             { id: "sec_vugnaes", nome: "Vugnaes Sreo", desc: "Encontrou e comprou o upgrade secreto!", req: () => upgradeSecretoComprado, bonusDesc: "+13.37% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.1337, secreta: true, img: "Conquistas/Vugnaes Sreo.png" },
-            { id: "sec_coco", nome: "Colecionador de Cocô", desc: "VOCÊ TÁ COLECIONANDO COCÔ?!?!?!", req: () => conquistasEstado["sec_coco"]?.desbloqueada, bonusDesc: "+100 Bapoedas", bonusType: "bapoedas", bonusVal: 100, secreta: true, img: "Conquistas/colecionador de cocô.png" }
+            { id: "sec_coco", nome: "COCÔlecionador", desc: "VOCÊ TÁ COLECIONANDO COCÔ?!?!?!", req: () => conquistasEstado["sec_coco"]?.desbloqueada, bonusDesc: "+100 Bapoedas", bonusType: "bapoedas", bonusVal: 100, secreta: true, img: "Conquistas/colecionador de cocô.png" }
         ];
 
         let conquistasEstado = {};
@@ -1655,16 +1695,14 @@
             if (bgmMuted) return;
             if (!bossMusic.paused) return;
 
-            // Mata imediatamente a música normal para impedir sobreposição.
-            bgmMusic.pause();
-            bgmMusic.currentTime = 0;
-
             bossMusic.volume = 0;
             bossMusic.play().then(() => {
                 fazerFadeAudio(bossMusic, 0.4, 650);
             }).catch(e => {
                 console.warn("Não foi possível reproduzir a música da Boss Fight:", e);
             });
+
+            fazerFadeAudio(bgmMusic, 0, 500, () => bgmMusic.pause());
         }
 
         function pararMusicaBoss() {
@@ -1674,11 +1712,7 @@
                 bossMusic.volume = 0.4;
             });
 
-            if (!bgmMuted) {
-                setTimeout(() => {
-                    if (!document.body.classList.contains('boss-mode')) tocarMusica();
-                }, 500);
-            }
+            if (!bgmMuted) setTimeout(() => tocarMusica(), 500);
         }
 
         function iniciarBossFight() {
@@ -1872,8 +1906,6 @@
             document.getElementById('player-greeting').innerText = `Boa sorte, ${nomeJogador}! Salve os Bapos!`;
             document.getElementById('welcome-modal').style.display = 'none';
             bgmMuted = false;
-            bossMusic.pause();
-            bossMusic.currentTime = 0;
             bgmMusic.play().catch(e => {});
             document.getElementById('toggle-bgm-btn').innerText = 'Música: ON';
             salvarJogo();
@@ -2005,6 +2037,75 @@
                 atualizarTela();
             }
         }, 100);
+
+
+        // ==================== MODO TESTE DEBUG ====================
+        // Digite B A P O T O D O, nessa ordem, para abrir o menu secreto.
+        const debugSequencia = 'bapotodo';
+        let debugEntrada = '';
+
+        function fecharModaisParaDebug() {
+            document.getElementById('pause-menu').style.display = 'none';
+            document.getElementById('boss-dialogue-modal').style.display = 'none';
+            document.getElementById('boss-fight-modal').style.display = 'none';
+            document.getElementById('revive-modal').style.display = 'none';
+            document.getElementById('revive-sequence-modal').style.display = 'none';
+            document.getElementById('bapos-freed-modal').style.display = 'none';
+            document.getElementById('credits-screen').style.display = 'none';
+            document.body.classList.remove('boss-mode');
+        }
+
+        function abrirModoDebug() {
+            debugEntrada = '';
+            fecharModaisParaDebug();
+            document.getElementById('debug-modal').style.display = 'flex';
+            jogoPausado = true;
+        }
+
+        document.addEventListener('keydown', (event) => {
+            const tag = document.activeElement?.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+            const tecla = event.key.toLowerCase();
+            if (tecla.length !== 1 || !/[a-z]/.test(tecla)) return;
+
+            debugEntrada += tecla;
+            if (debugEntrada.length > debugSequencia.length) {
+                debugEntrada = debugEntrada.slice(-debugSequencia.length);
+            }
+
+            if (debugEntrada === debugSequencia) {
+                abrirModoDebug();
+            }
+        });
+
+        function fecharModoDebug() {
+            document.getElementById('debug-modal').style.display = 'none';
+            jogoPausado = false;
+        }
+
+        document.getElementById('debug-close-btn').addEventListener('click', fecharModoDebug);
+
+        document.getElementById('debug-boss-btn').addEventListener('click', () => {
+            fecharModoDebug();
+            document.getElementById('welcome-modal').style.display = 'none';
+            document.getElementById('boss-dialogue-modal').style.display = 'none';
+            iniciarBossFight();
+        });
+
+        document.getElementById('debug-boss-intro-btn').addEventListener('click', () => {
+            fecharModoDebug();
+            document.getElementById('welcome-modal').style.display = 'none';
+            iniciarIntroducaoBoss();
+        });
+
+        document.getElementById('debug-credits-btn').addEventListener('click', () => {
+            fecharModoDebug();
+            document.getElementById('welcome-modal').style.display = 'none';
+            const credits = document.getElementById('credits-screen');
+            credits.style.display = 'flex';
+        });
+
 
         carregarJogo();
         atualizarTela();
