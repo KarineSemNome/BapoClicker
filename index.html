@@ -468,6 +468,12 @@
         .pause-corner-btn:active { transform: scale(.96); }
         .pause-corner-btn img { width: 100%; height: 100%; object-fit: contain; }
 
+        /* Classe aplicada quando há um modal/tab aberto: esconde o botão de pausa e o de SFX */
+        .pause-corner-btn.hidden-by-modal,
+        .standalone-sfx-btn.hidden-by-modal {
+            display: none !important;
+        }
+
         @media (max-width: 600px) {
             .pause-corner-btn {
                 width: 42px;
@@ -2473,6 +2479,69 @@
 
         // Reavaliar ao redimensionar (trocar desktop/mobile)
         window.addEventListener('resize', atualizarVisibilidadeBotao2x);
+
+
+        // ==================== ESCONDER PAUSA QUANDO HÁ MODAL ABERTO ====================
+        const pauseBtnEl = document.getElementById('pause-btn');
+        const sfxBtnEl = document.getElementById('toggle-sfx-btn');
+
+        // Lista de elementos que, se visíveis, escondem o botão de pausa.
+        // Inclui tabs (que usam classe .open) e modais (que usam display: flex).
+        const modaisQueEscondemPausa = [
+            'pause-menu',
+            'pause-options-modal',
+            'site-dialog-modal',
+            'debug-modal',
+            'welcome-modal',
+            'boss-dialogue-modal',
+            'boss-fight-modal',
+            'revive-modal',
+            'revive-sequence-modal',
+            'bapos-freed-modal',
+            'vugnaes-modal',
+            'change-name-modal',
+            'endgame-modal',
+            'prestige-tab',
+            'achievements-tab'
+        ];
+
+        function algumModalAberto() {
+            return modaisQueEscondemPausa.some(id => {
+                const el = document.getElementById(id);
+                if (!el) return false;
+                // Tabs usam a classe .open
+                if (el.classList.contains('open')) return true;
+                // Modais usam style.display === 'flex'
+                return el.style.display === 'flex';
+            });
+        }
+
+        function atualizarBotoesFixos() {
+            if (algumModalAberto()) {
+                pauseBtnEl.classList.add('hidden-by-modal');
+                sfxBtnEl.classList.add('hidden-by-modal');
+                // Garante que não fique "pausado" no estado interno
+                if (jogoPausado) fecharPausa();
+            } else {
+                pauseBtnEl.classList.remove('hidden-by-modal');
+                sfxBtnEl.classList.remove('hidden-by-modal');
+            }
+        }
+
+        // Observa mudanças de classe (tabs) e de style (modais) em todos os elementos relevantes
+        const observadorModais = new MutationObserver(atualizarBotoesFixos);
+
+        modaisQueEscondemPausa.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            observadorModais.observe(el, {
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+        });
+
+        // Checagem inicial (caso algum modal já esteja aberto ao carregar)
+        atualizarBotoesFixos();
 
 
         carregarJogo();
