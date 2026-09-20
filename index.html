@@ -526,7 +526,7 @@
             position: absolute; bottom: -100%; width: 80%; max-width: 600px; text-align: center; animation: scrollCredits 25s linear forwards;
         }
 
-        @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -160%; } }
+        @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -280%; } }
         .credits-scroll h1 {
             font-size: 3rem;
             color: #FE3867;
@@ -543,7 +543,9 @@
 
         /* Categorias: fortes e destacadas em #FE3867 */
         .credits-scroll p strong,
-        .credits-section-title
+        .credits-section-title {
+            color: #FE3867;
+        }
 
         /* Nomes: preto com contorno branco */
         .credit-person-name {
@@ -621,17 +623,28 @@
             color: #000;
             font-weight: 900;
         }
+        
+        /* NOVO CSS ADICIONADO AQUI */
+        .credits-actions {
+            position: absolute;
+            bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 10000;
+            width: 100%;
+        }
 
         .credits-restart-btn {
-            margin-top: 20px; padding: 15px 25px; font-size: 1.2rem; background: #00E676;
+            padding: 15px 25px; font-size: 1.2rem; background: #00E676;
             color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF;
         }
 
         .credits-want-btn {
-            margin-top: 15px; padding: 12px 20px; font-size: 1rem; background: #FF9100;
+            padding: 12px 20px; font-size: 1rem; background: #FF9100;
             color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF; display: none;
         }
-
 
         /* MODO TESTE DEBUG */
         #debug-modal .modal-content {
@@ -918,6 +931,7 @@
                         <div class="credit-person-name">Ea-nasir</div>
                     </div>
                     <p><span class="credit-person-name">Vende cobre baratinho e puro</span></p>
+                </div>
                 <p><strong class="credits-section-title">Testadores:</strong><br>
                 <span class="credit-person-name">Aline A.<br>
                 Onespace Cat<br>
@@ -978,8 +992,12 @@
                 </div>
                 <p><span class="credit-person-name">(sim, tem 2 Kiara)</span></p>
                 <p><strong class="credits-section-title">Agradecimento mais que especial:</strong><br><span class="credit-person-name">Ao nosso salvador <span id="credits-player-name"></span></span></p>
-            </div>
             <p class="watermark">siga @obapotodo em todas as redes sociais</p>
+            </div>
+        </div>
+        
+        <!-- ADICIONADO: BOTOES FORA DA ANIMACAO AQUI -->
+        <div class="credits-actions">
             <button class="credits-restart-btn" onclick="resetarJogo()">REINICIAR JOGO</button>
             <br>
             <button class="credits-want-btn" id="want-play-btn" onclick="voltarParaAjudar()">Agola, eu quelo, não sou mais Muliro</button>
@@ -2138,6 +2156,7 @@
                     if (confirmado) {
                         localStorage.removeItem('bapoClickerSave');
                         location.reload();
+                        window.location.reload();
                     }
                 },
                 "Resetar jogo"
