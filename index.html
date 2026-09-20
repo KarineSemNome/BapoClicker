@@ -813,6 +813,7 @@
             <button id="toggle-bgm-btn">Música: ON</button>
             <button id="save-btn" style="background:#00E676; color:#000;">💾 Salvar</button>
             <button id="reset-btn" style="background:#FF1744; color:#FFF;">🗑️ Resetar</button>
+            <button id="open-debug-code-btn" style="background:#D500F9; color:#FFF;">🐛 Modo Debug</button>
             <label for="sound-mode">Som Clique:</label>
             <select id="sound-mode">
                 <option value="monhado">Som Monhado</option>
@@ -923,6 +924,18 @@
             <button class="debug-btn" id="debug-boss-intro-btn">INTRODUÇÃO DO MARRONE</button>
             <button class="debug-btn" id="debug-credits-btn">CRÉDITOS FINAIS</button>
             <button class="debug-btn" id="debug-close-btn" style="background:#555;">FECHAR DEBUG</button>
+        </div>
+    </div>
+
+    <!-- Mini-modal para inserir o código do Modo Debug -->
+    <div class="modal-overlay" id="debug-code-modal" style="display:none; z-index:10001;">
+        <div class="modal-content">
+            <h3 style="color:#D500F9; margin-top:0;">🐛 MODO DEBUG</h3>
+            <p>Digite o código secreto para ativar o modo debug:</p>
+            <input type="text" id="debug-code-input" placeholder="Código..." maxlength="20">
+            <br>
+            <button class="btn-buy" id="confirm-debug-code-btn" style="margin-bottom:8px; background-color:#D500F9; color:#FFF;">CONFIRMAR</button>
+            <button class="btn-buy" id="cancel-debug-code-btn" style="background-color:#FF1744; color:#FFF;">CANCELAR</button>
         </div>
     </div>
 
@@ -1280,7 +1293,7 @@
         const listaSkills = [
             { id: "s1", nome: "Desconto Bapal", desc: "Loja -5%", custo: 1, tipo: "desconto", val: 0.05, parentId: null, img: "Imagens/skill_1.png" },
             { id: "s2", nome: "Clique Mais forte", desc: "+5% de poder de clique por nível (20 níveis)", custo: 1, tipo: "cliqueMult", val: 0.05, maxNivel: 20, parentId: null, img: "Imagens/skill_2.png" },
-            { id: "s3", nome: "Auto Boost", desc: "Auto-clickers +100%", custo: 1, tipo: "autoPerc", val: 1.0, parentId: null, img: "Imagens/skill_3.png" },
+            { id: "s3", nome: "Auto Boost", desc: "Bapo GPT +100%", custo: 1, tipo: "autoPerc", val: 1.0, parentId: null, img: "Imagens/skill_3.png" },
             { id: "s4", nome: "Super Desconto", desc: "Loja -10%", custo: 2, tipo: "desconto", val: 0.10, parentId: "s1", img: "Imagens/skill_4.png" },
             { id: "s5", nome: "Fazenda Turbo", desc: "Fazendas +150%", custo: 2, tipo: "farmMult", val: 2.5, parentId: "s1", img: "Imagens/skill_5.png" },
             { id: "s6", nome: "Mega Clique", desc: "Clique Base +25", custo: 2, tipo: "cliqueBase", val: 25, parentId: "s2", img: "Imagens/skill_6.png" },
@@ -2355,6 +2368,36 @@
             dispararCreditos("", false);
         });
 
+        // ==================== MINI-MODAL DE CÓDIGO DEBUG ====================
+        document.getElementById('open-debug-code-btn').addEventListener('click', () => {
+            document.getElementById('debug-code-input').value = '';
+            document.getElementById('debug-code-modal').style.display = 'flex';
+        });
+
+        document.getElementById('cancel-debug-code-btn').addEventListener('click', () => {
+            document.getElementById('debug-code-modal').style.display = 'none';
+        });
+
+        document.getElementById('confirm-debug-code-btn').addEventListener('click', () => {
+            const codigo = document.getElementById('debug-code-input').value.trim().toLowerCase();
+            if (codigo === 'bapotodo') {
+                document.getElementById('debug-code-modal').style.display = 'none';
+                // Fecha pausa/opções antes de abrir o debug
+                fecharPausa();
+                abrirModoDebug();
+            } else {
+                mostrarAviso('Código incorreto! Tente novamente.', 'Código Inválido');
+            }
+        });
+
+        // Permitir Enter no input
+        document.getElementById('debug-code-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('confirm-debug-code-btn').click();
+            }
+        });
+
 
         // ==================== VELOCIDADE 2X NOS CRÉDITOS ====================
         const creditsScreen = document.getElementById('credits-screen');
@@ -2371,7 +2414,7 @@
 
         function mostrarFinalCreditos() {
             creditsEnding.classList.add('visible');
-            // Agenda o reinício automático 15s depois de aparecer o bloco final
+            // Agenda o reinício automático 4.5s depois de aparecer o bloco final
             if (creditsTimerReiniciar) clearTimeout(creditsTimerReiniciar);
             creditsTimerReiniciar = setTimeout(() => {
                 reiniciarJogoAutomatico();
@@ -2486,12 +2529,12 @@
         const sfxBtnEl = document.getElementById('toggle-sfx-btn');
 
         // Lista de elementos que, se visíveis, escondem o botão de pausa.
-        // Inclui tabs (que usam classe .open) e modais (que usam display: flex).
+        // IMPORTANTE: pause-menu e pause-options-modal NÃO entram aqui,
+        // porque eles SÃO a pausa — se entrassem, a pausa se fecharia sozinha ao abrir.
         const modaisQueEscondemPausa = [
-            'pause-menu',
-            'pause-options-modal',
             'site-dialog-modal',
             'debug-modal',
+            'debug-code-modal',
             'welcome-modal',
             'boss-dialogue-modal',
             'boss-fight-modal',
@@ -2520,8 +2563,6 @@
             if (algumModalAberto()) {
                 pauseBtnEl.classList.add('hidden-by-modal');
                 sfxBtnEl.classList.add('hidden-by-modal');
-                // Garante que não fique "pausado" no estado interno
-                if (jogoPausado) fecharPausa();
             } else {
                 pauseBtnEl.classList.remove('hidden-by-modal');
                 sfxBtnEl.classList.remove('hidden-by-modal');
