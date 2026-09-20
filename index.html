@@ -527,9 +527,40 @@
         }
 
         @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -160%; } }
-        .credits-scroll h1 { font-size: 3rem; color: #FE3867; text-shadow: 2px 2px 0px #FFF; margin-bottom: 20px; }
-        .credits-scroll p { font-size: 1.3rem; color: #FFF; line-height: 1.6; margin: 15px 0; }
-        .credits-scroll .watermark { font-size: 1.8rem; color: #00E5FF; font-weight: bold; margin-top: 40px; }
+        .credits-scroll h1 {
+            font-size: 3rem;
+            color: #FE3867;
+            text-shadow: 2px 2px 0 #FFF;
+            margin-bottom: 20px;
+        }
+
+        .credits-scroll p {
+            font-size: 1.3rem;
+            color: #000;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        /* Categorias: fortes e destacadas em #FE3867 */
+        .credits-scroll p strong,
+        .credits-section-title
+
+        /* Nomes: preto com contorno branco */
+        .credit-person-name {
+            color: #FFF !important;
+            font-weight: 900;
+            text-shadow:
+                2px 0 #000, -2px 0 #000,
+                0 2px #000, 0 -2px #000,
+                1px 1px #000, -1px -1px #000;
+        }
+
+        .credits-scroll .watermark {
+            font-size: 1.8rem;
+            color: #00E5FF;
+            font-weight: bold;
+            margin-top: 40px;
+        }
 
         .desenvolvedores-container {
             display: flex;
@@ -543,17 +574,52 @@
         .desenvolvedor {
             width: 130px;
             text-align: center;
-            color: #FFF;
+            color: #000;
             font-size: 1rem;
             line-height: 1.25;
+            font-weight: 900;
         }
 
-        .desenvolvedor img {
+        /* Moldura irregular, simulando desenho feito à mão */
+        .desenvolvedor img,
+        .fornecedorcobre img {
             width: 100px;
             height: 100px;
             object-fit: contain;
             display: block;
-            margin: 0 auto 8px;
+            margin: 0 auto 10px;
+            padding: 6px;
+            background: transparent;
+            border: 4px solid #FE3867;
+            box-shadow:
+                3px 2px 0 #FE3867,
+                -2px 3px 0 #FE3867,
+                2px -2px 0 #FE3867,
+                -3px -1px 0 #FE3867;
+            border-radius: 7px 10px 6px 9px;
+            transform: rotate(-1deg);
+        }
+
+        .desenvolvedor:nth-child(even) img {
+            transform: rotate(1.5deg);
+        }
+
+        .fornecedorcobre {
+            text-align: center;
+            color: #000;
+            font-weight: 900;
+        }
+
+        /* Ajuste específico do Ea-nasir para não deformar a imagem */
+        .fornecedorcobre img {
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+        }
+
+        .fornecedorcobre-container > p {
+            color: #000;
+            font-weight: 900;
         }
 
         .credits-restart-btn {
@@ -842,55 +908,76 @@
             <p id="credits-thanks-text"><strong>Agradecimento Especial:</strong><br>Obrigado por jogar e salvar todos os Bapos do terrível Marrone!</p>
             <p id="credits-custom-message" style="color:#FFD700; font-style:italic;"></p>
             <div id="credits-names-list">
-                <p><strong>Desenvolvimento & Design:</strong><br>Karine Millena do bapotodo</p>
-                <p><strong>Imagens e soins:</strong><br>Onespace Cat</p>
-                <p><strong>Testadores:</strong><br>
-                Aline A.<br>
-                Onespace Cat <br>
-                Sofia Sayuri <br>
-                Taexogi <br>
+                <p><strong class="credits-section-title">Desenvolvedores:</strong><br><span class="credit-person-name">Karine Millena do bapotodo</span></p>
+                <p><strong class="credits-section-title">Imagens:</strong><br><span class="credit-person-name">Onespace Cat</span></p>
+                <p><strong class="credits-section-title">Sons e músicas:</strong><br><span class="credit-person-name">Karine Millena</span></p>
+                <p><strong class="credits-section-title">Patrocinadores:</strong></p>
+                <div class="fornecedorcobre-container">
+                    <div class="fornecedorcobre">
+                        <img src="Imagens/eanasir.png" alt="Ea-nasir" onerror="this.src='Imagens/blau.png'">
+                        <div class="credit-person-name">Ea-nasir</div>
+                    </div>
+                    <p><span class="credit-person-name">Vende cobre baratinho e puro</span></p>
+                <p><strong class="credits-section-title">Testadores:</strong><br>
+                <span class="credit-person-name">Aline A.<br>
+                Onespace Cat<br>
+                Sofia Sayuri<br>
+                Taexogi</span>
                 </p>
-                <p><strong>Agradecimentos especiais:</strong><br>
-                A Comunidade😭<br>
-                Maison Margiella <br>
+                <p><strong class="credits-section-title">Agradecimentos especiais:</strong><br>
+                <span class="credit-person-name">A Comunidade😭<br>
+                Maison Margiella</span>
                 </p>
-                <p><strong>Verdadeiros Desenvolvedores:</strong></p>
+                <p><strong class="credits-section-title">Verdadeiros Desenvolvedores:</strong></p>
                 <div class="desenvolvedores-container">
                     <div class="desenvolvedor">
                         <img src="Imagens/jeno.png" alt="Jeno" onerror="this.src='Imagens/blau.png'">
-                        <div>Jeno Vugnaes Bapo da Silva</div>
+                        <div class="credit-person-name">Jeno Vugnaes Bapo da Silva</div>
                     </div>
                     <div class="desenvolvedor">
                         <img src="Imagens/maison.png" alt="Maison" onerror="this.src='Imagens/blau.png'">
-                        <div>Maison Margiella Bapo da Silva</div>
+                        <div class="credit-person-name">Maison Margiella Bapo da Silva</div>
                     </div>
                     <div class="desenvolvedor">
                         <img src="Imagens/agatha.png" alt="Agatha" onerror="this.src='Imagens/blau.png'">
-                        <div>Agatha Bapa da Silva</div>
+                        <div class="credit-person-name">Agatha Bapo</div>
                     </div>
                     <div class="desenvolvedor">
                         <img src="Imagens/dante.png" alt="Dante" onerror="this.src='Imagens/blau.png'">
-                        <div>Dante Bapa da Silva</div>
+                        <div class="credit-person-name">Dante Bapo</div>
                     </div>
                     <div class="desenvolvedor">
                         <img src="Imagens/maya.png" alt="Maya" onerror="this.src='Imagens/blau.png'">
-                        <div>Maya Bapa da Silva</div>
-                    </div>
-                    <div class="desenvolvedor">
-                        <img src="Imagens/kiara.png" alt="Kiara" onerror="this.src='Imagens/blau.png'">
-                        <div>Kiara Bapa</div>
-                    </div>
-                    <div class="desenvolvedor">
-                        <img src="Imagens/kiara2.png" alt="Kiara Piema" onerror="this.src='Imagens/blau.png'">
-                        <div>Kiara Piema</div>
+                        <div class="credit-person-name">Maya Bapa da Silva</div>
                     </div>
                     <div class="desenvolvedor">
                         <img src="Imagens/isha.png" alt="Isha Bapa" onerror="this.src='Imagens/blau.png'">
-                        <div>Isha Bapa</div>
+                        <div class="credit-person-name">Isha Bapa</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/pipoca.png" alt="Pipoca Bapo" onerror="this.src='Imagens/blau.png'">
+                        <div class="credit-person-name">Pipoca Bapo</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/jo.png" alt="Joaquina Maria Bapa" onerror="this.src='Imagens/blau.png'">
+                        <div class="credit-person-name">Joaquina Maria Bapa</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/coraoli.png" alt="Coralice e Olívia" onerror="this.src='Imagens/blau.png'">
+                        <div class="credit-person-name">Coralice e Olívia</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/kiara.png" alt="Kiara" onerror="this.src='Imagens/blau.png'">
+                        <div class="credit-person-name">Kiara Bapa</div>
+                    </div>
+                    <div class="desenvolvedor">
+                        <img src="Imagens/kiara2.png" alt="Kiara Piema" onerror="this.src='Imagens/blau.png'">
+                        <div class="credit-person-name">Kiara Piema</div>
+                    </div>
                     </div>
                 </div>
-                <p>(sim, tem 2 Kiara)</p>
-                <p><strong>Agradecimento mais que especial:</strong><br>Ao nosso salvador <span id="credits-player-name"></span></p>
+                <p><span class="credit-person-name">(sim, tem 2 Kiara)</span></p>
+                <p><strong class="credits-section-title">Agradecimento mais que especial:</strong><br><span class="credit-person-name">Ao nosso salvador <span id="credits-player-name"></span></span></p>
             </div>
             <p class="watermark">siga @obapotodo em todas as redes sociais</p>
             <button class="credits-restart-btn" onclick="resetarJogo()">REINICIAR JOGO</button>
@@ -946,6 +1033,8 @@
         const sfxCoco = new Audio('Áudios/cocô.mp3');
         const sfxCrocante = new Audio('Áudios/crocante.mp3');
         const sfxAnhanguera = new Audio('Áudios/anhanguera.mp3');
+        const sfxLesbica = new Audio('Áudios/lesbica.mp3');
+        const sfxFeliz = new Audio('Áudios/feliz.mp3');
 
         const bgmMusic = new Audio('Áudios/musica.mp3');
         bgmMusic.loop = true;
@@ -1046,7 +1135,7 @@
 
             // Interrompe imediatamente qualquer SFX que esteja tocando.
             if (sfxMuted) {
-                [sfxMonhado, sfxCoco, sfxCrocante, sfxAnhanguera].forEach(som => {
+                [sfxMonhado, sfxCoco, sfxCrocante, sfxAnhanguera, sfxLesbica, sfxFeliz].forEach(som => {
                     try {
                         som.pause();
                         som.currentTime = 0;
@@ -1103,7 +1192,7 @@
             { id: "c11", nome: "Nada... Literalmente Nada", desc: "Evolua a habilidade Nada até o nível máximo!", req: () => (skillsCompradas["s13"] || 0) >= 3, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: false, img: "Imagens/skill_13.png" },
             { id: "sec1", nome: "Então tá", desc: "Você recusou ajudar os Bapos no começo...", req: () => conquistasEstado["sec1"]?.desbloqueada, bonusDesc: "+1 Coisinho de consolo", bonusType: "pp", bonusVal: 1, secreta: true, img: "Conquistas/Então tá.png" },
             { id: "sec2", nome: "MUUUUU", desc: "Nomeou-se Anhanguera e invocou a lenda!", req: () => conquistasEstado["sec2"]?.desbloqueada, bonusDesc: "+5% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.05, secreta: true, img: "Conquistas/MUUUUU.png" },
-            { id: "sec3", nome: "Self Insert", desc: "Colocou 'Felps' ou 'Bapo' no seu nome!", req: () => conquistasEstado["sec3"]?.desbloqueada, bonusDesc: "+10% Clique Poderoso", bonusType: "cliqueMult", bonusVal: 0.10, secreta: true, img: "Conquistas/Self Insert.png" },
+            { id: "sec3", nome: "Self-Insert", desc: "Escolheu 'Felps' ou escreveu 'Bapo' no seu nome!", req: () => conquistasEstado["sec3"]?.desbloqueada, bonusDesc: "+10% Clique Poderoso", bonusType: "cliqueMult", bonusVal: 0.10, secreta: true, img: "Conquistas/Self Insert.png" },
             { id: "sec_vugnaes", nome: "Vugnaes Sreo", desc: "Encontrou e comprou o upgrade secreto!", req: () => upgradeSecretoComprado, bonusDesc: "+13.37% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.1337, secreta: true, img: "Conquistas/Vugnaes Sreo.png" },
             { id: "sec_coco", nome: "COCÔlecionador", desc: "VOCÊ TÁ COLECIONANDO COCÔ?!?!?!", req: () => conquistasEstado["sec_coco"]?.desbloqueada, bonusDesc: "+100 Bapoedas", bonusType: "bapoedas", bonusVal: 100, secreta: true, img: "Conquistas/colecionador de cocô.png" }
         ];
@@ -1385,13 +1474,25 @@
         }
 
         function validarSegredosNome(novoNome) {
-            const nomeMinusculo = novoNome.toLowerCase();
+            const nomeMinusculo = novoNome.trim().toLowerCase();
+
             if (nomeMinusculo === "anhanguera") {
                 conquistasEstado["sec2"].desbloqueada = true;
                 sfxAnhanguera.play().catch(e => {});
             }
-            if (nomeMinusculo.includes("felps") || nomeMinusculo.includes("bapo")) {
+
+            // Easter eggs da conquista "Self-Insert":
+            // Felps -> toca lesbica.mp3
+            // Bapo -> toca feliz.mp3
+            // Ambos desbloqueiam a mesma conquista.
+            if (nomeMinusculo === "felps") {
                 conquistasEstado["sec3"].desbloqueada = true;
+                sfxLesbica.currentTime = 0;
+                sfxLesbica.play().catch(e => {});
+            } else if (nomeMinusculo === "bapo") {
+                conquistasEstado["sec3"].desbloqueada = true;
+                sfxFeliz.currentTime = 0;
+                sfxFeliz.play().catch(e => {});
             }
         }
 
