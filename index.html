@@ -523,10 +523,25 @@
         }
 
         .credits-scroll {
-            position: absolute; bottom: -100%; width: 80%; max-width: 600px; text-align: center; animation: scrollCredits 25s linear forwards;
+            position: absolute;
+            bottom: -100%;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            animation: scrollCredits 30s linear forwards;
+            padding-bottom: 40px;
         }
 
-        @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -280%; } }
+        /* Classe aplicada quando o usuário aperta TAB ou o botão 2x */
+        .credits-scroll.speed-2x {
+            animation-duration: 15s;
+        }
+
+        @keyframes scrollCredits {
+            0% { top: 100%; }
+            100% { top: -320%; }
+        }
+
         .credits-scroll h1 {
             font-size: 3rem;
             color: #FE3867;
@@ -555,13 +570,6 @@
                 2px 0 #000, -2px 0 #000,
                 0 2px #000, 0 -2px #000,
                 1px 1px #000, -1px -1px #000;
-        }
-
-        .credits-scroll .watermark {
-            font-size: 1.8rem;
-            color: #00E5FF;
-            font-weight: bold;
-            margin-top: 40px;
         }
 
         .desenvolvedores-container {
@@ -624,16 +632,113 @@
             font-weight: 900;
         }
 
-        .credits-restart-btn {
-            margin-top: 20px; padding: 15px 25px; font-size: 1.2rem; background: #00E676;
-            color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF;
+        /* ============ BLOCO FINAL DOS CRÉDITOS ============ */
+        /* Aparece só depois que a rolagem dos créditos termina */
+        .credits-ending {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            z-index: 5;
         }
 
-        .credits-want-btn {
-            margin-top: 15px; padding: 12px 20px; font-size: 1rem; background: #FF9100;
-            color: #000; border: 4px solid #FFF; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0px #FFF; display: none;
+        .credits-ending.visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
+        .credits-ending .watermark {
+            font-size: 1.8rem;
+            color: #00E5FF;
+            font-weight: bold;
+            margin: 0 0 30px 0;
+        }
+
+        .credits-ending .credits-restart-btn {
+            margin: 0 0 20px 0;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            background: #00E676;
+            color: #000;
+            border: 4px solid #FFF;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 0px #FFF;
+            font-family: inherit;
+        }
+
+        .credits-ending .credits-want-btn {
+            margin: 0;
+            padding: 12px 20px;
+            font-size: 1rem;
+            background: #FF9100;
+            color: #000;
+            border: 4px solid #FFF;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 0px #FFF;
+            display: none;
+            font-family: inherit;
+        }
+
+        /* Botão 2x mobile — aparece no lugar da pausa durante os créditos */
+        .credits-speed-btn {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            width: 58px;
+            height: 58px;
+            padding: 5px;
+            border: 3px solid #FFF;
+            border-radius: 50%;
+            background: #000;
+            color: #FE3867;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 10001;
+            box-shadow: 3px 3px 0 #FFF;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: transform .15s ease;
+        }
+        .credits-speed-btn:hover { transform: scale(1.08); }
+        .credits-speed-btn:active { transform: scale(.96); }
+        .credits-speed-btn.active {
+            background: #FE3867;
+            color: #000;
+            border-color: #000;
+            box-shadow: 3px 3px 0 #000;
+        }
+
+        @media (max-width: 600px) {
+            .credits-speed-btn {
+                width: 48px;
+                height: 48px;
+                top: 8px;
+                right: 8px;
+                font-size: 0.85rem;
+                border-width: 2px;
+                box-shadow: 2px 2px 0 #FFF;
+            }
+        }
 
         /* MODO TESTE DEBUG */
         #debug-modal .modal-content {
@@ -681,6 +786,8 @@
     <button id="pause-btn" class="pause-corner-btn" aria-label="Abrir pausa" title="Pausa (ESC)">
         <img src="Imagens/pausa.png" alt="Pausa">
     </button>
+
+    <button id="credits-speed-btn" class="credits-speed-btn" aria-label="Velocidade 2x" title="Velocidade 2x (TAB)">2x</button>
 
     <button id="toggle-sfx-btn" class="standalone-sfx-btn">SFX: ON</button>
 
@@ -982,12 +1089,15 @@
                 <p><span class="credit-person-name">(sim, tem 2 Kiara)</span></p>
                 <p><strong class="credits-section-title">Agradecimento mais que especial:</strong><br><span class="credit-person-name">Ao nosso salvador <span id="credits-player-name"></span></span></p>
             </div>
+            <div>
+        <div class="credits-ending" id="credits-ending">
             <p class="watermark">siga @obapotodo em todas as redes sociais</p>
             <button class="credits-restart-btn" onclick="resetarJogo()">REINICIAR JOGO</button>
             <br>
             <button class="credits-want-btn" id="want-play-btn" onclick="voltarParaAjudar()">Agola, eu quelo, não sou mais Muliro</button>
         </div>
     </div>
+        </div>
 
     <div class="container" id="main-container">
         <div class="greeting" id="player-greeting">Ajudando a salvar os Bapos das garras do MARRONE!</div>
@@ -1999,8 +2109,18 @@
                 creditsPlayerName.textContent = nomeJogador;
             }
 
+            // Esconde o bloco final, reseta a velocidade
+            esconderFinalCreditos();
+            creditsSpeed2x = false;
+            aplicarVelocidadeCreditos();
+
             const screen = document.getElementById('credits-screen');
             screen.style.display = 'flex';
+
+            // Precisa de um pequeno delay pra garantir que o display:flex já foi aplicado
+            requestAnimationFrame(() => {
+                reiniciarAnimacaoCreditos();
+            });
         }
 
         document.getElementById('finish-game-btn').addEventListener('click', () => {
@@ -2226,9 +2346,133 @@
         document.getElementById('debug-credits-btn').addEventListener('click', () => {
             fecharModoDebug();
             document.getElementById('welcome-modal').style.display = 'none';
-            const credits = document.getElementById('credits-screen');
-            credits.style.display = 'flex';
+            dispararCreditos("", false);
         });
+
+
+        // ==================== VELOCIDADE 2X NOS CRÉDITOS ====================
+        const creditsScreen = document.getElementById('credits-screen');
+        const creditsScroll = document.getElementById('credits-scroll-content');
+        const creditsSpeedBtn = document.getElementById('credits-speed-btn');
+        const creditsEnding = document.getElementById('credits-ending');
+        let creditsSpeed2x = false;
+        let creditsTimerFinal = null;
+        let creditsTimerReiniciar = null;
+
+        const DURACAO_CREDITOS_NORMAL = 30000; // 30s
+        const DURACAO_CREDITOS_2X = 15000;     // 15s
+        const ESPERA_ANTES_DE_REINICIAR = 4500; // 4.5s após o fim dos créditos
+
+        function mostrarFinalCreditos() {
+            creditsEnding.classList.add('visible');
+            // Agenda o reinício automático 15s depois de aparecer o bloco final
+            if (creditsTimerReiniciar) clearTimeout(creditsTimerReiniciar);
+            creditsTimerReiniciar = setTimeout(() => {
+                reiniciarJogoAutomatico();
+            }, ESPERA_ANTES_DE_REINICIAR);
+        }
+
+        function esconderFinalCreditos() {
+            creditsEnding.classList.remove('visible');
+            if (creditsTimerReiniciar) {
+                clearTimeout(creditsTimerReiniciar);
+                creditsTimerReiniciar = null;
+            }
+        }
+
+        function reiniciarJogoAutomatico() {
+            // Não reinicia se o jogador clicou em "Agola, eu quelo..." (recusou ajuda)
+            const wantBtn = document.getElementById('want-play-btn');
+            const recusouAjuda = wantBtn && wantBtn.style.display === 'inline-block';
+            if (recusouAjuda) return;
+
+            localStorage.removeItem('bapoClickerSave');
+            location.reload();
+        }
+
+        function agendarFinalCreditos() {
+            if (creditsTimerFinal) clearTimeout(creditsTimerFinal);
+            const duracao = creditsSpeed2x ? DURACAO_CREDITOS_2X : DURACAO_CREDITOS_NORMAL;
+            creditsTimerFinal = setTimeout(() => {
+                mostrarFinalCreditos();
+            }, duracao);
+        }
+
+        function reiniciarAnimacaoCreditos() {
+            // Reinicia a animação do scroll do zero
+            creditsScroll.style.animation = 'none';
+            void creditsScroll.offsetWidth; // força reflow
+            creditsScroll.style.animation = '';
+            // Reagenda o aparecimento do bloco final
+            agendarFinalCreditos();
+        }
+
+        function aplicarVelocidadeCreditos() {
+            if (creditsSpeed2x) {
+                creditsScroll.classList.add('speed-2x');
+                creditsSpeedBtn.classList.add('active');
+                creditsSpeedBtn.innerText = '1x';
+            } else {
+                creditsScroll.classList.remove('speed-2x');
+                creditsSpeedBtn.classList.remove('active');
+                creditsSpeedBtn.innerText = '2x';
+            }
+        }
+
+        function toggleVelocidadeCreditos() {
+            if (creditsScreen.style.display !== 'flex') return;
+            creditsSpeed2x = !creditsSpeed2x;
+            aplicarVelocidadeCreditos();
+            // Reinicia a rolagem com a nova duração e reagenda o final
+            reiniciarAnimacaoCreditos();
+        }
+
+        // Atalho TAB (apenas quando os créditos estão visíveis)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab' && creditsScreen.style.display === 'flex') {
+                e.preventDefault();
+                toggleVelocidadeCreditos();
+            }
+        });
+
+        // Botão mobile
+        creditsSpeedBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleVelocidadeCreditos();
+        });
+
+        // Resetar velocidade ao sair dos créditos e mostrar/esconder botão no mobile
+        function atualizarVisibilidadeBotao2x() {
+            const emCreditos = creditsScreen.style.display === 'flex';
+            const isMobile = window.matchMedia('(max-width: 600px)').matches;
+
+            creditsSpeedBtn.style.display = (emCreditos && isMobile) ? 'flex' : 'none';
+
+            // No mobile, durante os créditos, esconde a pausa para não sobrepor
+            const pauseBtn = document.getElementById('pause-btn');
+            pauseBtn.style.display = emCreditos ? 'none' : '';
+
+            if (!emCreditos) {
+                creditsSpeed2x = false;
+                aplicarVelocidadeCreditos();
+                esconderFinalCreditos();
+                if (creditsTimerFinal) {
+                    clearTimeout(creditsTimerFinal);
+                    creditsTimerFinal = null;
+                }
+                if (creditsTimerReiniciar) {
+                    clearTimeout(creditsTimerReiniciar);
+                    creditsTimerReiniciar = null;
+                }
+            }
+        }
+
+        // Observa mudanças de display na tela de créditos
+        const creditsObserver = new MutationObserver(atualizarVisibilidadeBotao2x);
+        creditsObserver.observe(creditsScreen, { attributes: true, attributeFilter: ['style'] });
+
+        // Reavaliar ao redimensionar (trocar desktop/mobile)
+        window.addEventListener('resize', atualizarVisibilidadeBotao2x);
 
 
         carregarJogo();
