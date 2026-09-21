@@ -49,6 +49,53 @@
             100% { transform: translateY(110vh) rotate(360deg); }
         }
 
+        /* ============ BAPOS LATERAIS (ESQUERDA → DIREITA) ============ */
+        #bapos-laterais-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1; /* acima do fundo, abaixo do container principal (z-index 5) */
+            overflow: hidden;
+        }
+
+        /* Cada bapo que atravessa a tela da esquerda para a direita.
+           Usamos mask-image para tingir a imagem de #FE3867 mantendo a silhueta. */
+        .bapo-lateral {
+            position: absolute;
+            left: -20px; 
+            width: 60px;
+            height: 60px;
+            opacity: 0.4;
+
+            /* Tingir a imagem de #FE3867: a imagem vira máscara,
+               e a cor de fundo preenche a silhueta. */
+            background-color: #FE3867;
+            -webkit-mask-image: url('Imagens/bapo.png');
+            mask-image: url('Imagens/bapo.png');
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+
+            animation: atravessarBapo linear infinite, girarBapo linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes atravessarBapo {
+            0%   { transform: translateX(-20px); }
+            100% { transform: translateX(calc(100vw + 20px)); }
+        }
+
+        @keyframes girarBapo {
+            0%   { rotate: 0deg; }
+            100% { rotate: 360deg; }
+        }
+
         .shake {
             animation: shake 0.08s ease-in-out;
         }
@@ -155,7 +202,6 @@
             margin-bottom: 10px;
         }
 
-        /* Botão Principal Centralizado */
         .click-btn-container {
             display: flex;
             justify-content: center;
@@ -335,7 +381,6 @@
         .achievement-card.unlocked { background: #E8F5E9; }
         .achievement-card.claimed { background: #D1C4E9; }
 
-        /* Estilo para Conquistas Secretas */
         .achievement-card.secret-card {
             background-color: #FE3867 !important;
             color: #FFD700 !important;
@@ -370,6 +415,7 @@
         }
 
         body.boss-mode > #bapos-background-container,
+        body.boss-mode > #bapos-laterais-container,
         body.boss-mode > .accessibility-bar,
         body.boss-mode > .corner-widgets-container,
         body.boss-mode > .floating-side-btn,
@@ -385,7 +431,6 @@
             border: 3px solid #000; border-radius: 10px; margin-bottom: 15px; text-align: center;
         }
 
-        /* Diálogos internos: substituem alert/confirm do navegador */
         #site-dialog-modal {
             opacity: 0;
             visibility: hidden;
@@ -468,7 +513,6 @@
         .pause-corner-btn:active { transform: scale(.96); }
         .pause-corner-btn img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* Classe aplicada quando há um modal/tab aberto: esconde o botão de pausa e o de SFX */
         .pause-corner-btn.hidden-by-modal,
         .standalone-sfx-btn.hidden-by-modal {
             display: none !important;
@@ -538,14 +582,13 @@
             padding-bottom: 40px;
         }
 
-        /* Classe aplicada quando o usuário aperta TAB ou o botão 2x */
         .credits-scroll.speed-2x {
             animation-duration: 15s;
         }
 
         @keyframes scrollCredits {
             0% { top: 100%; }
-            100% { top: -320%; }
+            100% { top: -600%; }
         }
 
         .credits-scroll h1 {
@@ -562,13 +605,11 @@
             margin: 15px 0;
         }
 
-        /* Categorias: fortes e destacadas em #FE3867 */
         .credits-scroll p strong,
         .credits-section-title {
             color: #FE3867;
         }
 
-        /* Nomes: preto com contorno branco */
         .credit-person-name {
             color: #FFF !important;
             font-weight: 900;
@@ -596,7 +637,6 @@
             font-weight: 900;
         }
 
-        /* Moldura irregular, simulando desenho feito à mão */
         .desenvolvedor img,
         .fornecedorcobre img {
             width: 100px;
@@ -626,7 +666,6 @@
             font-weight: 900;
         }
 
-        /* Ajuste específico do Ea-nasir para não deformar a imagem */
         .fornecedorcobre img {
             width: 130px;
             height: 130px;
@@ -638,8 +677,6 @@
             font-weight: 900;
         }
 
-        /* ============ BLOCO FINAL DOS CRÉDITOS ============ */
-        /* Aparece só depois que a rolagem dos créditos termina */
         .credits-ending {
             position: absolute;
             top: 0;
@@ -702,7 +739,6 @@
             font-family: inherit;
         }
 
-        /* Botão 2x mobile — aparece no lugar da pausa durante os créditos */
         .credits-speed-btn {
             position: fixed;
             top: 14px;
@@ -746,7 +782,6 @@
             }
         }
 
-        /* MODO TESTE DEBUG */
         #debug-modal .modal-content {
             max-width: 520px;
             border: 5px solid #FE3867;
@@ -770,7 +805,6 @@
         }
         .debug-btn:hover { transform: scale(1.02); }
 
-        /* Easter Egg Cocô */
         #easter-egg-coco {
             position: fixed;
             width: 45px;
@@ -788,6 +822,7 @@
 <body>
 
     <div id="bapos-background-container"></div>
+    <div id="bapos-laterais-container"></div>
 
     <button id="pause-btn" class="pause-corner-btn" aria-label="Abrir pausa" title="Pausa (ESC)">
         <img src="Imagens/pausa.png" alt="Pausa">
@@ -824,18 +859,14 @@
         </div>
     </div>
 
-    <!-- Widgets no Canto Superior Esquerdo -->
     <div class="corner-widgets-container">
-        <!-- Mostruário de Bapoedas -->
         <div class="corner-currency-widget">
             <img src="Imagens/bapoeda.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'14\' fill=\'%23FFD700\' stroke=\'%23000\' stroke-width=\'2\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>🟡</text></svg>'" class="corner-currency-img" alt="Bapoedas">
             <span id="corner-score">0</span>
         </div>
-        <!-- Indicador de Bps abaixo das Bapoedas -->
         <div class="bps-widget">
             <span id="bps-score">0</span> Bps
         </div>
-        <!-- Indicador de Coisinhos atuais abaixo de Bps -->
         <div class="corner-currency-widget" style="background: #E1BEE7;">
             <img src="Imagens/coisinho.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'14\' fill=\'%23D500F9\' stroke=\'%23000\' stroke-width=\'2\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>🌀</text></svg>'" class="corner-currency-img" alt="Coisinhos">
             <span id="coisinhos-score">0</span>
@@ -854,7 +885,6 @@
         <span>CONQUISTAS</span>
     </div>
 
-    <!-- Placares de Vida da Boss Fight -->
     <div class="boss-hp-box" id="player-hp-box" style="display:none;">
         <span>VOCÊ:</span>
         <div class="hp-hearts-container" id="player-hearts"></div>
@@ -868,7 +898,7 @@
         <div class="tab-content">
             <button class="close-tab-btn" id="close-prestige-btn">X</button>
             <h2 style="margin-top:5px; text-shadow: 2px 2px 0px #FF9100;">
-                DIMENSÃO <span id="secret-bapal-btn" class="secret-trigger" title="???">BAPAL</span> & ÁRVORE DE HABILIDADES
+                DIMENSÃO <span id="secret-bapal-btn" class="secret-trigger" title="???">BAPÔNICA</span> & ÁRVORE DE HABILIDADES
             </h2>
             <p><strong>Reinicie seu progresso para ascender e comprar habilidades permanentes!</strong></p>
             
@@ -881,7 +911,7 @@
                 </button>
             </div>
 
-            <h3>🌳 Árvore de Habilidades Bapal</h3>
+            <h3>🌳 Árvore de Habilidades Bapônica</h3>
             <p><small>Upgrades Adquiridos: <span id="total-skills">0</span>/13</small></p>
 
             <div class="tree-container" id="tree-container">
@@ -902,10 +932,9 @@
         </div>
     </div>
 
-    <!-- Modal interno para avisos e confirmações, sem janelas nativas do navegador -->
     <div class="modal-overlay" id="site-dialog-modal" style="display:none;">
         <div class="modal-content">
-            <h3 id="site-dialog-title">Aviso Bapal</h3>
+            <h3 id="site-dialog-title">Aviso Bapônico</h3>
             <p id="site-dialog-message"></p>
             <div class="site-dialog-buttons">
                 <button class="btn-buy" id="site-dialog-ok-btn">OK</button>
@@ -914,8 +943,6 @@
         </div>
     </div>
 
-
-    <!-- Modo Teste Debug: ativado pela sequência B A P O T O D O -->
     <div class="modal-overlay" id="debug-modal" style="display:none; z-index:10000;">
         <div class="modal-content">
             <h2>MODO TESTE DEBUG</h2>
@@ -927,7 +954,6 @@
         </div>
     </div>
 
-    <!-- Mini-modal para inserir o código do Modo Debug -->
     <div class="modal-overlay" id="debug-code-modal" style="display:none; z-index:10001;">
         <div class="modal-content">
             <h3 style="color:#D500F9; margin-top:0;">🐛 MODO DEBUG</h3>
@@ -941,7 +967,7 @@
 
     <div class="modal-overlay" id="welcome-modal">
         <div class="modal-content">
-            <p>OH NÃO! O MARRONE sequestrou (quase) TODOS os Bapos! OH SER ALÉM DA CONSCIÊNCIA BAPAL, PODERIA NOS AJUDAR PUFAVÔ? Nos diga seu nome</p>
+            <p>OH NÃO! O MARRONE sequestrou (quase) TODOS os Bapos! OH SER ALÉM DA CONSCIÊNCIA BAPÔNICA, PODERIA NOS AJUDAR PUFAVÔ? Nos diga seu nome</p>
             <input type="text" id="player-name-input" placeholder="Seu nome aqui..." maxlength="15">
             <br>
             <button class="btn-buy" id="start-game-btn" style="margin-bottom:8px;">Ok, vou lá</button>
@@ -949,7 +975,6 @@
         </div>
     </div>
 
-    <!-- Modais da Boss Fight -->
     <div class="modal-overlay" id="boss-dialogue-modal" style="display:none;">
         <div class="modal-content">
             <h3 style="color:#FF1744; margin-top:0;">MARRONE APARECEU!</h3>
@@ -994,6 +1019,10 @@
         <div class="modal-content">
             <h2 style="color:#00E676; margin-top:0;">EBAAAAA! OS BAPOS FORAM LIBERTADOS</h2>
             <p>Você salvou todos eles!</p>
+            <p style="color:#D500F9; font-weight:bold; margin-top:15px;">
+                <strong>Agradecimento Especial:</strong><br>
+                Muito feliz obrigado por jogar e salvar todos os Bapos do terrível Marrone!
+            </p>
             <button class="btn-buy" id="bapos-freed-btn">VER CRÉDITOS FINAIS</button>
         </div>
     </div>
@@ -1001,7 +1030,7 @@
     <div class="modal-overlay" id="vugnaes-modal" style="display:none;">
         <div class="modal-content">
             <h3 style="color:#D500F9; margin-top:0;">🔮 VUGNAES SREO 🔮</h3>
-            <p id="vugnaes-modal-desc">Você descobriu um antigo mistério Bapal! Digite o código de ativação ou confirme a compra do Upgrade Lendário por <strong>2543 Bapoedas</strong>.</p>
+            <p id="vugnaes-modal-desc">Você descobriu um antigo mistério Bapônico! Digite o código de ativação ou confirme a compra do Upgrade Lendário por <strong>2543 Bapoedas</strong>.</p>
             <input type="text" id="vugnaes-input" placeholder="Digite o código secreto..." maxlength="20">
             <br>
             <button class="btn-buy" id="confirm-vugnaes-btn" style="margin-bottom:8px; background-color:#D500F9; color:#FFF;">ATIVAR VUGNAES (2543 Bapoedas)</button>
@@ -1033,12 +1062,12 @@
     <div class="credits-overlay" id="credits-screen">
         <div class="credits-scroll" id="credits-scroll-content">
             <h1>BAPO CLICKER</h1>
-            <p id="credits-thanks-text"><strong>Agradecimento Especial:</strong><br>Obrigado por jogar e salvar todos os Bapos do terrível Marrone!</p>
-            <p id="credits-custom-message" style="color:#FFD700; font-style:italic;"></p>
+
             <div id="credits-names-list">
                 <p><strong class="credits-section-title">Desenvolvedores:</strong><br><span class="credit-person-name">Karine Millena do bapotodo</span></p>
-                <p><strong class="credits-section-title">Imagens:</strong><br><span class="credit-person-name">Onespace Cat</span></p>
+                <p><strong class="credits-section-title">Imagens:</strong><br><span class="credit-person-name">Space Cat</span></p>
                 <p><strong class="credits-section-title">Sons e músicas:</strong><br><span class="credit-person-name">Karine Millena</span></p>
+
                 <p><strong class="credits-section-title">Patrocinadores:</strong></p>
                 <div class="fornecedorcobre-container">
                     <div class="fornecedorcobre">
@@ -1047,16 +1076,25 @@
                     </div>
                     <p><span class="credit-person-name">Vende cobre baratinho e puro</span></p>
                 </div>
-                <p><strong class="credits-section-title">Testadores:</strong><br>
-                <span class="credit-person-name">Aline A.<br>
-                Onespace Cat<br>
-                Sofia Sayuri<br>
-                Taexogi</span>
+
+                <p><strong class="credits-section-title">Testadores:</strong></p>
+                <div class="desenvolvedores-container">
+                    <div class="desenvolvedor">
+                        <img src="Imagens/miau.png" alt="Aline" onerror="this.src='Imagens/blau.png'">
+                        <div class="credit-person-name">Aline A.</div>
+                    </div>
+                </div>
+                <p>
+                    <span class="credit-person-name">Space Cat</span><br>
+                    <span class="credit-person-name">Sofi</span><br>
+                    <span class="credit-person-name">Taexogi</span>
                 </p>
+
                 <p><strong class="credits-section-title">Agradecimentos especiais:</strong><br>
                 <span class="credit-person-name">A Comunidade😭<br>
                 Maison Margiella</span>
                 </p>
+
                 <p><strong class="credits-section-title">Verdadeiros Desenvolvedores:</strong></p>
                 <div class="desenvolvedores-container">
                     <div class="desenvolvedor">
@@ -1103,12 +1141,15 @@
                         <img src="Imagens/kiara2.png" alt="Kiara Piema" onerror="this.src='Imagens/blau.png'">
                         <div class="credit-person-name">Kiara Piema</div>
                     </div>
-                    </div>
                 </div>
                 <p><span class="credit-person-name">(sim, tem 2 Kiara)</span></p>
+
                 <p><strong class="credits-section-title">Agradecimento mais que especial:</strong><br><span class="credit-person-name">Ao nosso salvador <span id="credits-player-name"></span></span></p>
+
+                <p id="credits-thanks-text" style="margin-top: 40px; color:#FFD700; font-weight:bold;"></p>
             </div>
-            <div>
+        </div>
+
         <div class="credits-ending" id="credits-ending">
             <p class="watermark">siga @obapotodo em todas as redes sociais</p>
             <button class="credits-restart-btn" onclick="resetarJogo()">REINICIAR JOGO</button>
@@ -1116,13 +1157,11 @@
             <button class="credits-want-btn" id="want-play-btn" onclick="voltarParaAjudar()">Agola, eu quelo, não sou mais Muliro</button>
         </div>
     </div>
-        </div>
 
     <div class="container" id="main-container">
         <div class="greeting" id="player-greeting">Ajudando a salvar os Bapos das garras do MARRONE!</div>
         <button class="btn-change-name" id="open-change-name-btn">✏️ Mudar Nome (5 Bapoedas)</button>
         
-        <!-- Botão centralizado sozinho -->
         <div class="click-btn-container">
             <button id="click-btn">CLICA AQUI OH!</button>
         </div>
@@ -1133,7 +1172,6 @@
         </div>
     </div>
 
-    <!-- Elemento do Easter Egg do Cocô -->
     <img id="easter-egg-coco" src="Imagens/cocô.png" style="display:none;" alt="Cocô" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'45\' height=\'45\'><text y=\'35\' font-size=\'35\'>💩</text></svg>'">
 
     <script>
@@ -1153,7 +1191,6 @@
         const a1 = 500;
         const r = 1.35;
 
-        // Variaveis do Boss
         let playerHp = 3;
         let bossHp = 3;
         const bossOrder = ['tesoura', 'pedra', 'papel'];
@@ -1173,7 +1210,6 @@
         bgmMusic.preload = 'auto';
         bgmMusic.volume = 0.4;
 
-        // Música exclusiva da Boss Fight
         const bossMusic = new Audio('Áudios/Marrone.mp3');
         bossMusic.loop = true;
         bossMusic.preload = 'auto';
@@ -1181,7 +1217,6 @@
 
         let bgmIniciado = false;
 
-        // Sistema de diálogos interno: nenhum alert/confirm nativo do navegador.
         let siteDialogCallback = null;
 
         function mostrarDialogoSite(mensagem, opcoes = {}) {
@@ -1191,7 +1226,7 @@
             const okBtn = document.getElementById('site-dialog-ok-btn');
             const cancelBtn = document.getElementById('site-dialog-cancel-btn');
 
-            title.innerText = opcoes.titulo || 'Aviso Bapal';
+            title.innerText = opcoes.titulo || 'Aviso Bapônico';
             message.innerText = mensagem;
             cancelBtn.style.display = opcoes.confirmacao ? 'block' : 'none';
             okBtn.innerText = opcoes.textoOk || (opcoes.confirmacao ? 'SIM' : 'OK');
@@ -1216,15 +1251,14 @@
         document.getElementById('site-dialog-ok-btn').addEventListener('click', () => fecharDialogoSite(true));
         document.getElementById('site-dialog-cancel-btn').addEventListener('click', () => fecharDialogoSite(false));
 
-        function mostrarAviso(mensagem, titulo = 'Aviso Bapal') {
+        function mostrarAviso(mensagem, titulo = 'Aviso Bapônico') {
             mostrarDialogoSite(mensagem, { titulo });
         }
 
-        function pedirConfirmacao(mensagem, callback, titulo = 'Confirmação Bapal') {
+        function pedirConfirmacao(mensagem, callback, titulo = 'Confirmação Bapônica') {
             mostrarDialogoSite(mensagem, { titulo, confirmacao: true, callback });
         }
 
-        // Qualquer alert usado futuramente também será convertido em modal.
         window.alert = (mensagem) => mostrarAviso(String(mensagem));
 
         function tocarMusica() {
@@ -1265,7 +1299,6 @@
             const botao = document.getElementById('toggle-sfx-btn');
             botao.innerText = `SFX: ${sfxMuted ? 'OFF' : 'ON'}`;
 
-            // Interrompe imediatamente qualquer SFX que esteja tocando.
             if (sfxMuted) {
                 [sfxMonhado, sfxCoco, sfxCrocante, sfxAnhanguera, sfxLesbica, sfxFeliz].forEach(som => {
                     try {
@@ -1291,7 +1324,7 @@
         lojaData.forEach(item => { loja[item.id] = { qtd: 0, ...item }; });
 
         const listaSkills = [
-            { id: "s1", nome: "Desconto Bapal", desc: "Loja -5%", custo: 1, tipo: "desconto", val: 0.05, parentId: null, img: "Imagens/skill_1.png" },
+            { id: "s1", nome: "Desconto Bapônico", desc: "Loja -5%", custo: 1, tipo: "desconto", val: 0.05, parentId: null, img: "Imagens/skill_1.png" },
             { id: "s2", nome: "Clique Mais forte", desc: "+5% de poder de clique por nível (20 níveis)", custo: 1, tipo: "cliqueMult", val: 0.05, maxNivel: 20, parentId: null, img: "Imagens/skill_2.png" },
             { id: "s3", nome: "Auto Boost", desc: "Bapo GPT +100%", custo: 1, tipo: "autoPerc", val: 1.0, parentId: null, img: "Imagens/skill_3.png" },
             { id: "s4", nome: "Super Desconto", desc: "Loja -10%", custo: 2, tipo: "desconto", val: 0.10, parentId: "s1", img: "Imagens/skill_4.png" },
@@ -1315,7 +1348,7 @@
             { id: "c2", nome: "A técnica do 5 e +", desc: "Alcance 50 cliques manuais", req: () => totalCliquesManuais >= 50, bonusDesc: "+1% Clique Poderoso", bonusType: "cliqueMult", bonusVal: 0.01, secreta: false, img: "Conquistas/cinco e mais.png" },
             { id: "c3", nome: "Início da Revolução Bapal", desc: "Compre seu primeiro upgrade da loja", req: () => Object.values(loja).some(item => item.qtd > 0), bonusDesc: "-1% em todos os preços", bonusType: "desconto", bonusVal: 0.01, secreta: false, img: "Conquistas/Revolução Bapal.png" },
             { id: "c4", nome: "Pequena Fortuna", desc: "Acumule 1.000 Bapoedas", req: () => bapoedas >= 1000, bonusDesc: "+50 Bapoedas", bonusType: "bapoedas", bonusVal: 50, secreta: false, img: "Conquistas/Pequena Fortuna.png" },
-            { id: "c5", nome: "Agricultor Bapal", desc: "Tenha 10 Fazendas de Bapo", req: () => loja.farm.qtd >= 10, bonusDesc: "+2% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.02, secreta: false, img: "Conquistas/Agricultor Bapal.png" },
+            { id: "c5", nome: "Agricultor Bapônico", desc: "Tenha 10 Fazendas de Bapo", req: () => loja.farm.qtd >= 10, bonusDesc: "+2% BPS Geral", bonusType: "bpsGeral", bonusVal: 0.02, secreta: false, img: "Conquistas/Agricultor Bapal.png" },
             { id: "c6", nome: "Primeiro Salto", desc: "Realize seu primeiro Prestígio", req: () => totalPrestagiosFeitos >= 1, bonusDesc: "+2 Coisinhos extra", bonusType: "pp", bonusVal: 2, secreta: false, img: "Conquistas/Primeiro Salto.png" },
             { id: "c7", nome: "Mestre do Lojinho", desc: "Tenha pelo menos 5 unidades de cada item comum", req: () => loja.click.qtd >= 5 && loja.auto.qtd >= 5 && loja.farm.qtd >= 5 && loja.factory.qtd >= 5, bonusDesc: "-2% em todos os preços", bonusType: "desconto", bonusVal: 0.02, secreta: false, img: "Conquistas/Mestre do Lojinho.png" },
             { id: "c8", nome: "Clicker Anônimo", desc: "Alcance 500 cliques manuais", req: () => totalCliquesManuais >= 500, bonusDesc: "+5% Poder de Clique", bonusType: "cliqueMult", bonusVal: 0.05, secreta: false, img: "Conquistas/Clicker Anônimo.png" },
@@ -1376,6 +1409,36 @@
             container.appendChild(img);
         }
 
+        // ==================== BAPOS LATERAIS (ESQUERDA → DIREITA) ====================
+        const QTD_BAPOS_LATERAIS = 12;
+
+        function criarBapoLateral(container) {
+            const div = document.createElement('div');
+            div.className = 'bapo-lateral';
+
+            const tamanho = Math.floor(Math.random() * 40) + 40;
+            div.style.width = `${tamanho}px`;
+            div.style.height = `${tamanho}px`;
+
+            div.style.top = `${Math.random() * 90}vh`;
+
+            const duracaoAtravessar = (Math.random() * 12 + 10).toFixed(1);
+            const duracaoGirar = (Math.random() * 4 + 4).toFixed(1);
+            const atraso = (Math.random() * -20).toFixed(1);
+
+            div.style.animationDuration = `${duracaoAtravessar}s, ${duracaoGirar}s`;
+            div.style.animationDelay = `${atraso}s, 0s`;
+
+            container.appendChild(div);
+        }
+
+        function inicializarBaposLaterais() {
+            const container = document.getElementById('bapos-laterais-container');
+            for (let i = 0; i < QTD_BAPOS_LATERAIS; i++) {
+                criarBapoLateral(container);
+            }
+        }
+
         const pauseMenu = document.getElementById('pause-menu');
         const pauseOptionsModal = document.getElementById('pause-options-modal');
         let jogoPausado = false;
@@ -1407,7 +1470,7 @@
         });
         document.getElementById('pause-credits-btn').addEventListener('click', () => {
             pauseMenu.style.display = 'none';
-            dispararCreditos('', false);
+            dispararCreditos(false);
         });
         document.addEventListener('keydown', (e) => {
             if (e.key !== 'Escape') return;
@@ -1460,7 +1523,7 @@
                 input.style.display = 'none';
                 confirmBtn.style.display = 'none';
             } else {
-                desc.innerHTML = "Você descobriu um mistério Bapal!<br>Digite a palavra mágica ou confirme a compra por <strong>2543 Bapoedas</strong>.";
+                desc.innerHTML = "Você descobriu um mistério Bapônico!<br>Digite a 'vou ganhar esse sorteio' ou confirme a compra por <strong>2543 Bapoedas</strong>.";
                 input.style.display = 'inline-block';
                 input.value = '';
                 confirmBtn.style.display = 'inline-block';
@@ -1613,10 +1676,6 @@
                 sfxAnhanguera.play().catch(e => {});
             }
 
-            // Easter eggs da conquista "Self-Insert":
-            // Felps -> toca lesbica.mp3
-            // Bapo -> toca feliz.mp3
-            // Ambos desbloqueiam a mesma conquista.
             if (nomeMinusculo === "felps") {
                 conquistasEstado["sec3"].desbloqueada = true;
                 sfxLesbica.currentTime = 0;
@@ -1858,7 +1917,6 @@
             }
         });
 
-        // TRIGGER DA BOSS FIGHT
         document.getElementById('skill-supreme').addEventListener('click', () => {
             if (contarUpgradesMaximizados() >= listaSkills.length) {
                 prestigeTab.classList.remove('open');
@@ -2106,29 +2164,24 @@
 
         document.getElementById('bapos-freed-btn').addEventListener('click', () => {
             document.getElementById('bapos-freed-modal').style.display = 'none';
-            dispararCreditos("", false);
+            dispararCreditos(false);
         });
 
-        function dispararCreditos(mensagemCustomizada = "", recusouAjuda = false) {
+        const TEXTO_AGRADECIMENTO_RECUSA =
+            "<strong>AGRADECEMOS DE TODO CORAÇÃO A TODES (exceto você)</strong>";
+
+        function dispararCreditos(recusouAjuda = false) {
             const thanksText = document.getElementById('credits-thanks-text');
             const wantBtn = document.getElementById('want-play-btn');
 
-            if (recusouAjuda) {
-                thanksText.innerHTML = "<strong>AGRADECEMOS DE TODO CORAÇÃO A TODES (exceto você)</strong>";
-                wantBtn.style.display = 'inline-block';
-            } else {
-                thanksText.innerHTML = "<strong>Agradecimento Especial:</strong><br>Muito feliz obrigado por jogar e salvar todos os Bapos do terrível Marrone!";
-                wantBtn.style.display = 'none';
-            }
-
-            document.getElementById('credits-custom-message').innerText = mensagemCustomizada;
+            thanksText.innerHTML = recusouAjuda ? TEXTO_AGRADECIMENTO_RECUSA : "";
+            wantBtn.style.display = recusouAjuda ? 'inline-block' : 'none';
 
             const creditsPlayerName = document.getElementById('credits-player-name');
             if (creditsPlayerName) {
-                creditsPlayerName.textContent = nomeJogador;
+                creditsPlayerName.textContent = nomeJogador || "Herói";
             }
 
-            // Esconde o bloco final, reseta a velocidade
             esconderFinalCreditos();
             creditsSpeed2x = false;
             aplicarVelocidadeCreditos();
@@ -2136,22 +2189,20 @@
             const screen = document.getElementById('credits-screen');
             screen.style.display = 'flex';
 
-            // Precisa de um pequeno delay pra garantir que o display:flex já foi aplicado
             requestAnimationFrame(() => {
                 reiniciarAnimacaoCreditos();
             });
         }
 
         document.getElementById('finish-game-btn').addEventListener('click', () => {
-            const msg = document.getElementById('endgame-message-input').value;
             document.getElementById('endgame-modal').style.display = 'none';
-            dispararCreditos(msg, false);
+            dispararCreditos(false);
         });
 
         document.getElementById('no-want-btn').addEventListener('click', () => {
             conquistasEstado["sec1"].desbloqueada = true;
             document.getElementById('welcome-modal').style.display = 'none';
-            dispararCreditos("", true);
+            dispararCreditos(true);
         });
 
         function voltarParaAjudar() {
@@ -2174,7 +2225,6 @@
             atualizarTela();
         });
 
-        /* EASTER EGG COCÔ */
         function tentarGerarCoco() {
             const cocoElem = document.getElementById('easter-egg-coco');
             if (cocoElem.style.display === 'block') return;
@@ -2209,8 +2259,7 @@
             atualizarTela();
         });
 
-        // Tenta gerar um cocô a cada 15 segundos
-        setInterval(tentarGerarCoco, 15000);
+        setInterval(tentarGerarCoco, 100000);
 
         function salvarJogo(exibirAlerta = false) {
             const dadosJogo = {
@@ -2302,8 +2351,6 @@
         }, 100);
 
 
-        // ==================== MODO TESTE DEBUG ====================
-        // Digite B A P O T O D O, nessa ordem, para abrir o menu secreto.
         const debugSequencia = 'bapotodo';
         let debugEntrada = '';
 
@@ -2365,10 +2412,9 @@
         document.getElementById('debug-credits-btn').addEventListener('click', () => {
             fecharModoDebug();
             document.getElementById('welcome-modal').style.display = 'none';
-            dispararCreditos("", false);
+            dispararCreditos(false);
         });
 
-        // ==================== MINI-MODAL DE CÓDIGO DEBUG ====================
         document.getElementById('open-debug-code-btn').addEventListener('click', () => {
             document.getElementById('debug-code-input').value = '';
             document.getElementById('debug-code-modal').style.display = 'flex';
@@ -2382,7 +2428,6 @@
             const codigo = document.getElementById('debug-code-input').value.trim().toLowerCase();
             if (codigo === 'bapotodo') {
                 document.getElementById('debug-code-modal').style.display = 'none';
-                // Fecha pausa/opções antes de abrir o debug
                 fecharPausa();
                 abrirModoDebug();
             } else {
@@ -2390,7 +2435,6 @@
             }
         });
 
-        // Permitir Enter no input
         document.getElementById('debug-code-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -2399,7 +2443,6 @@
         });
 
 
-        // ==================== VELOCIDADE 2X NOS CRÉDITOS ====================
         const creditsScreen = document.getElementById('credits-screen');
         const creditsScroll = document.getElementById('credits-scroll-content');
         const creditsSpeedBtn = document.getElementById('credits-speed-btn');
@@ -2408,13 +2451,12 @@
         let creditsTimerFinal = null;
         let creditsTimerReiniciar = null;
 
-        const DURACAO_CREDITOS_NORMAL = 30000; // 30s
-        const DURACAO_CREDITOS_2X = 15000;     // 15s
-        const ESPERA_ANTES_DE_REINICIAR = 4500; // 4.5s após o fim dos créditos
+        const DURACAO_CREDITOS_NORMAL = 30000;
+        const DURACAO_CREDITOS_2X = 15000;
+        const ESPERA_ANTES_DE_REINICIAR = 6200;
 
         function mostrarFinalCreditos() {
             creditsEnding.classList.add('visible');
-            // Agenda o reinício automático 4.5s depois de aparecer o bloco final
             if (creditsTimerReiniciar) clearTimeout(creditsTimerReiniciar);
             creditsTimerReiniciar = setTimeout(() => {
                 reiniciarJogoAutomatico();
@@ -2430,7 +2472,6 @@
         }
 
         function reiniciarJogoAutomatico() {
-            // Não reinicia se o jogador clicou em "Agola, eu quelo..." (recusou ajuda)
             const wantBtn = document.getElementById('want-play-btn');
             const recusouAjuda = wantBtn && wantBtn.style.display === 'inline-block';
             if (recusouAjuda) return;
@@ -2448,11 +2489,9 @@
         }
 
         function reiniciarAnimacaoCreditos() {
-            // Reinicia a animação do scroll do zero
             creditsScroll.style.animation = 'none';
-            void creditsScroll.offsetWidth; // força reflow
+            void creditsScroll.offsetWidth;
             creditsScroll.style.animation = '';
-            // Reagenda o aparecimento do bloco final
             agendarFinalCreditos();
         }
 
@@ -2472,11 +2511,9 @@
             if (creditsScreen.style.display !== 'flex') return;
             creditsSpeed2x = !creditsSpeed2x;
             aplicarVelocidadeCreditos();
-            // Reinicia a rolagem com a nova duração e reagenda o final
             reiniciarAnimacaoCreditos();
         }
 
-        // Atalho TAB (apenas quando os créditos estão visíveis)
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Tab' && creditsScreen.style.display === 'flex') {
                 e.preventDefault();
@@ -2484,20 +2521,17 @@
             }
         });
 
-        // Botão mobile
         creditsSpeedBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             toggleVelocidadeCreditos();
         });
 
-        // Resetar velocidade ao sair dos créditos e mostrar/esconder botão no mobile
         function atualizarVisibilidadeBotao2x() {
             const emCreditos = creditsScreen.style.display === 'flex';
             const isMobile = window.matchMedia('(max-width: 600px)').matches;
 
             creditsSpeedBtn.style.display = (emCreditos && isMobile) ? 'flex' : 'none';
 
-            // No mobile, durante os créditos, esconde a pausa para não sobrepor
             const pauseBtn = document.getElementById('pause-btn');
             pauseBtn.style.display = emCreditos ? 'none' : '';
 
@@ -2516,21 +2550,15 @@
             }
         }
 
-        // Observa mudanças de display na tela de créditos
         const creditsObserver = new MutationObserver(atualizarVisibilidadeBotao2x);
         creditsObserver.observe(creditsScreen, { attributes: true, attributeFilter: ['style'] });
 
-        // Reavaliar ao redimensionar (trocar desktop/mobile)
         window.addEventListener('resize', atualizarVisibilidadeBotao2x);
 
 
-        // ==================== ESCONDER PAUSA QUANDO HÁ MODAL ABERTO ====================
         const pauseBtnEl = document.getElementById('pause-btn');
         const sfxBtnEl = document.getElementById('toggle-sfx-btn');
 
-        // Lista de elementos que, se visíveis, escondem o botão de pausa.
-        // IMPORTANTE: pause-menu e pause-options-modal NÃO entram aqui,
-        // porque eles SÃO a pausa — se entrassem, a pausa se fecharia sozinha ao abrir.
         const modaisQueEscondemPausa = [
             'site-dialog-modal',
             'debug-modal',
@@ -2552,9 +2580,7 @@
             return modaisQueEscondemPausa.some(id => {
                 const el = document.getElementById(id);
                 if (!el) return false;
-                // Tabs usam a classe .open
                 if (el.classList.contains('open')) return true;
-                // Modais usam style.display === 'flex'
                 return el.style.display === 'flex';
             });
         }
@@ -2569,7 +2595,6 @@
             }
         }
 
-        // Observa mudanças de classe (tabs) e de style (modais) em todos os elementos relevantes
         const observadorModais = new MutationObserver(atualizarBotoesFixos);
 
         modaisQueEscondemPausa.forEach(id => {
@@ -2581,12 +2606,12 @@
             });
         });
 
-        // Checagem inicial (caso algum modal já esteja aberto ao carregar)
         atualizarBotoesFixos();
 
 
         carregarJogo();
         atualizarTela();
+        inicializarBaposLaterais();
     </script>
 </body>
 </html>
