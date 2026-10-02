@@ -1078,7 +1078,7 @@ languageSelect.value=idiomaAtual;
 // ==================== ELEIÇÃO BAPAL (04/10/2026) ====================
 const DATA_ELEICAO='2026-10-04';
 const ELECTION_API_BASE='https://abacus.jasoncameron.dev';
-const ELECTION_NS='bapo-clicker-eleicao-2026';
+const ELECTION_NS='bapo-clicker-eleicao-2026-v2';
 const LIMITE_VOTOS=5000000;
 
 let eleicaoAtiva=false;
@@ -1250,9 +1250,12 @@ localStorage.removeItem(`bapoEleicao_lula`);
 }catch(e){}
 eleicaoEncerrada=false;
 vencedorEleicao=null;
+eleicaoAtiva=false;
 const box=document.getElementById('election-winner-box');
 if(box)box.style.display='none';
-mostrarAviso('Eleição resetada! (apenas no armazenamento local)','Debug');
+const banner=document.getElementById('election-banner');
+if(banner)banner.style.display='none';
+mostrarAviso('Eleição resetada! Os novos votos serão registrados em uma urna zerada.','Debug');
 }
 
 document.getElementById('debug-eleicao-btn').addEventListener('click',()=>{
