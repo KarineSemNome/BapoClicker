@@ -187,6 +187,9 @@ body.tema-escuro .election-vote-btn{border-color:#000;box-shadow:0 4px 0 #000}
 @keyframes electionGlow{from{box-shadow:0 0 0 rgba(255,215,0,0)}to{box-shadow:0 0 20px rgba(255,215,0,.8)}}
 .election-banner .election-title{font-size:1.1rem;display:block}
 .election-banner .election-sub{font-size:.75rem;font-weight:normal;opacity:.9}
+.election-banner .election-live-score{display:block;margin-top:5px;font-size:.85rem;font-weight:bold}
+.election-banner .election-connection-status{display:block;margin-top:3px;font-size:.72rem;font-weight:bold}
+.election-connection-status{font-size:.75rem;font-weight:bold;color:#555}
 #election-modal .modal-content{max-width:560px;background:linear-gradient(180deg,#FFFDE7 0%,#FFF 100%);border:5px solid #000}
 #election-modal h2{color:#009C3B;text-shadow:2px 2px 0 #FFDF00;margin-top:0}
 .election-candidates{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:15px 0}
@@ -218,6 +221,8 @@ body.tema-escuro .election-vote-btn{border-color:#000;box-shadow:0 4px 0 #000}
 <div id="election-banner" class="election-banner" style="display:none;" onclick="abrirEleicao()">
 <span class="election-title">🗳️ ELEIÇÃO BAPAL — VOTE AGORA!</span>
 <span class="election-sub">Clique para abrir as urnas (Evento especial de 04/10)</span>
+<span class="election-live-score" id="election-banner-score">Marrone Otário: 0 | Lula: 0 | Total: 0</span>
+<span class="election-connection-status" id="election-banner-connection">Conectando ao placar online...</span>
 </div>
 
 <button id="pause-btn" class="pause-corner-btn" aria-label="Abrir pausa"><img src="Imagens/pausa.png" alt="Pausa"></button>
@@ -452,6 +457,15 @@ body.tema-escuro .election-vote-btn{border-color:#000;box-shadow:0 4px 0 #000}
 </div>
 <div class="election-status" id="election-status">Carregando votos em tempo real...</div>
 <div class="election-total" id="election-total">Total de votos: 0 / 5.000.000</div>
+<div class="election-connection-status" id="election-modal-connection">Conectando ao placar online...</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="election-result-modal" style="display:none;z-index:10003;">
+<div class="modal-content">
+<h2 id="election-result-title" style="margin-top:0"></h2>
+<p id="election-result-message"></p>
+<button class="btn-buy" id="election-result-ok-btn">OK</button>
 </div>
 </div>
 
@@ -530,6 +544,42 @@ body.tema-escuro .election-vote-btn{border-color:#000;box-shadow:0 4px 0 #000}
 <img id="easter-egg-coco" src="Imagens/cocô.png" style="display:none" alt="Cocô">
 
 <script>
+const $ = (id) => document.getElementById(id);
+const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+const formatNumber = (value, locale = 'pt-BR') => Number(value).toLocaleString(locale);
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+const setDisplay = (element, visible) => {
+  if (!element) return;
+  element.style.display = visible ? 'flex' : 'none';
+};
+
+const MODAIS_PARA_PAUSA = [
+  'site-dialog-modal',
+  'debug-modal',
+  'debug-code-modal',
+  'welcome-modal',
+  'boss-dialogue-modal',
+  'boss-fight-modal',
+  'revive-modal',
+  'revive-sequence-modal',
+  'bapos-freed-modal',
+  'vugnaes-modal',
+  'change-name-modal',
+  'endgame-modal',
+  'prestige-tab',
+  'achievements-tab',
+  'election-modal',
+  'election-result-modal'
+];
+const stopAudioList = (audios = []) => {
+  audios.forEach((audio) => {
+    try {
+      audio.pause();
+      audio.currentTime = 0;
+    } catch (error) {}
+  });
+};
+
 // ==================== i18n ====================
 let idiomaAtual='pt-BR';
 const lojaInfo={
@@ -571,7 +621,9 @@ const conquistaInfo={
 'sec2':{ptBR:['MUUUUU','Nomeou-se Anhanguera e invocou a lenda!','+5% BPS Geral'],ptPT:['MUUUUU','Nomeaste-te Anhanguera e invocaste a lenda!','+5% BPS Geral'],enUS:['MOOOOO','You named yourself Anhanguera and summoned the legend!','+5% Overall BPS'],enUK:['MOOOOO','You named yourself Anhanguera and summoned the legend!','+5% Overall BPS'],zh:['哞——','你自称 Anhanguera，召唤了传说！','+5% 全局 BPS']},
 'sec3':{ptBR:['Self-Insert','Escolheu "Felps" ou escreveu "Bapo" no seu nome!','+10% Clique Poderoso'],ptPT:['Self-Insert','Escolheste "Felps" ou escreveste "Bapo" no teu nome!','+10% Clique Poderoso'],enUS:['Self-Insert','You chose "Felps" or wrote "Bapo" in your name!','+10% Click Power'],enUK:['Self-Insert','You chose "Felps" or wrote "Bapo" in your name!','+10% Click Power'],zh:['自我代入','你选择了 "Felps" 或名字里写了 "Bapo"！','+10% 点击威力']},
 'sec_vugnaes':{ptBR:['Vugnaes Sreo','Encontrou e comprou o upgrade secreto!','+13.37% BPS Geral'],ptPT:['Vugnaes Sreo','Encontraste e compraste o upgrade secreto!','+13.37% BPS Geral'],enUS:['Vugnaes Sreo','You found and bought the secret upgrade!','+13.37% Overall BPS'],enUK:['Vugnaes Sreo','You found and bought the secret upgrade!','+13.37% Overall BPS'],zh:['Vugnaes Sreo','你找到并购买了秘密升级！','+13.37% 全局 BPS']},
-'sec_coco':{ptBR:['COCÔlecionador','VOCÊ TÁ COLECIONANDO COCÔ?!?!?!','+100 Bapoedas'],ptPT:['COCÓlecionador','ESTÁS A COLECIONAR COCÓ?!?!?!','+100 Bapoedas'],enUS:['POOP Collector','YOU ARE COLLECTING POOP?!?!?!','+100 Bapo Coins'],enUK:['POO Collector','YOU ARE COLLECTING POO?!?!?!','+100 Bapo Coins'],zh:['便便收藏家','你在收集便便？！？！？！','+100 Bapo 币']}
+'sec_coco':{ptBR:['COCÔlecionador','VOCÊ TÁ COLECIONANDO COCÔ?!?!?!','+100 Bapoedas'],ptPT:['COCÓlecionador','ESTÁS A COLECIONAR COCÓ?!?!?!','+100 Bapoedas'],enUS:['POOP Collector','YOU ARE COLLECTING POOP?!?!?!','+100 Bapo Coins'],enUK:['POO Collector','YOU ARE COLLECTING POO?!?!?!','+100 Bapo Coins'],zh:['便便收藏家','你在收集便便？！？！？！','+100 Bapo 币']},
+'sec_lula_presidente':{ptBR:['Lula Presidente','O Lula venceu e salvou a Dimensão Bapal!','+1 Coisinho'],ptPT:['Lula Presidente','O Lula venceu e salvou a Dimensão Bapal!','+1 Coisinho'],enUS:['President Lula','Lula won and saved the Bapal Dimension!','+1 Thingy'],enUK:['President Lula','Lula won and saved the Bapal Dimension!','+1 Thingy'],zh:['卢拉总统','卢拉获胜并拯救了 Bapal 维度！','+1 小东西']},
+'sec_marrone_presidente':{ptBR:['Marrone Presidente','Marrone venceu e condenou os Bapos à morte!','-3 Coisinhos'],ptPT:['Marrone Presidente','Marrone venceu e condenou os Bapos à morte!','-3 Coisinhos'],enUS:['President Marrone','Marrone won and condemned the Bapos to death!','-3 Thingies'],enUK:['President Marrone','Marrone won and condemned the Bapos to death!','-3 Thingies'],zh:['马罗内总统','马罗内获胜并判处 Bapo 们死刑！','-3 小东西']}
 };
 const traducoes={
 'pt-BR':{
@@ -815,7 +867,9 @@ const conquistasData=[
 {id:'sec2',req:()=>conquistasEstado['sec2']?.desbloqueada,bonusType:'bpsGeral',bonusVal:.05,secreta:true,img:'Conquistas/MUUUUU.png'},
 {id:'sec3',req:()=>conquistasEstado['sec3']?.desbloqueada,bonusType:'cliqueMult',bonusVal:.1,secreta:true,img:'Conquistas/Self Insert.png'},
 {id:'sec_vugnaes',req:()=>upgradeSecretoComprado,bonusType:'bpsGeral',bonusVal:.1337,secreta:true,img:'Conquistas/Vugnaes Sreo.png'},
-{id:'sec_coco',req:()=>conquistasEstado['sec_coco']?.desbloqueada,bonusType:'bapoedas',bonusVal:100,secreta:true,img:'Conquistas/colecionador de cocô.png'}
+{id:'sec_coco',req:()=>conquistasEstado['sec_coco']?.desbloqueada,bonusType:'bapoedas',bonusVal:100,secreta:true,img:'Conquistas/colecionador de cocô.png'},
+{id:'sec_lula_presidente',req:()=>conquistasEstado['sec_lula_presidente']?.desbloqueada,bonusType:'pp',bonusVal:1,secreta:true,img:'Imagens/Lula.png'},
+{id:'sec_marrone_presidente',req:()=>conquistasEstado['sec_marrone_presidente']?.desbloqueada,bonusType:'pp',bonusVal:-3,secreta:true,img:'Imagens/otario.png'}
 ];
 let conquistasEstado={};conquistasData.forEach(c=>conquistasEstado[c.id]={desbloqueada:false,resgatada:false});
 
@@ -827,38 +881,90 @@ const QTD_BAPOS_LATERAIS=12;
 function criarBapoLateral(c){const d=document.createElement('div');d.className='bapo-lateral';const sz=Math.floor(Math.random()*40)+40;d.style.width=`${sz}px`;d.style.height=`${sz}px`;d.style.top=`${Math.random()*90}vh`;const da=(Math.random()*12+10).toFixed(1);const dg=(Math.random()*4+4).toFixed(1);const a=(Math.random()*-20).toFixed(1);d.style.animationDuration=`${da}s, ${dg}s`;d.style.animationDelay=`${a}s, 0s`;c.appendChild(d)}
 function inicializarBaposLaterais(){const c=document.getElementById('bapos-laterais-container');for(let i=0;i<QTD_BAPOS_LATERAIS;i++)criarBapoLateral(c)}
 
-const pauseMenu=document.getElementById('pause-menu');
-const pauseOptionsModal=document.getElementById('pause-options-modal');
-let jogoPausado=false;
-function abrirPausa(){if(document.getElementById('credits-screen').style.display==='flex')return;jogoPausado=true;pauseOptionsModal.style.display='none';pauseMenu.style.display='flex'}
-function fecharPausa(){jogoPausado=false;pauseOptionsModal.style.display='none';pauseMenu.style.display='none'}
-document.getElementById('pause-btn').addEventListener('click',()=>{if(jogoPausado)fecharPausa();else abrirPausa()});
-document.getElementById('pause-continue-btn').addEventListener('click',fecharPausa);
-document.getElementById('pause-options-btn').addEventListener('click',()=>{pauseMenu.style.display='none';pauseOptionsModal.style.display='flex'});
-document.getElementById('close-options-btn').addEventListener('click',()=>{pauseOptionsModal.style.display='none';pauseMenu.style.display='flex'});
-document.getElementById('pause-credits-btn').addEventListener('click',()=>{pauseMenu.style.display='none';dispararCreditos(false)});
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(pauseOptionsModal.style.display==='flex'){pauseOptionsModal.style.display='none';pauseMenu.style.display='flex'}else if(jogoPausado)fecharPausa();else abrirPausa()});
-document.getElementById('toggle-anim-btn').addEventListener('click',()=>{animacoesAtivas=!animacoesAtivas;document.getElementById('toggle-anim-btn').innerText=`${t('opcoes.animacoes')}: ${animacoesAtivas?'ON':'OFF'}`;const b=document.getElementById('prestige-notification');if(!animacoesAtivas)b.classList.remove('animated-pulse');else b.classList.add('animated-pulse')});
-document.getElementById('sound-mode').addEventListener('change',e=>modoSom=e.target.value);
+const pauseMenu=$('pause-menu');
+const pauseOptionsModal=$('pause-options-modal');
+const setModalVisibility=(modal,visible)=>{
+  if (!modal) return;
+  modal.style.display=visible?'flex':'none';
+};
 
-const shopContainer=document.getElementById('shop-container');
-function renderLoja(){
-shopContainer.innerHTML='';
-lojaData.forEach(item=>{
-const info=lojaTxt(item.id);
-const card=document.createElement('div');card.className='upgrade-card';card.id=`card-item-${item.id}`;
-const ph="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'><rect width='50' height='50' fill='%23FFD700'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='20'>📦</text></svg>";
-card.innerHTML=`
-<img src="${item.img}" onerror="this.src='${ph}'" class="upgrade-img" alt="${info[0]}">
-<div class="upgrade-info">
-<strong>${info[0]}</strong>
-<p style="margin:2px 0"><small>${info[1]}. ${t('loja.qtd')}: <span id="count-${item.id}">0</span></small></p>
-<button class="btn-buy" id="buy-${item.id}">${t('loja.comprar')} (${t('loja.custo')}: <span id="cost-${item.id}">${item.baseCost}</span>)</button>
-</div>`;
-shopContainer.appendChild(card);
-document.getElementById(`buy-${item.id}`).addEventListener('click',()=>comprarItemLoja(item.id));
+let jogoPausado=false;
+
+function abrirPausa(){
+  if($('credits-screen').style.display==='flex')return;
+  jogoPausado=true;
+  setModalVisibility(pauseMenu,true);
+  setModalVisibility(pauseOptionsModal,false);
+}
+
+function fecharPausa(){
+  jogoPausado=false;
+  setModalVisibility(pauseMenu,false);
+  setModalVisibility(pauseOptionsModal,false);
+}
+
+$('pause-btn').addEventListener('click',()=>{
+  if(jogoPausado)fecharPausa();
+  else abrirPausa();
 });
-atualizarTela();
+$('pause-continue-btn').addEventListener('click',fecharPausa);
+$('pause-options-btn').addEventListener('click',()=>{
+  setModalVisibility(pauseMenu,false);
+  setModalVisibility(pauseOptionsModal,true);
+});
+$('close-options-btn').addEventListener('click',()=>{
+  setModalVisibility(pauseOptionsModal,false);
+  setModalVisibility(pauseMenu,true);
+});
+$('pause-credits-btn').addEventListener('click',()=>{
+  setModalVisibility(pauseMenu,false);
+  dispararCreditos(false);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if(pauseOptionsModal.style.display==='flex'){
+    setModalVisibility(pauseOptionsModal,false);
+    setModalVisibility(pauseMenu,true);
+    return;
+  }
+  if(jogoPausado)fecharPausa();
+  else abrirPausa();
+});
+$('toggle-anim-btn').addEventListener('click',()=>{
+  animacoesAtivas=!animacoesAtivas;
+  $('toggle-anim-btn').innerText=`${t('opcoes.animacoes')}: ${animacoesAtivas?'ON':'OFF'}`;
+  const badge=$('prestige-notification');
+  if(!animacoesAtivas)badge.classList.remove('animated-pulse');
+  else badge.classList.add('animated-pulse');
+});
+$('sound-mode').addEventListener('change',e=>modoSom=e.target.value);
+
+const shopContainer = $('shop-container');
+function renderLoja() {
+  shopContainer.innerHTML = '';
+
+  lojaData.forEach((item) => {
+    const info = lojaTxt(item.id);
+    const card = document.createElement('div');
+    card.className = 'upgrade-card';
+    card.id = `card-item-${item.id}`;
+
+    const fallbackImage = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'><rect width='50' height='50' fill='%23FFD700'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='20'>📦</text></svg>";
+
+    card.innerHTML = `
+      <img src="${item.img}" onerror="this.src='${fallbackImage}'" class="upgrade-img" alt="${info[0]}">
+      <div class="upgrade-info">
+        <strong>${info[0]}</strong>
+        <p style="margin:2px 0"><small>${info[1]}. ${t('loja.qtd')}: <span id="count-${item.id}">0</span></small></p>
+        <button class="btn-buy" id="buy-${item.id}">${t('loja.comprar')} (${t('loja.custo')}: <span id="cost-${item.id}">${item.baseCost}</span>)</button>
+      </div>
+    `;
+
+    shopContainer.appendChild(card);
+    $(`buy-${item.id}`).addEventListener('click', () => comprarItemLoja(item.id));
+  });
+
+  atualizarTela();
 }
 
 document.getElementById('secret-bapal-btn')&&document.getElementById('secret-bapal-btn').addEventListener('click',()=>{
@@ -905,37 +1011,56 @@ if(nvAt<nvMax&&pontosPrestigio>=cc&&parentOk){pontosPrestigio-=cc;skillsComprada
 }
 
 function renderConquistas(){
-const grid=document.getElementById('achievements-grid');grid.innerHTML='';
-const ph="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><rect width='48' height='48' fill='%2300E5FF'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='22'>🏆</text></svg>";
-conquistasData.forEach(c=>{
-const est=conquistasEstado[c.id];if(c.secreta&&!est.desbloqueada)return;
-const info=conquistaTxt(c.id);
-const card=document.createElement('div');card.className=`achievement-card ${c.secreta?'secret-card':''} ${est.resgatada?'claimed':(est.desbloqueada?'unlocked':'')}`;
-let bt=t('conquistas.bloqueada');let bd=true;
-if(est.resgatada)bt=t('conquistas.resgatado');
-else if(est.desbloqueada){bt=t('conquistas.coletar');bd=false}
-card.innerHTML=`
-<img src="${c.img}" onerror="this.src='${ph}'" class="achievement-img" alt="${info[0]}">
-<div class="achievement-info">
-<strong>${info[0]}</strong>
-<p style="margin:2px 0;font-size:.8rem">${info[1]}</p>
-<small style="color:${c.secreta?'#FFD700':'#D500F9'};font-weight:bold">${t('conquistas.bonus')} ${info[2]}</small>
-</div>
-<div><button class="btn-buy" id="btn-ach-${c.id}" ${bd?'disabled':''} style="font-size:.75rem">${bt}</button></div>`;
-grid.appendChild(card);
-if(est.desbloqueada&&!est.resgatada)document.getElementById(`btn-ach-${c.id}`).addEventListener('click',()=>resgatarConquista(c.id));
-});
+  const grid = $('achievements-grid');
+  grid.innerHTML = '';
+  const ph = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><rect width='48' height='48' fill='%2300E5FF'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='22'>🏆</text></svg>";
+
+  conquistasData.forEach((conquista) => {
+    const estado = conquistasEstado[conquista.id];
+    if (conquista.secreta && !estado.desbloqueada) return;
+
+    const info = conquistaTxt(conquista.id);
+    const card = document.createElement('div');
+    card.className = `achievement-card ${conquista.secreta ? 'secret-card' : ''} ${estado.resgatada ? 'claimed' : estado.desbloqueada ? 'unlocked' : ''}`;
+
+    let textoBotao = t('conquistas.bloqueada');
+    let botaoDesabilitado = true;
+    if (estado.resgatada) {
+      textoBotao = t('conquistas.resgatado');
+    } else if (estado.desbloqueada) {
+      textoBotao = t('conquistas.coletar');
+      botaoDesabilitado = false;
+    }
+
+    card.innerHTML = `
+      <img src="${conquista.img}" onerror="this.src='${ph}'" class="achievement-img" alt="${info[0]}">
+      <div class="achievement-info">
+        <strong>${info[0]}</strong>
+        <p style="margin:2px 0;font-size:.8rem">${info[1]}</p>
+        <small style="color:${conquista.secreta ? '#FFD700' : '#D500F9'};font-weight:bold">${t('conquistas.bonus')} ${info[2]}</small>
+      </div>
+      <div>
+        <button class="btn-buy" id="btn-ach-${conquista.id}" ${botaoDesabilitado ? 'disabled' : ''} style="font-size:.75rem">${textoBotao}</button>
+      </div>
+    `;
+
+    grid.appendChild(card);
+
+    if (estado.desbloqueada && !estado.resgatada) {
+      $(`btn-ach-${conquista.id}`).addEventListener('click', () => resgatarConquista(conquista.id));
+    }
+  });
 }
 function checarConquistas(){let h=false;conquistasData.forEach(c=>{if(!conquistasEstado[c.id].desbloqueada&&c.req()){conquistasEstado[c.id].desbloqueada=true;h=true}});if(h)atualizarTela()}
-function resgatarConquista(id){const c=conquistasData.find(i=>i.id===id);const e=conquistasEstado[id];if(e&&e.desbloqueada&&!e.resgatada){e.resgatada=true;if(c.bonusType==='bapoedas')bapoedas+=c.bonusVal;if(c.bonusType==='pp')pontosPrestigio+=c.bonusVal;playClickSound();atualizarTela();renderConquistas()}}
+function resgatarConquista(id){const c=conquistasData.find(i=>i.id===id);const e=conquistasEstado[id];if(e&&e.desbloqueada&&!e.resgatada){e.resgatada=true;if(c.bonusType==='bapoedas')bapoedas+=c.bonusVal;if(c.bonusType==='pp')pontosPrestigio=Math.max(0,pontosPrestigio+c.bonusVal);playClickSound();atualizarTela();renderConquistas();salvarJogo()}}
 function validarSegredosNome(n){const m=n.trim().toLowerCase();if(m==='anhanguera'){conquistasEstado['sec2'].desbloqueada=true;sfxAnhanguera.play().catch(()=>{})}if(m==='felps'){conquistasEstado['sec3'].desbloqueada=true;sfxLesbica.currentTime=0;sfxLesbica.play().catch(()=>{})}else if(m==='bapo'){conquistasEstado['sec3'].desbloqueada=true;sfxFeliz.currentTime=0;sfxFeliz.play().catch(()=>{})}}
-const floatingBtn=document.getElementById('floating-prestige-btn');
-const prestigeTab=document.getElementById('prestige-tab');
-document.getElementById('close-prestige-btn').addEventListener('click',()=>prestigeTab.classList.remove('open'));
+const floatingBtn=$('floating-prestige-btn');
+const prestigeTab=$('prestige-tab');
+$('close-prestige-btn').addEventListener('click',()=>prestigeTab.classList.remove('open'));
 floatingBtn.addEventListener('click',()=>{prestigeTab.classList.add('open');renderSkillTree()});
-const floatingAchBtn=document.getElementById('floating-achievements-btn');
-const achTab=document.getElementById('achievements-tab');
-document.getElementById('close-achievements-btn').addEventListener('click',()=>achTab.classList.remove('open'));
+const floatingAchBtn=$('floating-achievements-btn');
+const achTab=$('achievements-tab');
+$('close-achievements-btn').addEventListener('click',()=>achTab.classList.remove('open'));
 floatingAchBtn.addEventListener('click',()=>{achTab.classList.add('open');renderConquistas()});
 document.getElementById('open-change-name-btn').addEventListener('click',()=>{if(bapoedas<5){mostrarAviso(t('mudarNome.avisoPouco'));return}document.getElementById('change-name-modal').style.display='flex'});
 document.getElementById('cancel-change-name-btn').addEventListener('click',()=>document.getElementById('change-name-modal').style.display='none');
@@ -958,30 +1083,52 @@ return{poderClique:cb*mg,bpsTotal:bb*mg};
 function obterMultSkill(t){let m=1;listaSkills.forEach(sk=>{if(sk.tipo===t&&skillsCompradas[sk.id])m*=sk.val});return m}
 function calcularCustoPrestigio(){return Math.floor(a1*Math.pow(r,nivelPrestigio-1))}
 function atualizarTela(){
-checarConquistas();atualizarBaposNoFundo();
-const{bpsTotal}=calcularGanhos();const v=Math.floor(bapoedas);
-document.getElementById('corner-score').innerText=v;
-document.getElementById('bps-score').innerText=bpsTotal.toFixed(2);
-document.getElementById('coisinhos-score').innerText=pontosPrestigio;
-lojaData.forEach(item=>{
-const ce=document.getElementById(`cost-${item.id}`);const cnt=document.getElementById(`count-${item.id}`);const be=document.getElementById(`buy-${item.id}`);
-if(ce)ce.innerText=obterCustoItem(item.id);
-if(cnt)cnt.innerText=loja[item.id].qtd;
-if(be)be.disabled=bapoedas<obterCustoItem(item.id);
-});
-const rb=document.getElementById('buy-reactor');if(rb&&totalPrestagiosFeitos<2)rb.disabled=true;
-document.getElementById('pp-score').innerText=pontosPrestigio;
-document.getElementById('prestige-count').innerText=totalPrestagiosFeitos;
-document.getElementById('prestige-cost').innerText=calcularCustoPrestigio();
-document.getElementById('buy-prestige').disabled=bapoedas<calcularCustoPrestigio();
-const bp=document.getElementById('prestige-notification');bp.style.display=bapoedas>=calcularCustoPrestigio()?'flex':'none';
-const temPend=conquistasData.some(c=>conquistasEstado[c.id].desbloqueada&&!conquistasEstado[c.id].resgatada);
-const ba=document.getElementById('achievements-notification');ba.style.display=temPend?'flex':'none';
-const tm=contarUpgradesMaximizados();
-document.getElementById('total-skills').innerText=tm;
-const ss=document.getElementById('skill-supreme');
-if(supremoLiberado){ss.innerText=t('prestigio.supremoFeito');ss.disabled=true}
-else ss.disabled=tm<listaSkills.length;
+  checarConquistas();
+  atualizarBaposNoFundo();
+
+  const { bpsTotal } = calcularGanhos();
+  const valorAtual = Math.floor(bapoedas);
+
+  $('corner-score').innerText = valorAtual;
+  $('bps-score').innerText = bpsTotal.toFixed(2);
+  $('coisinhos-score').innerText = pontosPrestigio;
+
+  lojaData.forEach((item) => {
+    const custo = obterCustoItem(item.id);
+    const custoEl = $(`cost-${item.id}`);
+    const qtdEl = $(`count-${item.id}`);
+    const botaoEl = $(`buy-${item.id}`);
+
+    if (custoEl) custoEl.innerText = custo;
+    if (qtdEl) qtdEl.innerText = loja[item.id].qtd;
+    if (botaoEl) botaoEl.disabled = bapoedas < custo;
+  });
+
+  const reactorBtn = $('buy-reactor');
+  if (reactorBtn && totalPrestagiosFeitos < 2) reactorBtn.disabled = true;
+
+  $('pp-score').innerText = pontosPrestigio;
+  $('prestige-count').innerText = totalPrestagiosFeitos;
+  $('prestige-cost').innerText = calcularCustoPrestigio();
+  $('buy-prestige').disabled = bapoedas < calcularCustoPrestigio();
+
+  const badgePrestigio = $('prestige-notification');
+  badgePrestigio.style.display = bapoedas >= calcularCustoPrestigio() ? 'flex' : 'none';
+
+  const temPendentes = conquistasData.some((c) => conquistasEstado[c.id].desbloqueada && !conquistasEstado[c.id].resgatada);
+  const badgeConquistas = $('achievements-notification');
+  badgeConquistas.style.display = temPendentes ? 'flex' : 'none';
+
+  const totalSkills = contarUpgradesMaximizados();
+  $('total-skills').innerText = totalSkills;
+
+  const skillSupreme = $('skill-supreme');
+  if (supremoLiberado) {
+    skillSupreme.innerText = t('prestigio.supremoFeito');
+    skillSupreme.disabled = true;
+  } else {
+    skillSupreme.disabled = totalSkills < listaSkills.length;
+  }
 }
 document.getElementById('click-btn').addEventListener('click',()=>{
 totalCliquesManuais++;
@@ -1004,19 +1151,53 @@ let transicaoMusicaBoss=null;
 function fazerFadeAudio(a,v,d=500,fim=null){if(transicaoMusicaBoss)clearInterval(transicaoMusicaBoss);const ini=a.volume;const t0=performance.now();transicaoMusicaBoss=setInterval(()=>{const p=Math.min((performance.now()-t0)/d,1);a.volume=ini+(v-ini)*p;if(p>=1){clearInterval(transicaoMusicaBoss);transicaoMusicaBoss=null;if(fim)fim()}},16)}
 function tocarMusicaBoss(){if(bgmMuted)return;if(!bossMusic.paused)return;bossMusic.volume=0;bossMusic.play().then(()=>fazerFadeAudio(bossMusic,.4,650)).catch(()=>{});fazerFadeAudio(bgmMusic,0,500,()=>bgmMusic.pause())}
 function pararMusicaBoss(){fazerFadeAudio(bossMusic,0,500,()=>{bossMusic.pause();bossMusic.currentTime=0;bossMusic.volume=.4});if(!bgmMuted)setTimeout(()=>tocarMusica(),500)}
-function iniciarBossFight(){playerHp=3;bossHp=3;bossIndex=0;document.body.classList.add('boss-mode');tocarMusicaBoss();document.getElementById('player-hp-box').style.display='flex';document.getElementById('boss-hp-box').style.display='flex';renderCoracoes('player-hearts',playerHp,'vida_bapo.png');renderCoracoes('boss-hearts',bossHp,'vida_marrone.png');atualizarSpriteBoss();atualizarDicaMarrone();document.getElementById('jokenpo-status-text').innerText=t('boss.escolha');document.getElementById('boss-fight-modal').style.display='flex'}
-function atualizarDicaMarrone(){const h=document.getElementById('marrone-next-move-hint');const n=Number(skillsCompradas['s13'])||0;if(n>=2){h.innerText=t('jokenpo.revelacao').replace('{jogada}',t('jokenpo.'+bossOrder[bossIndex]+'UP'));h.style.display='block'}else h.style.display='none'}
-function jogarJokenpo(ep){const eb=bossOrder[bossIndex];bossIndex=(bossIndex+1)%bossOrder.length;let r='';if(ep===eb)r=t('jokenpo.empate').replace('{escolha}',t('jokenpo.'+ep+'UP'));else if((ep==='pedra'&&eb==='tesoura')||(ep==='papel'&&eb==='pedra')||(ep==='tesoura'&&eb==='papel')){bossHp--;r=t('jokenpo.vitoria').replace('{boss}',t('jokenpo.'+eb+'UP')).replace('{player}',t('jokenpo.'+ep+'UP'))}else{playerHp--;r=t('jokenpo.derrota').replace('{boss}',t('jokenpo.'+eb+'UP')).replace('{player}',t('jokenpo.'+ep+'UP'))}renderCoracoes('player-hearts',playerHp,'vida_bapo.png');renderCoracoes('boss-hearts',bossHp,'vida_marrone.png');atualizarSpriteBoss();atualizarDicaMarrone();document.getElementById('jokenpo-status-text').innerText=r;if(bossHp<=0){pararMusicaBoss();setTimeout(()=>{document.getElementById('boss-fight-modal').style.display='none';document.getElementById('revive-modal').style.display='flex'},800)}else if(playerHp<=0){mostrarAviso(t('boss.perdeu'));iniciarBossFight()}}
-document.getElementById('revive-no-btn').addEventListener('click',()=>{document.getElementById('revive-modal').style.display='none';ocultarHUDsBoss();document.body.classList.remove('boss-mode');pararMusicaBoss();mostrarModalBaposLibertados()});
-document.getElementById('revive-yes-btn').addEventListener('click',()=>{document.getElementById('revive-modal').style.display='none';iniciarSequenciaReviver()});
-function ocultarHUDsBoss(){document.getElementById('player-hp-box').style.display='none';document.getElementById('boss-hp-box').style.display='none'}
-function iniciarSequenciaReviver(){reviveStep=0;const i=document.getElementById('revive-sequence-img');const t2=document.getElementById('revive-sequence-text');i.className='boss-sprite-img';i.style.opacity='1';i.style.transform='scale(1)';i.src='Imagens/marrone_normal.png';t2.innerText=t('boss.dialogo1');document.getElementById('revive-sequence-modal').style.display='flex'}
-document.getElementById('revive-next-btn').addEventListener('click',()=>{
-reviveStep++;const i=document.getElementById('revive-sequence-img');const tx=document.getElementById('revive-sequence-text');const n=Number(skillsCompradas['s13'])||0;
-if(reviveStep===1){trocarImagemMarroneSuave(i,'Imagens/marrone_serio.png');tx.innerText=t('boss.dialogo2')}
-else if(reviveStep===2){trocarImagemMarroneSuave(i,'Imagens/marrone1.png');tx.innerText=t('boss.dialogo3')}
-else if(reviveStep===3){trocarImagemMarroneSuave(i,'Imagens/marrone.png');tx.innerText=n>=3?t('boss.dialogo4Nada'):t('boss.dialogo4')}
-else if(reviveStep>=4){document.getElementById('revive-sequence-modal').style.display='none';ocultarHUDsBoss();document.body.classList.remove('boss-mode');pararMusicaBoss();mostrarModalBaposLibertados()}
+function iniciarBossFight() {
+  playerHp = 3;
+  bossHp = 3;
+  bossIndex = 0;
+  document.body.classList.add('boss-mode');
+  tocarMusicaBoss();
+
+  setDisplay($('player-hp-box'), true);
+  setDisplay($('boss-hp-box'), true);
+  renderCoracoes('player-hearts', playerHp, 'vida_bapo.png');
+  renderCoracoes('boss-hearts', bossHp, 'vida_marrone.png');
+  atualizarSpriteBoss();
+  atualizarDicaMarrone();
+  $('jokenpo-status-text').innerText = t('boss.escolha');
+  setDisplay($('boss-fight-modal'), true);
+}
+
+function atualizarDicaMarrone() {
+  const hint = $('marrone-next-move-hint');
+  const nivelNada = Number(skillsCompradas['s13']) || 0;
+
+  if (nivelNada >= 2) {
+    hint.innerText = t('jokenpo.revelacao').replace('{jogada}', t('jokenpo.' + bossOrder[bossIndex] + 'UP'));
+    hint.style.display = 'block';
+    return;
+  }
+
+  hint.style.display = 'none';
+}
+
+function jogarJokenpo(ep){const eb=bossOrder[bossIndex];bossIndex=(bossIndex+1)%bossOrder.length;let r='';if(ep===eb)r=t('jokenpo.empate').replace('{escolha}',t('jokenpo.'+ep+'UP'));else if((ep==='pedra'&&eb==='tesoura')||(ep==='papel'&&eb==='pedra')||(ep==='tesoura'&&eb==='papel')){bossHp--;r=t('jokenpo.vitoria').replace('{boss}',t('jokenpo.'+eb+'UP')).replace('{player}',t('jokenpo.'+ep+'UP'))}else{playerHp--;r=t('jokenpo.derrota').replace('{boss}',t('jokenpo.'+eb+'UP')).replace('{player}',t('jokenpo.'+ep+'UP'))}renderCoracoes('player-hearts',playerHp,'vida_bapo.png');renderCoracoes('boss-hearts',bossHp,'vida_marrone.png');atualizarSpriteBoss();atualizarDicaMarrone();document.getElementById('jokenpo-status-text').innerText=r;if(bossHp<=0){pararMusicaBoss();setTimeout(()=>{setDisplay($('boss-fight-modal'), false);setDisplay($('revive-modal'), true)},800)}else if(playerHp<=0){mostrarAviso(t('boss.perdeu'));iniciarBossFight()}}
+$('revive-no-btn').addEventListener('click',()=>{setDisplay($('revive-modal'), false);ocultarHUDsBoss();document.body.classList.remove('boss-mode');pararMusicaBoss();mostrarModalBaposLibertados()});
+$('revive-yes-btn').addEventListener('click',()=>{setDisplay($('revive-modal'), false);iniciarSequenciaReviver()});
+function ocultarHUDsBoss(){setDisplay($('player-hp-box'), false);setDisplay($('boss-hp-box'), false)}
+function iniciarSequenciaReviver(){reviveStep=0;const i=$('revive-sequence-img');const t2=$('revive-sequence-text');i.className='boss-sprite-img';i.style.opacity='1';i.style.transform='scale(1)';i.src='Imagens/marrone_normal.png';t2.innerText=t('boss.dialogo1');setDisplay($('revive-sequence-modal'), true)}
+$('revive-next-btn').addEventListener('click',()=>{
+  reviveStep++;
+  const image=$('revive-sequence-img');
+  const text=$('revive-sequence-text');
+  const n=Number(skillsCompradas['s13'])||0;
+  const proximoPasso={
+    1:()=>{trocarImagemMarroneSuave(image,'Imagens/marrone_serio.png');text.innerText=t('boss.dialogo2');},
+    2:()=>{trocarImagemMarroneSuave(image,'Imagens/marrone1.png');text.innerText=t('boss.dialogo3');},
+    3:()=>{trocarImagemMarroneSuave(image,'Imagens/marrone.png');text.innerText=n>=3?t('boss.dialogo4Nada'):t('boss.dialogo4');},
+    4:()=>{$('revive-sequence-modal').style.display='none';ocultarHUDsBoss();document.body.classList.remove('boss-mode');pararMusicaBoss();mostrarModalBaposLibertados();}
+  };
+  (proximoPasso[reviveStep]||proximoPasso[4])();
 });
 function mostrarModalBaposLibertados(){supremoLiberado=true;atualizarTela();document.getElementById('bapos-freed-modal').style.display='flex'}
 document.getElementById('bapos-freed-btn').addEventListener('click',()=>{document.getElementById('bapos-freed-modal').style.display='none';dispararCreditos(false)});
@@ -1064,11 +1245,30 @@ function atualizarVisibilidadeBotao2x(){const em=creditsScreen.style.display==='
 const creditsObserver=new MutationObserver(atualizarVisibilidadeBotao2x);creditsObserver.observe(creditsScreen,{attributes:true,attributeFilter:['style']});
 window.addEventListener('resize',atualizarVisibilidadeBotao2x);
 const pauseBtnEl=document.getElementById('pause-btn');const sfxBtnEl=document.getElementById('toggle-sfx-btn');
-const modaisQueEscondemPausa=['site-dialog-modal','debug-modal','debug-code-modal','welcome-modal','boss-dialogue-modal','boss-fight-modal','revive-modal','revive-sequence-modal','bapos-freed-modal','vugnaes-modal','change-name-modal','endgame-modal','prestige-tab','achievements-tab','election-modal'];
-function algumModalAberto(){return modaisQueEscondemPausa.some(id=>{const el=document.getElementById(id);if(!el)return false;if(el.classList.contains('open'))return true;return el.style.display==='flex'})}
-function atualizarBotoesFixos(){if(algumModalAberto()){pauseBtnEl.classList.add('hidden-by-modal');sfxBtnEl.classList.add('hidden-by-modal')}else{pauseBtnEl.classList.remove('hidden-by-modal');sfxBtnEl.classList.remove('hidden-by-modal')}}
-const observadorModais=new MutationObserver(atualizarBotoesFixos);
-modaisQueEscondemPausa.forEach(id=>{const el=document.getElementById(id);if(!el)return;observadorModais.observe(el,{attributes:true,attributeFilter:['style','class']})});
+function algumModalAberto(){
+  return MODAIS_PARA_PAUSA.some((id) => {
+    const el = $(id);
+    if (!el) return false;
+    if (el.classList.contains('open')) return true;
+    return el.style.display === 'flex';
+  });
+}
+function atualizarBotoesFixos(){
+  if (algumModalAberto()) {
+    pauseBtnEl.classList.add('hidden-by-modal');
+    sfxBtnEl.classList.add('hidden-by-modal');
+    return;
+  }
+
+  pauseBtnEl.classList.remove('hidden-by-modal');
+  sfxBtnEl.classList.remove('hidden-by-modal');
+}
+const observadorModais = new MutationObserver(atualizarBotoesFixos);
+MODAIS_PARA_PAUSA.forEach((id) => {
+  const el = $(id);
+  if (!el) return;
+  observadorModais.observe(el, { attributes: true, attributeFilter: ['style', 'class'] });
+});
 atualizarBotoesFixos();
 const languageSelect=document.getElementById('language-select');
 languageSelect.addEventListener('change',e=>trocarIdioma(e.target.value));
@@ -1078,7 +1278,7 @@ languageSelect.value=idiomaAtual;
 // ==================== ELEIÇÃO BAPAL (04/10/2026) ====================
 const DATA_ELEICAO='2026-10-04';
 const ELECTION_API_BASE='https://abacus.jasoncameron.dev';
-const ELECTION_NS='bapo-clicker-eleicao-2026-v2';
+const ELECTION_NS='bapo-clicker-eleicao-2026';
 const LIMITE_VOTOS=5000000;
 
 let eleicaoAtiva=false;
@@ -1086,6 +1286,46 @@ let eleicaoEncerrada=false;
 let eleicaoTimerAtualizacao=null;
 let debugEleicaoForcada=false;
 let vencedorEleicao=null;
+let votosEleicaoCache={otario:0,lula:0};
+let atualizacaoPlacarEmAndamento=false;
+let placarOnlineDisponivel=false;
+
+function carregarVotosEleicaoCache(){
+votosEleicaoCache={otario:0,lula:0};
+}
+
+function definirEstadoConexaoPlacar(online,mensagem=''){
+placarOnlineDisponivel=online;
+const texto=online?'🟢 Placar online — atualização automática':`🔴 ${mensagem||'Sem conexão com o placar online'}`;
+['election-banner-connection','election-modal-connection'].forEach(id=>{
+const el=document.getElementById(id);
+if(el)el.innerText=texto;
+});
+}
+
+function exibirPlacarEleicao(vO=votosEleicaoCache.otario,vL=votosEleicaoCache.lula){
+const total=vO+vL;
+const pctO=total>0?((vO/total)*100).toFixed(1):'0.0';
+const pctL=total>0?((vL/total)*100).toFixed(1):'0.0';
+const elVO=document.getElementById('votes-otario');
+const elVL=document.getElementById('votes-lula');
+const elPO=document.getElementById('pct-otario');
+const elPL=document.getElementById('pct-lula');
+const elTotal=document.getElementById('election-total');
+const bannerScore=document.getElementById('election-banner-score');
+if(elVO)elVO.innerText=vO.toLocaleString('pt-BR');
+if(elVL)elVL.innerText=vL.toLocaleString('pt-BR');
+if(elPO)elPO.innerText=pctO+'%';
+if(elPL)elPL.innerText=pctL+'%';
+if(elTotal)elTotal.innerText=`Total de votos: ${total.toLocaleString('pt-BR')} / ${LIMITE_VOTOS.toLocaleString('pt-BR')}`;
+if(bannerScore)bannerScore.innerText=`Marrone Otário: ${vO.toLocaleString('pt-BR')} | Lula: ${vL.toLocaleString('pt-BR')} | Total: ${total.toLocaleString('pt-BR')}`;
+}
+
+function iniciarAtualizacaoEleicao(){
+if(eleicaoTimerAtualizacao)return;
+eleicaoTimerAtualizacao=setInterval(atualizarPlacarEleicao,1500);
+atualizarPlacarEleicao();
+}
 
 function ehDiaDaEleicao(){
 const hoje=new Date();
@@ -1098,58 +1338,44 @@ return `${ano}-${mes}-${dia}`===DATA_ELEICAO;
 function carregarVencedorSalvo(){
 try{
 const v=localStorage.getItem('bapoEleicaoVencedor');
-if(v==='otario'||v==='lula'){vencedorEleicao=v;eleicaoEncerrada=true}
+if(v==='otario'||v==='lula'){vencedorEleicao=v;eleicaoEncerrada=true;const id=v==='lula'?'sec_lula_presidente':'sec_marrone_presidente';if(conquistasEstado[id])conquistasEstado[id].desbloqueada=true}
 }catch(e){}
 }
 
 function salvarVencedor(v){try{localStorage.setItem('bapoEleicaoVencedor',v)}catch(e){}}
 
 async function buscarVotos(candidato){
-try{
-const r=await fetch(`${ELECTION_API_BASE}/get/${ELECTION_NS}/${candidato}`);
-if(!r.ok)throw new Error('Falha');
+const r=await fetch(`${ELECTION_API_BASE}/get/${ELECTION_NS}/${candidato}?_=${Date.now()}`,{cache:'no-store'});
+if(!r.ok)throw new Error(`HTTP ${r.status}`);
 const d=await r.json();
-return Number(d.value)||0;
-}catch(e){
-try{return Number(localStorage.getItem(`bapoEleicao_${candidato}`))||0}catch(e2){return 0}
-}
+if(!Number.isFinite(Number(d.value)))throw new Error('Resposta inválida do placar');
+return Math.max(0,Number(d.value));
 }
 
 async function incrementarVoto(candidato){
-try{
-const r=await fetch(`${ELECTION_API_BASE}/hit/${ELECTION_NS}/${candidato}`);
-if(!r.ok)throw new Error('Falha');
+const r=await fetch(`${ELECTION_API_BASE}/hit/${ELECTION_NS}/${candidato}`,{cache:'no-store'});
+if(!r.ok)throw new Error(`HTTP ${r.status}`);
 const d=await r.json();
-return Number(d.value)||0;
-}catch(e){
-try{
-const atual=Number(localStorage.getItem(`bapoEleicao_${candidato}`))||0;
-const novo=atual+1;
-localStorage.setItem(`bapoEleicao_${candidato}`,novo);
-return novo;
-}catch(e2){return 0}
-}
+if(!Number.isFinite(Number(d.value)))throw new Error('Resposta inválida do placar');
+return Math.max(0,Number(d.value));
 }
 
 async function atualizarPlacarEleicao(){
-if(!eleicaoAtiva)return;
-const[vO,vL]=await Promise.all([buscarVotos('otario'),buscarVotos('lula')]);
-const total=vO+vL;
-const pctO=total>0?((vO/total)*100).toFixed(1):'0.0';
-const pctL=total>0?((vL/total)*100).toFixed(1):'0.0';
-const elVO=document.getElementById('votes-otario');
-const elVL=document.getElementById('votes-lula');
-const elPO=document.getElementById('pct-otario');
-const elPL=document.getElementById('pct-lula');
-const elTotal=document.getElementById('election-total');
-if(elVO)elVO.innerText=vO.toLocaleString('pt-BR');
-if(elVL)elVL.innerText=vL.toLocaleString('pt-BR');
-if(elPO)elPO.innerText=pctO+'%';
-if(elPL)elPL.innerText=pctL+'%';
-if(elTotal)elTotal.innerText=`Total de votos: ${total.toLocaleString('pt-BR')} / ${LIMITE_VOTOS.toLocaleString('pt-BR')}`;
+if((!eleicaoAtiva&&!eleicaoEncerrada)||atualizacaoPlacarEmAndamento)return;
+atualizacaoPlacarEmAndamento=true;
+try{
+const votos=await Promise.all([buscarVotos('otario'),buscarVotos('lula')]);
+votosEleicaoCache={otario:votos[0],lula:votos[1]};
+definirEstadoConexaoPlacar(true);
+exibirPlacarEleicao(votosEleicaoCache.otario,votosEleicaoCache.lula);
 if(!eleicaoEncerrada){
-if(vO>=LIMITE_VOTOS){encerrarEleicao('otario',vO)}
-else if(vL>=LIMITE_VOTOS){encerrarEleicao('lula',vL)}
+if(votosEleicaoCache.otario>=LIMITE_VOTOS){encerrarEleicao('otario',votosEleicaoCache.otario)}
+else if(votosEleicaoCache.lula>=LIMITE_VOTOS){encerrarEleicao('lula',votosEleicaoCache.lula)}
+}
+}catch(error){
+definirEstadoConexaoPlacar(false,'Sem conexão — tentando reconectar…');
+}finally{
+atualizacaoPlacarEmAndamento=false;
 }
 }
 
@@ -1158,6 +1384,8 @@ if(eleicaoEncerrada)return;
 eleicaoEncerrada=true;
 vencedorEleicao=vencedor;
 salvarVencedor(vencedor);
+const conquistaId=vencedor==='lula'?'sec_lula_presidente':'sec_marrone_presidente';
+if(conquistasEstado[conquistaId])conquistasEstado[conquistaId].desbloqueada=true;
 eleicaoAtiva=false;
 const banner=document.getElementById('election-banner');
 if(banner)banner.style.display='none';
@@ -1165,8 +1393,27 @@ const modal=document.getElementById('election-modal');
 if(modal)modal.style.display='none';
 if(eleicaoTimerAtualizacao){clearInterval(eleicaoTimerAtualizacao);eleicaoTimerAtualizacao=null}
 mostrarGanhadorTelaPrincipal(vencedor,votos);
-mostrarAviso(`🎉 A ELEIÇÃO BAPAL ACABOU! ${vencedor==='otario'?'Marrone Otário':'Lula'} venceu com ${votos.toLocaleString('pt-BR')} votos!`,'Resultado da Eleição');
+atualizarTela();
+salvarJogo();
+mostrarResultadoEleicao(vencedor,votos);
 }
+
+function mostrarResultadoEleicao(vencedor,votos){
+const titulo=document.getElementById('election-result-title');
+const mensagem=document.getElementById('election-result-message');
+if(vencedor==='lula'){
+titulo.innerText='OBAAAAAAAA! SALVOU A DIMENSÃO BAPAL';
+mensagem.innerText=`Lula venceu com ${votos.toLocaleString('pt-BR')} votos! A conquista “Lula Presidente” foi desbloqueada: resgate-a em Conquistas para receber +1 Coisinho.`;
+}else{
+titulo.innerText='CONDENOU OS BAPOS A MORTE :(';
+mensagem.innerText=`Marrone venceu com ${votos.toLocaleString('pt-BR')} votos! A conquista “Marrone Presidente” foi desbloqueada: resgate-a em Conquistas para receber -3 Coisinhos.`;
+}
+document.getElementById('election-result-modal').style.display='flex';
+}
+
+document.getElementById('election-result-ok-btn').addEventListener('click',()=>{
+document.getElementById('election-result-modal').style.display='none';
+});
 
 function mostrarGanhadorTelaPrincipal(vencedor,votos){
 const box=document.getElementById('election-winner-box');
@@ -1186,7 +1433,13 @@ if(eleicaoEncerrada){mostrarAviso('A eleição já foi encerrada!','Eleição Ba
 if(!eleicaoAtiva){mostrarAviso('A eleição ainda não está ativa.','Eleição Bapal');return}
 const status=document.getElementById('election-status');
 if(status)status.innerText='Registrando seu voto...';
-await incrementarVoto(candidato);
+votosEleicaoCache[candidato]++;
+salvarVotosEleicaoCache();
+exibirPlacarEleicao();
+const votosRegistrados=await incrementarVoto(candidato);
+votosEleicaoCache[candidato]=Math.max(votosEleicaoCache[candidato],Number(votosRegistrados)||0);
+salvarVotosEleicaoCache();
+exibirPlacarEleicao();
 await atualizarPlacarEleicao();
 if(!eleicaoEncerrada){
 if(status)status.innerText=`✅ Voto em ${candidato==='otario'?'Marrone Otário':'Lula'} registrado! Pode votar de novo.`;
@@ -1198,9 +1451,9 @@ if(!eleicaoAtiva&&!eleicaoEncerrada)return;
 const modal=document.getElementById('election-modal');
 if(!modal)return;
 modal.style.display='flex';
+exibirPlacarEleicao();
 atualizarPlacarEleicao();
-if(eleicaoTimerAtualizacao)clearInterval(eleicaoTimerAtualizacao);
-eleicaoTimerAtualizacao=setInterval(atualizarPlacarEleicao,2000);
+if(eleicaoAtiva)iniciarAtualizacaoEleicao();
 const status=document.getElementById('election-status');
 if(eleicaoEncerrada){if(status)status.innerText='A eleição já foi encerrada! Confira o vencedor na tela principal.'}
 else if(status){status.innerText='Clique quantas vezes quiser para votar!'}
@@ -1209,22 +1462,24 @@ else if(status){status.innerText='Clique quantas vezes quiser para votar!'}
 function fecharEleicao(){
 const modal=document.getElementById('election-modal');
 if(modal)modal.style.display='none';
-if(eleicaoTimerAtualizacao){clearInterval(eleicaoTimerAtualizacao);eleicaoTimerAtualizacao=null}
 }
 document.getElementById('close-election-btn').addEventListener('click',fecharEleicao);
 
 function iniciarEleicaoSeForDia(){
+carregarVotosEleicaoCache();
+exibirPlacarEleicao();
 carregarVencedorSalvo();
 if(eleicaoEncerrada&&vencedorEleicao){
-(async()=>{const votos=await buscarVotos(vencedorEleicao);mostrarGanhadorTelaPrincipal(vencedorEleicao,votos)})();
+atualizarTela();
+salvarJogo();
+(async()=>{const votos=Math.max(votosEleicaoCache[vencedorEleicao],await buscarVotos(vencedorEleicao));mostrarGanhadorTelaPrincipal(vencedorEleicao,votos)})();
 return;
 }
 if(ehDiaDaEleicao()||debugEleicaoForcada){
 eleicaoAtiva=true;
 const banner=document.getElementById('election-banner');
 if(banner)banner.style.display='block';
-setInterval(()=>{if(eleicaoAtiva)atualizarPlacarEleicao()},2000);
-atualizarPlacarEleicao();
+iniciarAtualizacaoEleicao();
 }
 }
 
@@ -1238,7 +1493,7 @@ if(box)box.style.display='none';
 eleicaoAtiva=true;
 const banner=document.getElementById('election-banner');
 if(banner)banner.style.display='block';
-atualizarPlacarEleicao();
+iniciarAtualizacaoEleicao();
 mostrarAviso('Eleição Bapal ativada em modo debug!','Debug');
 }
 
@@ -1247,15 +1502,15 @@ try{
 localStorage.removeItem('bapoEleicaoVencedor');
 localStorage.removeItem(`bapoEleicao_otario`);
 localStorage.removeItem(`bapoEleicao_lula`);
+localStorage.removeItem('bapoEleicaoVotosCache');
 }catch(e){}
+votosEleicaoCache={otario:0,lula:0};
+exibirPlacarEleicao();
 eleicaoEncerrada=false;
 vencedorEleicao=null;
-eleicaoAtiva=false;
 const box=document.getElementById('election-winner-box');
 if(box)box.style.display='none';
-const banner=document.getElementById('election-banner');
-if(banner)banner.style.display='none';
-mostrarAviso('Eleição resetada! Os novos votos serão registrados em uma urna zerada.','Debug');
+mostrarAviso('Eleição resetada! (apenas no armazenamento local)','Debug');
 }
 
 document.getElementById('debug-eleicao-btn').addEventListener('click',()=>{
