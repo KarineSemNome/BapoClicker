@@ -1323,7 +1323,7 @@ if(bannerScore)bannerScore.innerText=`Marrone Otário: ${vO.toLocaleString('pt-B
 
 function iniciarAtualizacaoEleicao(){
 if(eleicaoTimerAtualizacao)return;
-eleicaoTimerAtualizacao=setInterval(atualizarPlacarEleicao,1500);
+eleicaoTimerAtualizacao=setInterval(atualizarPlacarEleicao,5000);
 atualizarPlacarEleicao();
 }
 
@@ -1353,7 +1353,7 @@ return Math.max(0,Number(d.value));
 }
 
 async function incrementarVoto(candidato){
-const r=await fetch(`${ELECTION_API_BASE}/hit/${ELECTION_NS}/${candidato}`,{cache:'no-store'});
+const r=await fetch(`${ELECTION_API_BASE}/hit/${ELECTION_NS}/${candidato}?_=${Date.now()}`,{cache:'no-store'});
 if(!r.ok)throw new Error(`HTTP ${r.status}`);
 const d=await r.json();
 if(!Number.isFinite(Number(d.value)))throw new Error('Resposta inválida do placar');
@@ -1433,16 +1433,16 @@ if(eleicaoEncerrada){mostrarAviso('A eleição já foi encerrada!','Eleição Ba
 if(!eleicaoAtiva){mostrarAviso('A eleição ainda não está ativa.','Eleição Bapal');return}
 const status=document.getElementById('election-status');
 if(status)status.innerText='Registrando seu voto...';
-votosEleicaoCache[candidato]++;
-salvarVotosEleicaoCache();
-exibirPlacarEleicao();
+try{
 const votosRegistrados=await incrementarVoto(candidato);
-votosEleicaoCache[candidato]=Math.max(votosEleicaoCache[candidato],Number(votosRegistrados)||0);
-salvarVotosEleicaoCache();
+votosEleicaoCache[candidato]=votosRegistrados;
+definirEstadoConexaoPlacar(true);
 exibirPlacarEleicao();
+if(status)status.innerText=`✅ Voto em ${candidato==='otario'?'Marrone Otário':'Lula'} registrado online!`;
 await atualizarPlacarEleicao();
-if(!eleicaoEncerrada){
-if(status)status.innerText=`✅ Voto em ${candidato==='otario'?'Marrone Otário':'Lula'} registrado! Pode votar de novo.`;
+}catch(error){
+definirEstadoConexaoPlacar(false,'Falha ao registrar voto — tente novamente');
+if(status)status.innerText='❌ Não foi possível registrar seu voto online. Verifique a conexão e tente novamente.';
 }
 }
 
@@ -1500,11 +1500,9 @@ mostrarAviso('Eleição Bapal ativada em modo debug!','Debug');
 function resetarEleicaoDebug(){
 try{
 localStorage.removeItem('bapoEleicaoVencedor');
-localStorage.removeItem(`bapoEleicao_otario`);
-localStorage.removeItem(`bapoEleicao_lula`);
-localStorage.removeItem('bapoEleicaoVotosCache');
 }catch(e){}
 votosEleicaoCache={otario:0,lula:0};
+definirEstadoConexaoPlacar(false,'Conectando ao placar online...');
 exibirPlacarEleicao();
 eleicaoEncerrada=false;
 vencedorEleicao=null;
